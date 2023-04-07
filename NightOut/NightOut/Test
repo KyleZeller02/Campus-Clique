@@ -1,0 +1,654 @@
+diff --git a/NightOut.xcodeproj/project.pbxproj b/NightOut.xcodeproj/project.pbxproj
+index d2d145e..e2f6e45 100644
+--- a/NightOut.xcodeproj/project.pbxproj
++++ b/NightOut.xcodeproj/project.pbxproj
+@@ -8,7 +8,7 @@
+ 
+ /* Begin PBXBuildFile section */
+ 		02947E682879F727005133D5 /* NightOutApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02947E672879F727005133D5 /* NightOutApp.swift */; };
+-		02947E6A2879F727005133D5 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02947E692879F727005133D5 /* ContentView.swift */; };
++		02947E6A2879F727005133D5 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02947E692879F727005133D5 /* LoginView.swift */; };
+ 		02947E6C2879F72A005133D5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 02947E6B2879F72A005133D5 /* Assets.xcassets */; };
+ 		02947E6F2879F72A005133D5 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 02947E6E2879F72A005133D5 /* Preview Assets.xcassets */; };
+ 		02947E7C28834581005133D5 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 02947E7B28834581005133D5 /* GoogleService-Info.plist */; };
+@@ -22,16 +22,20 @@
+ 		02947E8D288348C9005133D5 /* FirebaseMessaging in Frameworks */ = {isa = PBXBuildFile; productRef = 02947E8C288348C9005133D5 /* FirebaseMessaging */; };
+ 		02947E8F288348C9005133D5 /* FirebaseRemoteConfigSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 02947E8E288348C9005133D5 /* FirebaseRemoteConfigSwift */; };
+ 		02947E91288348C9005133D5 /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = 02947E90288348C9005133D5 /* FirebaseStorage */; };
++		02947E9428836C9C005133D5 /* NameCollegeProfileCreation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02947E9328836C9C005133D5 /* NameCollegeProfileCreation.swift */; };
++		02947E96288376CD005133D5 /* UserProfileSetUp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02947E95288376CD005133D5 /* UserProfileSetUp.swift */; };
+ /* End PBXBuildFile section */
+ 
+ /* Begin PBXFileReference section */
+ 		02947E642879F727005133D5 /* NightOut.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = NightOut.app; sourceTree = BUILT_PRODUCTS_DIR; };
+ 		02947E672879F727005133D5 /* NightOutApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NightOutApp.swift; sourceTree = "<group>"; };
+-		02947E692879F727005133D5 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
++		02947E692879F727005133D5 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
+ 		02947E6B2879F72A005133D5 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+ 		02947E6E2879F72A005133D5 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+ 		02947E7A28834509005133D5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+ 		02947E7B28834581005133D5 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
++		02947E9328836C9C005133D5 /* NameCollegeProfileCreation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NameCollegeProfileCreation.swift; sourceTree = "<group>"; };
++		02947E95288376CD005133D5 /* UserProfileSetUp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileSetUp.swift; sourceTree = "<group>"; };
+ /* End PBXFileReference section */
+ 
+ /* Begin PBXFrameworksBuildPhase section */
+@@ -75,9 +79,10 @@
+ 		02947E662879F727005133D5 /* NightOut */ = {
+ 			isa = PBXGroup;
+ 			children = (
++				02947E97288388A3005133D5 /* New Group */,
+ 				02947E7A28834509005133D5 /* Info.plist */,
+ 				02947E672879F727005133D5 /* NightOutApp.swift */,
+-				02947E692879F727005133D5 /* ContentView.swift */,
++				02947E9228836C66005133D5 /* Views */,
+ 				02947E6B2879F72A005133D5 /* Assets.xcassets */,
+ 				02947E6D2879F72A005133D5 /* Preview Content */,
+ 			);
+@@ -92,6 +97,23 @@
+ 			path = "Preview Content";
+ 			sourceTree = "<group>";
+ 		};
++		02947E9228836C66005133D5 /* Views */ = {
++			isa = PBXGroup;
++			children = (
++				02947E692879F727005133D5 /* LoginView.swift */,
++				02947E9328836C9C005133D5 /* NameCollegeProfileCreation.swift */,
++				02947E95288376CD005133D5 /* UserProfileSetUp.swift */,
++			);
++			path = Views;
++			sourceTree = "<group>";
++		};
++		02947E97288388A3005133D5 /* New Group */ = {
++			isa = PBXGroup;
++			children = (
++			);
++			path = "New Group";
++			sourceTree = "<group>";
++		};
+ /* End PBXGroup section */
+ 
+ /* Begin PBXNativeTarget section */
+@@ -178,7 +200,9 @@
+ 			isa = PBXSourcesBuildPhase;
+ 			buildActionMask = 2147483647;
+ 			files = (
+-				02947E6A2879F727005133D5 /* ContentView.swift in Sources */,
++				02947E9428836C9C005133D5 /* NameCollegeProfileCreation.swift in Sources */,
++				02947E6A2879F727005133D5 /* LoginView.swift in Sources */,
++				02947E96288376CD005133D5 /* UserProfileSetUp.swift in Sources */,
+ 				02947E682879F727005133D5 /* NightOutApp.swift in Sources */,
+ 			);
+ 			runOnlyForDeploymentPostprocessing = 0;
+diff --git a/NightOut.xcodeproj/xcuserdata/kylezeller.xcuserdatad/xcschemes/xcschememanagement.plist b/NightOut.xcodeproj/xcuserdata/kylezeller.xcuserdatad/xcschemes/xcschememanagement.plist
+index 18ce636..fe837ed 100644
+--- a/NightOut.xcodeproj/xcuserdata/kylezeller.xcuserdatad/xcschemes/xcschememanagement.plist
++++ b/NightOut.xcodeproj/xcuserdata/kylezeller.xcuserdatad/xcschemes/xcschememanagement.plist
+@@ -9,6 +9,27 @@
+ 			<key>orderHint</key>
+ 			<integer>0</integer>
+ 		</dict>
++		<key>Promises (Playground) 1.xcscheme</key>
++		<dict>
++			<key>isShown</key>
++			<false/>
++			<key>orderHint</key>
++			<integer>2</integer>
++		</dict>
++		<key>Promises (Playground) 2.xcscheme</key>
++		<dict>
++			<key>isShown</key>
++			<false/>
++			<key>orderHint</key>
++			<integer>3</integer>
++		</dict>
++		<key>Promises (Playground).xcscheme</key>
++		<dict>
++			<key>isShown</key>
++			<false/>
++			<key>orderHint</key>
++			<integer>0</integer>
++		</dict>
+ 	</dict>
+ </dict>
+ </plist>
+diff --git a/NightOut/Auth0.plist b/NightOut/Auth0.plist
+new file mode 100644
+index 0000000..bc2e07a
+--- /dev/null
++++ b/NightOut/Auth0.plist
+@@ -0,0 +1,12 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
++<!--
++   Auth0.plist
++   NightOut
++
++   Created by Kyle Zeller on 7/9/22.
++   Copyright (c) 2022 ___ORGANIZATIONNAME___. All rights reserved.
++-->
++<plist version="1.0">
++<dict/>
++</plist>
+diff --git a/NightOut/ContentView.swift b/NightOut/ContentView.swift
+deleted file mode 100644
+index 329f4bf..0000000
+--- a/NightOut/ContentView.swift
++++ /dev/null
+@@ -1,162 +0,0 @@
+-//
+-//  ContentView.swift
+-//  NightOut
+-//
+-//  Created by Kyle Zeller on 7/9/22.
+-//
+-
+-import SwiftUI
+-import Firebase
+-
+-extension Color {
+-    static let Purple = Color(red: 15/255, green:4/255 , blue: 76/255)
+-    static let White = Color(red: 238/255, green: 238/255, blue: 238/255)
+-    static let Gray = Color(red: 120/255, green: 122/255, blue: 145/255, opacity:0.5)
+-}
+-struct ContentView: View {
+-    @State var email: String = ""
+-    @State var password: String = ""
+-    
+-    
+-    var body: some View {
+-        Color.White
+-               .ignoresSafeArea()
+-               .overlay(
+-        VStack {
+-            Title()
+-            // this image(Logo) is a place holder for the app logo
+-            Logo()
+-            //username field
+-            TextField("Email", text: $email)
+-                .autocapitalization(.none)
+-                .padding()
+-                .background(Color.Gray)
+-                .cornerRadius(5.0)
+-                .padding(.bottom, 20)
+-            //password field
+-            SecureField("Password", text: $password)
+-                .autocapitalization(.none)
+-               .padding()
+-               .background(Color.Gray)
+-               .cornerRadius(5.0)
+-               .padding(.bottom, 20)
+-            
+-            //Login Buttons
+-            //normal login
+-            Button(action:
+-                    {
+-                       print("Button Tapped")
+-                    }) {
+-                          LoginButton()
+-                       }
+-            //sign up button
+-            Button(action:
+-                    { if email != "" && password != ""{
+-                        Auth.auth().createUser(withEmail: email, password: password){authResult, error in
+-                            if let e = error{
+-                                print(e)
+-                            }
+-                            //successfully regiesterd
+-                            else{
+-                                
+-                            }
+-                        }
+-                    
+-                    }}
+-            ) {
+-                          SIGNUP()
+-                       }
+-            HStack {
+-                //sign in with apple id
+-                Button(action:
+-                        {print("Button tapped")}) {
+-                        LoginWithAppleID()
+-                }
+-                //sign in with phone number
+-                Button(action:
+-                    {print("Button tapped")}) {
+-                    LoginWithPhoneNumber()
+-                }
+-                    
+-            }
+-        }
+-            .padding()
+-       )
+-    }
+-}
+-
+-struct ContentView_Previews: PreviewProvider {
+-    static var previews: some View {
+-        ContentView()
+-            .previewInterfaceOrientation(.portrait)
+-    }
+-}
+-
+-struct Title: View {
+-    var body: some View {
+-        Text("NightOut")
+-            .font(.system(size: 75))
+-            .fontWeight(.semibold)
+-            .padding(.bottom, 20)
+-            .foregroundColor(Color.Purple)
+-    }
+-}
+-
+-struct Logo: View {
+-    var body: some View {
+-        Image("AppLogo")
+-            .resizable()
+-            .aspectRatio(contentMode: .fill)
+-            .frame(width: 150, height: 150)
+-            .clipped()
+-            .cornerRadius(150)
+-            .padding()
+-    }
+-}
+-
+-struct LoginButton: View {
+-    var body: some View {
+-        Text("LOGIN")
+-            .font(.headline)
+-            .foregroundColor(.white)
+-            .padding()
+-            .frame(width: 220, height: 60)
+-            .background(.indigo)
+-            .cornerRadius(15.0)
+-    }
+-}
+-
+-struct SIGNUP: View {
+-    var body: some View {
+-        Text("SIGN UP")
+-            .font(.headline)
+-            .foregroundColor(.white)
+-            .padding()
+-            .frame(width: 220, height: 60)
+-            .background(.indigo)
+-            .cornerRadius(15.0)
+-    }
+-}
+-struct LoginWithAppleID: View {
+-    var body: some View {
+-        Text("Login With Apple ID")
+-            .font(.system(size:12))
+-            .foregroundColor(.white)
+-            .padding()
+-            .frame(width: 190, height: 60)
+-            .background(.indigo)
+-            .cornerRadius(15.0)
+-    }
+-}
+-
+-struct LoginWithPhoneNumber: View {
+-    var body: some View {
+-        Text("Login With Phone Number")
+-            .font(.system(size:12))
+-            .foregroundColor(.white)
+-            .padding()
+-            .frame(width: 190, height: 60)
+-            .background(.indigo)
+-            .cornerRadius(15.0)
+-    }
+-}
+diff --git a/NightOut/NightOutApp.swift b/NightOut/NightOutApp.swift
+index 3518129..2f79359 100644
+--- a/NightOut/NightOutApp.swift
++++ b/NightOut/NightOutApp.swift
+@@ -22,9 +22,10 @@ class AppDelegate: NSObject, UIApplicationDelegate {
+ struct NightOutApp: App {
+     //line below was also copied as instructed
+     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
++    
+     var body: some Scene {
+         WindowGroup {
+-            ContentView()
++            LoginView()
+         }
+     }
+ }
+diff --git a/NightOut/Views/LoginView.swift b/NightOut/Views/LoginView.swift
+new file mode 100644
+index 0000000..104d91d
+--- /dev/null
++++ b/NightOut/Views/LoginView.swift
+@@ -0,0 +1,171 @@
++//
++//  ContentView.swift
++//  NightOut
++//
++//  Created by Kyle Zeller on 7/9/22.
++//
++
++import SwiftUI
++import Firebase
++
++extension Color {
++    static let Purple = Color(red: 15/255, green:4/255 , blue: 76/255)
++    static let White = Color(red: 238/255, green: 238/255, blue: 238/255)
++    static let Gray = Color(red: 120/255, green: 122/255, blue: 145/255, opacity:0.5)
++}
++struct LoginView: View {
++    @State var email: String = ""
++    @State var password: String = ""
++    @State var showView = false
++    
++    
++    var body: some View {
++        Color.White
++            .ignoresSafeArea()
++            .overlay(
++                NavigationView{
++                    VStack {
++                        Title()
++                        // this image(Logo) is a place holder for the app logo
++                        Logo()
++                        //username field
++                        TextField("Email", text: $email)
++                            .autocapitalization(.none)
++                            .padding()
++                            .background(Color.Gray)
++                            .cornerRadius(5.0)
++                            .padding(.bottom, 20)
++                        //password field
++                        SecureField("Password", text: $password)
++                            .autocapitalization(.none)
++                            .padding()
++                            .background(Color.Gray)
++                            .cornerRadius(5.0)
++                            .padding(.bottom, 20)
++                        //Login Buttons
++                        //normal login
++                        Button(action:
++                                {
++                            print("Button Tapped")
++                        }) {
++                            LoginButton()
++                        }
++                        //sign up button
++                        Button(action:
++                                { if email != "" && password != ""{
++                                    Auth.auth().createUser(withEmail: email, password: password){authResult, error in
++                                        if let e = error{
++                                            print(e)
++                                        }
++                                        //successfully regiesterd
++                                        else{
++                                            
++                                            //go to ProfileSetUP()
++                                            DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
++                                                self.showView = true
++                                            }
++                                            
++                                        }
++                                    }
++                                    
++                                }}
++                        ) {
++                            SIGNUP()
++                        }
++                        HStack {
++                            //sign in with apple id
++                            Button(action:
++                                    {print("Button tapped")}) {
++                                LoginWithAppleID()
++                            }
++                            //sign in with phone number
++                            Button(action:
++                                    {print("Button tapped")}) {
++                                LoginWithPhoneNumber()
++                            }
++                        }
++                    }
++                    
++                }
++                    .navigationBarTitle("NightOut")
++                    .padding()
++                    .ignoresSafeArea()
++            )
++    }
++}
++
++struct ContentView_Previews: PreviewProvider {
++    static var previews: some View {
++        LoginView()
++            .previewInterfaceOrientation(.portrait)
++    }
++}
++
++struct Title: View {
++    var body: some View {
++        Text("NightOut")
++            .font(.system(size: 75))
++            .fontWeight(.semibold)
++            .padding(.bottom, 20)
++            .foregroundColor(Color.Purple)
++    }
++}
++
++struct Logo: View {
++    var body: some View {
++        Image("AppLogo")
++            .resizable()
++            .aspectRatio(contentMode: .fill)
++            .frame(width: 150, height: 150)
++            .clipped()
++            .cornerRadius(150)
++            .padding()
++    }
++}
++
++struct LoginButton: View {
++    var body: some View {
++        Text("LOGIN")
++            .font(.headline)
++            .foregroundColor(.white)
++            .padding()
++            .frame(width: 220, height: 60)
++            .background(.indigo)
++            .cornerRadius(15.0)
++    }
++}
++
++struct SIGNUP: View {
++    var body: some View {
++        Text("SIGN UP")
++            .font(.headline)
++            .foregroundColor(.white)
++            .padding()
++            .frame(width: 220, height: 60)
++            .background(.indigo)
++            .cornerRadius(15.0)
++    }
++}
++struct LoginWithAppleID: View {
++    var body: some View {
++        Text("Login With Apple ID")
++            .font(.system(size:12))
++            .foregroundColor(.white)
++            .padding()
++            .frame(width: 175, height: 60)
++            .background(.indigo)
++            .cornerRadius(15.0)
++    }
++}
++
++struct LoginWithPhoneNumber: View {
++    var body: some View {
++        Text("Login With Phone Number")
++            .font(.system(size:12))
++            .foregroundColor(.white)
++            .padding()
++            .frame(width: 175, height: 60)
++            .background(.indigo)
++            .cornerRadius(15.0)
++    }
++}
+diff --git a/NightOut/Views/NameCollegeProfileCreation.swift b/NightOut/Views/NameCollegeProfileCreation.swift
+new file mode 100644
+index 0000000..2810593
+--- /dev/null
++++ b/NightOut/Views/NameCollegeProfileCreation.swift
+@@ -0,0 +1,85 @@
++//
++//  ProfileSetUp.swift
++//  NightOut
++//
++//  Created by Kyle Zeller on 7/16/22.
++// this file may need to keep track of login information
++//
++
++import SwiftUI
++
++
++struct ProfileSetUp: View {
++    @State var FirstName: String = ""
++    @State var LastName: String = ""
++    @State var College: String = ""
++    var body: some View {
++        
++        VStack{
++            Spacer()
++            Text("Create Your Profile")
++                .font(.system(size: 40))
++                .fontWeight(.semibold)
++                .foregroundColor(Color.Purple)
++                .multilineTextAlignment(.center)
++            
++            
++            TextField("First Name", text: $FirstName)
++                .autocapitalization(UITextAutocapitalizationType.words)
++                .padding()
++                .background(Color.Gray)
++                .cornerRadius(5.0)
++                .padding(.leading, 20)
++                .padding(.trailing, 20)
++            
++            
++            TextField("Last Name", text: $LastName)
++                .autocapitalization(UITextAutocapitalizationType.words)
++                .padding()
++                .background(Color.Gray)
++                .cornerRadius(5.0)
++                .padding(.leading, 20)
++                .padding(.trailing, 20)
++            
++            //I want the college to be a search and select like how crowdmark did
++            TextField("College", text: $College)
++                .autocapitalization(UITextAutocapitalizationType.words)
++                .padding()
++                .background(Color.Gray)
++                .cornerRadius(5.0)
++                .padding(.leading, 20)
++                .padding(.trailing, 20)
++                .padding(.bottom, 20)
++            
++            Spacer()
++            Button(action:
++                    {
++                print("Next Button Pressed")
++            }) {
++                NextButton()
++            }
++            
++            
++            
++        }
++        
++    }
++}
++
++struct ProfileSetUp_Previews: PreviewProvider {
++    static var previews: some View {
++        ProfileSetUp()
++    }
++}
++
++struct NextButton: View {
++    var body: some View {
++        Text("Next")
++            .font(.headline)
++            .foregroundColor(.white)
++            .padding()
++            .frame(width: 220, height: 60)
++            .background(.indigo)
++            .cornerRadius(15.0)
++    }
++}
+diff --git a/NightOut/Views/UserProfileSetUp.swift b/NightOut/Views/UserProfileSetUp.swift
+new file mode 100644
+index 0000000..217437e
+--- /dev/null
++++ b/NightOut/Views/UserProfileSetUp.swift
+@@ -0,0 +1,64 @@
++//
++//  UserProfileSetUp.swift
++//  NightOut
++//
++//  Created by Kyle Zeller on 7/16/22.
++//
++
++import SwiftUI
++
++struct UserProfileSetUp: View {
++    
++    @State var Major: String = ""
++    // Classes will need to be parsed to a string array
++    @State var Classes: String = ""
++    var body: some View {
++        
++        VStack{
++            Spacer()
++            Text("About You")
++                .font(.system(size: 40))
++                .fontWeight(.semibold)
++                .foregroundColor(Color.Purple)
++                .multilineTextAlignment(.center)
++                .padding(.top,200)
++            
++            
++            TextField("What Are You Studying?", text: $Major)
++                .autocapitalization(UITextAutocapitalizationType.words)
++                .padding()
++                .background(Color.Gray)
++                .cornerRadius(5.0)
++                .padding(.leading, 20)
++                .padding(.trailing, 20)
++            
++            
++            TextField("What Classes Are You Taking?", text: $Classes)
++                .autocapitalization(UITextAutocapitalizationType.words)
++                .padding()
++                .background(Color.Gray)
++                .cornerRadius(5.0)
++                .padding(.leading, 20)
++                .padding(.trailing, 20)
++            
++            
++            //I want the college to be a search and select like how crowdmark did
++            Spacer()
++            
++            Button(action:
++                    {
++                print("Next Button Pressed")
++            }) {
++                NextButton()
++            }
++            
++            
++        }
++    }
++}
++
++struct UserProfileSetUp_Previews: PreviewProvider {
++    static var previews: some View {
++        UserProfileSetUp()
++    }
++}
