@@ -41,7 +41,7 @@ struct LoginView: View {
                 //Login Button
                 Button(action:
                         {
-                    print(SavedEmail)
+                    print(SavedEmail ?? "")
                     if  !email.isEmpty, !password.isEmpty {
                         //attempt login
                         Auth.auth().signIn(withEmail: email, password: password) {  authResult, error in

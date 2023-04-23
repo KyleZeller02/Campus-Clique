@@ -38,13 +38,59 @@ struct UserDataAcquisition: View {
                     .padding(.trailing, 20)
                 Text("What classes are you taking? Type the class as it shows on your schedule, ie: CIS115, ECON110")
                 Text("Use a comma to seperate your classes")
-                TextField("Classes", text: $Classes)
-                    .autocapitalization(UITextAutocapitalizationType.words)
-                    .padding()
-                    .background(Color.Gray)
-                    .cornerRadius(5.0)
-                    .padding(.leading, 20)
-                    .padding(.trailing, 20)
+                VStack(spacing: 0){
+                    VStack(spacing: 0){
+                        HStack(spacing: 0){
+                            TextField("Class", text: $Classes)
+                                .padding()
+                                .background(Color.Gray)
+                                .cornerRadius(5.0)
+                                .padding(.bottom, 20)
+                                .padding(.trailing,10)
+                                .minimumScaleFactor(0.7)
+                            TextField("Class", text: $Classes)
+                                .padding()
+                                .background(Color.Gray)
+                                .cornerRadius(5.0)
+                                .padding(.bottom, 20)
+                                .padding(.trailing,10)
+                                .minimumScaleFactor(0.7)
+                            TextField("Class", text: $Classes)
+                                .padding()
+                                .background(Color.Gray)
+                                .cornerRadius(5.0)
+                                .padding(.bottom, 20)
+                                .padding(.trailing,10)
+                                .minimumScaleFactor(0.7)
+                        }
+                    }
+                    VStack(spacing: 0){
+                        HStack(spacing: 0){
+                            TextField("Class", text: $Classes)
+                                .padding()
+                                .background(Color.Gray)
+                                .cornerRadius(5.0)
+                                .padding(.bottom, 20)
+                                .padding(.trailing,10)
+                                .minimumScaleFactor(0.7)
+                            TextField("Class", text: $Classes)
+                                .padding()
+                                .background(Color.Gray)
+                                .cornerRadius(5.0)
+                                .padding(.bottom, 20)
+                                .padding(.trailing,10)
+                                .minimumScaleFactor(0.7)
+                            TextField("Class", text: $Classes)
+                                .padding()
+                                .background(Color.Gray)
+                                .cornerRadius(5.0)
+                                .padding(.bottom, 20)
+                                .padding(.trailing,10)
+                                .minimumScaleFactor(0.7)
+                        }
+                    }
+                    
+                }
                 
                 Spacer()
                 Button(action:

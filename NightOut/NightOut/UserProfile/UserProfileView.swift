@@ -29,12 +29,12 @@ struct UserProfileView: View {
     @State var newClass6: String = ""
     @State private var showingAlert: Bool = false
     
+    @StateObject var posts: ClassPostsViewModel = ClassPostsViewModel()
+    
     
     
     var body: some View {
-        Color.Gray
-            .ignoresSafeArea()
-            .overlay(
+       
                 ZStack{
                 VStack(alignment: .leading){
                     
@@ -47,7 +47,18 @@ struct UserProfileView: View {
                             .padding(.bottom)
                         
                         Button {
-                            self.showEditView = true
+                            
+                           
+                            
+                            let user = Auth.auth().currentUser
+                            if let user = user{
+                                let email = user.email
+                                if email == profileVM.CurUser(){
+                                    self.showEditView = true
+                                }
+                            }
+                           
+                            
                             
                             
                         } label: {
@@ -218,11 +229,6 @@ struct UserProfileView: View {
                                             
                                         }
                                         
-                                        
-                                        
-                                        
-                                        
-                                        
                                     }
                                     Button {
                                         if newFirstName.isEmpty || newLastName.isEmpty || newCollege.isEmpty || newMajors.isEmpty || newClass1.isEmpty ||
@@ -250,7 +256,7 @@ struct UserProfileView: View {
                                             if newClass6 != ""{
                                                 ClassArray.append(newClass6)
                                             }
-                                            profileVM.handleEdit(firstName: newFirstName, lastName: newLastName, College: newCollege, Birthday: newBirthday, Major: newMajors, Classes: ClassArray)
+                                            profileVM.handleEdit(firstName: newFirstName, lastName: newLastName, college: newCollege, birthday: newBirthday, major: newMajors, classes: ClassArray)
                                             self.showEditView = false
                                         }
                                         
@@ -282,6 +288,7 @@ struct UserProfileView: View {
 
                                     
                                 }
+                                
                                
                             }
                             .onAppear(){
@@ -381,24 +388,87 @@ struct UserProfileView: View {
                             .multilineTextAlignment(.leading)
                             
                     }
-                     
+                    
+                        Text("My Posts")
+                            .font(.system(size:20))
+                            .multilineTextAlignment(.center)
+                            
+                   
+                    
+                    NavigationView{
+                        List{
+                            ForEach(profileVM.usersPosts){ post in
+                                NavigationLink( destination: DetailView(selectedPost: post ,viewModel: posts, canEdit: false) , label: {
+                                    LazyVStack(alignment: .leading){
+                                    // post author and post body
+                                    HStack{
+                                        //the author of the ppost
+                                        Text("\(post.postAuthor)")
+                                            .padding(5)
+                                            .background(Color.Gray)
+                                        //the body of the post
+                                        Text("\(post.postBody)")
+                                            .foregroundColor(Color.Black)
+                                        
+                                        
+                                        
+                                    }
+                                    //spacer to seperate the post text and post voting
+                                    Spacer()
+                                    // vote buttons
+                                    HStack{
+                                        //votes on the post
+                                        Text("\(post.votes)")
+                                        Spacer()
+                                        
+                                    }
+                                    
+                                    .padding(.bottom,10)
+                                        
+                                    
+                                }
+                                })
+                                
+                             
+                            }
+                            
+                            
+                            
+                        }
+                        
+                        .padding(EdgeInsets(top: -10, leading: -20, bottom: -10, trailing: -20))
+                        .clipShape(Rectangle())
+                        .listStyle(PlainListStyle())
+                        
+                    }
+                    
+                    }
 
                 }
+                    
                     .frame(minWidth: 0,maxWidth: .infinity,minHeight: 0,maxHeight: .infinity, alignment: .topLeading)
                     .padding(.leading)
+                    .refreshable {
+                        let user = Auth.auth().currentUser
+                        let userEmail = user?.email
+                        profileVM.getPostsForUser(for: userEmail ?? ""){ posts in
+                            profileVM.usersPosts = posts
+                            profileVM.sortUsersPost()
+                        }
+                    }
                     
-                    
-                }
-                    
-            )
+            
         
     }
+    
+        
     
         
         
         
     
 }
+
 
 
 struct UserProfileView_Previews: PreviewProvider {

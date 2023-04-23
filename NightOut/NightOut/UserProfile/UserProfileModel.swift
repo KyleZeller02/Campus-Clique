@@ -24,6 +24,7 @@ class UserDocument:Identifiable,ObservableObject{
     }
     
     
+    
     init(FirstName: String, LastName: String, College: String, Birthday: String, Major: [String], Classes: [String], Email: String ) {
         self.FirstName = FirstName
         self.LastName = LastName
@@ -32,6 +33,7 @@ class UserDocument:Identifiable,ObservableObject{
         self.Major = Major
         self.Classes = Classes
         self.Email = Email
+        
         
     }
     

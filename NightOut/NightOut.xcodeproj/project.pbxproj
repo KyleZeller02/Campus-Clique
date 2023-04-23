@@ -20,7 +20,7 @@
 		02943C31296D09F000DB7DF6 /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02943C30296D09F000DB7DF6 /* Settings.swift */; };
 		02943C34296E2B3D00DB7DF6 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02943C33296E2B3D00DB7DF6 /* Constants.swift */; };
 		02943C37296E2FCA00DB7DF6 /* UserProfileViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02943C36296E2FCA00DB7DF6 /* UserProfileViewModel.swift */; };
-		02943C66296F887400DB7DF6 /* NightOutTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02943C65296F887400DB7DF6 /* NightOutTests.swift */; };
+		02943C66296F887400DB7DF6 /* ClassPostViewModelTesting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02943C65296F887400DB7DF6 /* ClassPostViewModelTesting.swift */; };
 		02943C6F296F8A8B00DB7DF6 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 02943C6E296F8A8B00DB7DF6 /* FirebaseAuth */; };
 		02943C71296F8B1400DB7DF6 /* FirebaseMessaging in Frameworks */ = {isa = PBXBuildFile; productRef = 02943C70296F8B1400DB7DF6 /* FirebaseMessaging */; };
 		02943C73296F8B1F00DB7DF6 /* FirebaseDatabaseSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 02943C72296F8B1F00DB7DF6 /* FirebaseDatabaseSwift */; };
@@ -77,7 +77,7 @@
 		02943C33296E2B3D00DB7DF6 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		02943C36296E2FCA00DB7DF6 /* UserProfileViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileViewModel.swift; sourceTree = "<group>"; };
 		02943C63296F887400DB7DF6 /* NightOutTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = NightOutTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		02943C65296F887400DB7DF6 /* NightOutTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NightOutTests.swift; sourceTree = "<group>"; };
+		02943C65296F887400DB7DF6 /* ClassPostViewModelTesting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClassPostViewModelTesting.swift; sourceTree = "<group>"; };
 		02943C882972299600DB7DF6 /* ClassPostsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClassPostsView.swift; sourceTree = "<group>"; };
 		02943C8A297229E500DB7DF6 /* ClassPostsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClassPostsViewModel.swift; sourceTree = "<group>"; };
 		02943C8C2972320400DB7DF6 /* ClassPosts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClassPosts.swift; sourceTree = "<group>"; };
@@ -189,7 +189,7 @@
 		02943C64296F887400DB7DF6 /* NightOutTests */ = {
 			isa = PBXGroup;
 			children = (
-				02943C65296F887400DB7DF6 /* NightOutTests.swift */,
+				02943C65296F887400DB7DF6 /* ClassPostViewModelTesting.swift */,
 			);
 			path = NightOutTests;
 			sourceTree = "<group>";
@@ -381,7 +381,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				02943C66296F887400DB7DF6 /* NightOutTests.swift in Sources */,
+				02943C66296F887400DB7DF6 /* ClassPostViewModelTesting.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

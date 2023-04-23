@@ -46,7 +46,7 @@ struct UserBirthdayAcquisition: View {
                         { if Birthday != "" {
                             let email = Settings.Email
                             OnboardingDatabaseManager.addBirthdayToDocument(birthday: Birthday, email: email)
-                            viewRouter.CurrentViewState = .ClassPosts
+                            viewRouter.CurrentViewState = .InAppViews
                             
                         }
                     else{

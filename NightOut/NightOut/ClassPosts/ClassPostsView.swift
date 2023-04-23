@@ -6,162 +6,337 @@
 //
 
 import SwiftUI
+import Firebase
 
 struct ClassPosts: View {
     @StateObject var viewRouter: ViewRouter
     @StateObject var posts: ClassPostsViewModel = ClassPostsViewModel()
     @State private var isShowingSheet = false
     @State var addedPost: String = ""
-    @AppStorage("Email") var SavedEmail: String?
     @StateObject var profileVM: UserProfileViewModel = UserProfileViewModel()
     var body: some View {
         
-        NavigationView{
-            
-            List{
-                ForEach(posts.postsArray){ post in
-                    NavigationLink( destination: DetailView(selectedPost: post ,viewModel: posts) , label: {
+        ZStack{
+            NavigationView{
+                if posts.postsArray.isEmpty{
+                    Text("There are currently no posts in this class. Get the party started!")
+                        .padding(.bottom, 10)
+                        .padding(.leading, 10)
+                        .padding(.trailing,10)
+                        .padding(.top,10)
                         
-                        VStack(alignment: .leading){
-                            // post author and post body
-                            HStack{
-                               
-                                //the author of the ppost
-                                Text("\(post.postAuthor)")
-                                    .padding(5)
-                                    .background(Color.Gray)
-                                //the body of the post
-                                Text("\(post.postBody)")
-                                    .foregroundColor(Color.Black)
-                                
-                                
-                                
+                        .background(Color.indigo)
+                        .foregroundColor(.white)
+                        .cornerRadius(10.0)
+                        
+                        .font(.largeTitle)
+                        .navigationBarTitleDisplayMode(.inline)
+                                   
+                        .navigationBarItems(leading: CustomNavigationBarTitle(selectedTitle: posts.selectedClass, ErrorMessage: true))
+                        .toolbar{
+                            Button {
+                                self.isShowingSheet = true
+                            } label: {
+                                Text("Add Post")
+                                    .padding(.bottom, 10)
+                                    .padding(.leading, 10)
+                                    .padding(.trailing,10)
+                                    .padding(.top,10)
+                                    
+                                    .background(Color.indigo)
+                                    .foregroundColor(.white)
+                                    .cornerRadius(10.0)
+                                    
+                                    .font(.headline)
                             }
-                            //spacer to seperate the post text and post voting
-                            Spacer()
-                            // vote buttons
-                            HStack{
-                                //votes on the post
-                                Text("\(post.votes)")
-                                
-                                //upvote button
-                                Button(action: {
-                                    DispatchQueue.main.async {
-                                        posts.handleVoteOnPost(UpOrDown: "up", onPost: post)
-                                       
+                            .sheet(isPresented: $isShowingSheet)
+                            {
+                                ZStack{
+                                    VStack{
+                                        Text("Share A Post With Your Classmates!")
+                                            .padding(30)
+                                            .font(.system(size:40))
+                                        TextField("Your Post", text: $addedPost)
+                                            .autocapitalization(UITextAutocapitalizationType.words)
+                                            .padding()
+                                            .background(Color.Gray)
+                                            .cornerRadius(5.0)
+                                            .padding(.leading, 20)
+                                            .padding(.trailing, 20)
+                                            .frame(minWidth: 200, maxWidth: .infinity,minHeight: 50,maxHeight: .infinity)
+                                        Button {
+                                            //send to firebase and update view
+                                            if addedPost == ""{
+                                                self.isShowingSheet.toggle()
+                                                //Probably needs to get rid of this posts.add
+                                                //posts.addPost(postBody: addedPost)
+                                            }
+                                            else{
+                                                posts.addPost(postBody: addedPost)
+                                                addedPost = ""
+                                                self.isShowingSheet.toggle()
+                                            }
+                                        } label: {
+                                            Text("Share Post")
+                                                .font(.system(size:30))
+                                                .foregroundColor(.white)
+                                                .padding()
+                                                .frame(width: 190, height: 60)
+                                                .background(.indigo)
+                                                .cornerRadius(15.0)
+                                        }
                                     }
-                                }, label: {
-                                    Image(systemName: "arrow.up")
-                                })
-                                .buttonStyle(.borderedProminent)
-                                .padding(.leading,10)
-                                //downvote button
-                                Button(action: {
-                                    DispatchQueue.main.async {
-                                        posts.handleVoteOnPost(UpOrDown: "down", onPost: post)
+                                }
+                                Spacer()
+                            }
+                            Menu {
+                                ForEach(profileVM.userDocument.Classes ?? [], id: \.self){ curClass in
+                                    Button {
+                                        
+                                        posts.selectedClass = curClass
+                                        DispatchQueue.main.async {
+                                            posts.getPosts(selectedClass: posts.selectedClass) { res in
+                                                posts.postsArray = res
+                                                posts.sortPosts()
+                                            }
+                                        }
+                                        
+                                    } label: {
+                                        Text("\(curClass)")
                                         
                                     }
-                                }, label: {
-                                    Image(systemName: "arrow.down")
-                                })
-                                .padding(.leading,10)
-                                .buttonStyle(.borderedProminent)
+                                }
+                                
+                            } label: {
+                                Text("Classes")
+                                    .padding(.bottom, 10)
+                                    .padding(.leading, 10)
+                                    .padding(.trailing,10)
+                                    .padding(.top,10)
+                                    
+                                    .background(Color.indigo)
+                                    .foregroundColor(.white)
+                                    .cornerRadius(10.0)
+                                    
+                                    .font(.headline)
                             }
-                            
-                            .padding(.bottom,10)
-                            
+                            .simultaneousGesture(TapGesture().onEnded() {
+                                let curUser = profileVM.CurUser()
+                                profileVM.getDocument(user: curUser){ doc in
+                                    self.profileVM.userDocument = doc
+                                    
+                                }
+                            })
+                        }
+                }
+                else{
+                    ScrollView {
+                        LazyVStack(spacing: 10) {
+                            ForEach(posts.postsArray) { post in
+                                NavigationLink(destination: DetailView(selectedPost: post, viewModel: posts, canEdit: true)) {
+                                    VStack(alignment: .leading) {
+                                        // post author and post body
+                                        HStack {
+                                            // the author of the post
+                                            Text("\(post.postAuthor)")
+                                                .padding(.bottom, 10)
+                                                .padding(.leading, 10)
+                                                .padding(.trailing,10)
+                                                .padding(.top,10)
+                                                
+                                                .background(Color.indigo)
+                                                .foregroundColor(.white)
+                                                .cornerRadius(10.0)
+                                                
+                                                .font(.headline) // Updated from Color.Gray
+                                            // the body of the post
+                                            // Updated from Color.Black
+                                        }
+                                        // spacer to separate the post text and post voting
+                                        Spacer()
+                                        HStack{
+                                            Text("\(post.postBody)")
+                                                .padding(.bottom, 10)
+                                                .padding(.leading, 10)
+                                                .padding(.trailing,10)
+                                                .padding(.top,10)
+                                                
+                                                .font(.headline)
+                                                .foregroundColor(Color.White)
+                                                .cornerRadius(10.0)
+                                        }
+                                        // vote buttons
+                                        HStack {
+                                            // votes on the post
+                                            Text("\(post.votes)")
+                                            // upvote button
+                                            Button(action: {
+                                                DispatchQueue.main.async {
+                                                    posts.handleVoteOnPost(UpOrDown: "up", onPost: post)
+                                                }
+                                            }, label: {
+                                                Image(systemName: "arrow.up")
+                                            })
+                                            .padding(.leading, 10)
+                                            .padding(.top, 10)
+                                            .padding(.bottom, 10)
+                                            .padding(.trailing, 10)
+                                            .buttonStyle(BorderlessButtonStyle()) // Use BorderlessButtonStyle instead of .borderedProminent
+                                            .background(Color.White)
+                                            .foregroundColor(Color.Black)// Set the background color of the button to red
+                                            .cornerRadius(8)
+                                            // downvote button
+                                            Button(action: {
+                                                DispatchQueue.main.async {
+                                                    posts.handleVoteOnPost(UpOrDown: "down", onPost: post)
+                                                }
+                                            }) {
+                                                Image(systemName: "arrow.down")
+                                            }
+                                            .padding(.leading, 10)
+                                            .padding(.top, 10)
+                                            .padding(.bottom, 10)
+                                            .padding(.trailing, 10)
+                                            .buttonStyle(BorderlessButtonStyle()) // Use BorderlessButtonStyle instead of .borderedProminent
+                                            .background(Color.White)
+                                            .foregroundColor(Color.Black) // Set the background color of the button to red
+                                            .cornerRadius(8)
+                                        }
+                                        .padding(.bottom, 10)
+                                        .padding(.leading, 10)
+                                        .padding(.trailing,10)
+                                        .padding(.top,10)
+                                        
+                                        .background(Color.indigo)
+                                        .foregroundColor(.white)
+                                        .cornerRadius(5.0)
+                                        
+                                        .font(.headline)
+                                    }
+                                    .frame(maxWidth: .infinity, alignment: .leading)
+                                    .cornerRadius(10) // Set corner radius for rounded edges
+                                    .background(Color.gray) // Set background color for the list items
+                                }
+                            }
                         }
                         
-                    })
+                        //.background(Color.gray) // Set background color for the LazyVStack
+                    }
                     
-                }
-                
-            }
-            .refreshable {
-                 posts.getPosts(selectedClass: posts.selectedClass){ newPosts in
-                    posts.postsArray = newPosts
-                }
-            }
-            
-            
-            .navigationTitle("\(posts.selectedClass)")
-            .toolbar{
-                Button {
-                    self.isShowingSheet = true
-                } label: {
-                    Text("Add Post")
-                }
-                .sheet(isPresented: $isShowingSheet)
-                {
-                    ZStack{
-                        VStack{
-                            Text("Share A Post With Your Classmates!")
-                                .padding(30)
-                                .font(.system(size:40))
-                            TextField("Your Post", text: $addedPost)
-                                .autocapitalization(UITextAutocapitalizationType.words)
-                                .padding()
-                                .background(Color.Gray)
-                                .cornerRadius(5.0)
-                                .padding(.leading, 20)
-                                .padding(.trailing, 20)
-                                .frame(minWidth: 200, maxWidth: .infinity,minHeight: 50,maxHeight: .infinity)
-                            Button {
-                                //send to firebase and update view
-                                if addedPost == ""{
-                                    self.isShowingSheet.toggle()
-                                    //Probably needs to get rid of this posts.add
-                                    //posts.addPost(postBody: addedPost)
-                                }
-                                else{
-                                    posts.addPost(postBody: addedPost)
-                                    addedPost = ""
-                                    self.isShowingSheet.toggle()
-                                }
-                            } label: {
-                                Text("Share Post")
-                                    .font(.system(size:30))
-                                    .foregroundColor(.white)
-                                    .padding()
-                                    .frame(width: 190, height: 60)
-                                    .background(.indigo)
-                                    .cornerRadius(15.0)
-                            }
+                    .background(Color.Black)
+                   
+                    .refreshable {
+                        posts.getPosts(selectedClass: posts.selectedClass) { newPosts in
+                            posts.postsArray = newPosts
                         }
                     }
-                    Spacer()
-                }
-                Menu {
-                    ForEach(profileVM.userDocument.Classes ?? [], id: \.self){ curClass in
+                    
+                   
+                    .navigationBarTitleDisplayMode(.inline)
+                               
+                    .navigationBarItems(leading: CustomNavigationBarTitle(selectedTitle: posts.selectedClass, ErrorMessage: false))
+                    .toolbar{
                         Button {
-                            
-                            posts.selectedClass = curClass
-                            DispatchQueue.main.async {
-                                posts.getPosts(selectedClass: posts.selectedClass) { res in
-                                    posts.postsArray = res
-                                   
-                                    posts.sortPosts()
-                                    }
-                               }
-                            
+                            self.isShowingSheet = true
                         } label: {
-                            Text("\(curClass)")
+                            Text("Add Post")
+                                .padding(.bottom, 10)
+                                .padding(.leading, 10)
+                                .padding(.trailing,10)
+                                .padding(.top,10)
+                                
+                                .background(Color.indigo)
+                                .foregroundColor(.white)
+                                .cornerRadius(10.0)
+                                
+                                .font(.headline)
                         }
-                    }
-                           
+                        .sheet(isPresented: $isShowingSheet)
+                        {
+                            ZStack{
+                                VStack{
+                                    Text("Share A Post With Your Classmates!")
+                                        .padding(30)
+                                        .font(.system(size:40))
+                                    TextField("Your Post", text: $addedPost)
+                                        .autocapitalization(UITextAutocapitalizationType.words)
+                                        .padding()
+                                        .background(Color.Gray)
+                                        .cornerRadius(5.0)
+                                        .padding(.leading, 20)
+                                        .padding(.trailing, 20)
+                                        .frame(minWidth: 200, maxWidth: .infinity,minHeight: 50,maxHeight: .infinity)
+                                    Button {
+                                        //send to firebase and update view
+                                        if addedPost == ""{
+                                            self.isShowingSheet.toggle()
+                                            //Probably needs to get rid of this posts.add
+                                            //posts.addPost(postBody: addedPost)
+                                        }
+                                        else{
+                                            posts.addPost(postBody: addedPost)
+                                            addedPost = ""
+                                            self.isShowingSheet.toggle()
+                                        }
+                                    } label: {
+                                        Text("Share Post")
+                                            .font(.system(size:30))
+                                            .foregroundColor(.white)
+                                            .padding()
+                                            .frame(width: 190, height: 60)
+                                            .background(.indigo)
+                                            .cornerRadius(15.0)
+                                    }
+                                }
+                            }
+                            Spacer()
+                        }
+                        Menu {
+                            ForEach(profileVM.userDocument.Classes ?? [], id: \.self){ curClass in
+                                Button {
+                                    
+                                    posts.selectedClass = curClass
+                                    DispatchQueue.main.async {
+                                        posts.getPosts(selectedClass: posts.selectedClass) { res in
+                                            posts.postsArray = res
+                                            posts.sortPosts()
+                                        }
+                                    }
+                                    
+                                } label: {
+                                    Text("\(curClass)")
+                                    
+                                }
+                            }
+                            
                         } label: {
                             Text("Classes")
+                                .padding(.bottom, 10)
+                                .padding(.leading, 10)
+                                .padding(.trailing,10)
+                                .padding(.top,10)
+                                
+                                .background(Color.indigo)
+                                .foregroundColor(.white)
+                                .cornerRadius(10.0)
+                                
+                                .font(.headline)
                         }
                         .simultaneousGesture(TapGesture().onEnded() {
-                               
-                            profileVM.getDocument(){ doc in
+                            let curUser = profileVM.CurUser()
+                            profileVM.getDocument(user: curUser){ doc in
                                 self.profileVM.userDocument = doc
+                                
                             }
-                            })
-            }
-            .listStyle(GroupedListStyle())
-            
+                        })
+                    }
+                   
+                    
+                }
+                }
+                
         }
+        
         
         
     }
@@ -179,7 +354,8 @@ struct DetailView: View{
     @ObservedObject var viewModel: ClassPostsViewModel
     @State var showSheet: Bool = false
     @State var addedReply: String = ""
-   
+    let canEdit: Bool
+    
     
     var body: some View{
         VStack{
@@ -189,7 +365,7 @@ struct DetailView: View{
             Text("- \(selectedPost.postAuthor)")
                 .font(.title)
         }
-       
+        
         List{
             ForEach(viewModel.curReplies) { reply in
                 
@@ -198,41 +374,45 @@ struct DetailView: View{
                         Text("\(reply.replyAuthor)")
                             .padding(5)
                             .background(Color.Gray)
-                            
-                            
+                        
+                        
                         //the body of the post
                         Text("\(reply.replyBody)")
                             .foregroundColor(Color.Black)
-                            
+                        Spacer()
                     }
                     
                     Spacer()
                     //upvote button
-                    HStack{
+                    HStack(){
                         Text("\(reply.votes)")
-                        Button {
-                            DispatchQueue.main.async {
-                                viewModel.handleVoteOnReply(UpOrDown: "up", onPost: selectedPost, onReply: reply)
-                            }
-                            
-                            
-                        } label: {
-                            Image(systemName: "arrow.up")
-                        }
-                        .padding(.leading,10)
-                        .buttonStyle(.borderedProminent)
                         
-                        //downvote button
-                        Button(action: {
-                            DispatchQueue.main.async {
-                                viewModel.handleVoteOnReply(UpOrDown: "down", onPost: selectedPost, onReply: reply)
+                        if canEdit{
+                            Button {
+                                DispatchQueue.main.async {
+                                    viewModel.handleVoteOnReply(UpOrDown: "up", onPost: selectedPost, onReply: reply)
+                                }
+                                
+                                
+                            } label: {
+                                Image(systemName: "arrow.up")
                             }
-                        }, label: {
-                            Image(systemName: "arrow.down")
+                            .padding(.leading,10)
+                            .buttonStyle(.borderedProminent)
                             
-                        })
-                        .padding(.leading,10)
-                        .buttonStyle(.borderedProminent)
+                            //downvote button
+                            Button(action: {
+                                DispatchQueue.main.async {
+                                    viewModel.handleVoteOnReply(UpOrDown: "down", onPost: selectedPost, onReply: reply)
+                                }
+                            }, label: {
+                                Image(systemName: "arrow.down")
+                                
+                            })
+                            .padding(.leading,10)
+                            .buttonStyle(.borderedProminent)
+                        }
+                        Spacer()
                     }
                     
                     .padding(.leading,10)
@@ -245,11 +425,14 @@ struct DetailView: View{
         }
         .listStyle(GroupedListStyle())
         .toolbar{
-            Button {
-                self.showSheet = true
-            } label: {
-                Text("Add Reply")
+            if canEdit{
+                Button {
+                    self.showSheet = true
+                } label: {
+                    Text("Add Reply")
+                }
             }
+            
             
             
         }
@@ -277,7 +460,7 @@ struct DetailView: View{
                                 viewModel.getReplies(forPost: selectedPost){ replies in
                                     viewModel.curReplies = replies
                                 }
-                                viewModel.sortReplies()
+                                
                                 
                             }
                             addedReply = ""
@@ -305,15 +488,44 @@ struct DetailView: View{
                 viewModel.getReplies(forPost: selectedPost){ replies in
                     viewModel.curReplies = replies
                 }
-                viewModel.sortReplies()
+                
                 
             }
-            for rep in selectedPost.replies{
-                print("reply: \(rep.UsersLiked)")
-            }
+            
             
         }
         
     }
+    
+}
+struct CustomNavigationBarTitle: View {
+    let selectedTitle: String
+    let ErrorMessage: Bool
+    var body: some View {
+        if ErrorMessage{
+            Text("\(selectedTitle)")
+                .padding(.leading, 5)
+                .padding(.top, 5)
+                .padding(.bottom, 1)
+                .padding(.trailing, 5)
+                 // Use BorderlessButtonStyle instead of .borderedProminent
+                
+                .foregroundColor(Color.Black)// Set the background color of the button to red
+                .cornerRadius(8)
+                .font(.largeTitle)
+        }
+        else{
+            Text("\(selectedTitle)")
+                .padding(.leading, 5)
+                .padding(.top, 5)
+                .padding(.bottom, 1)
+                .padding(.trailing, 5)
+                 // Use BorderlessButtonStyle instead of .borderedProminent
+                
+                .foregroundColor(Color.White)// Set the background color of the button to red
+                .cornerRadius(8)
+                .font(.largeTitle)
+        }
         
+    }
 }
