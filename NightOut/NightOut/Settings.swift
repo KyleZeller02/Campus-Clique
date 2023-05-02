@@ -7,6 +7,4 @@
 
 import Foundation
 
-struct Settings {
-    static var Email = ""
-}
+

@@ -11,32 +11,45 @@ import SwiftUI
 struct InAppView: View {
     @StateObject var viewRouter: ViewRouter
     
-    var body: some View {
-        TabView{
-            UserProfileView(viewRouter: viewRouter)
-                .tabItem(){
-                    
-                    Button {
-                        viewRouter.CurrentViewState = .UserProfileView
-                    } label: {
-                        Image(systemName: "person")
-                        Text("profile")
-                    }
+    @State private var selectedTab: Tab = .profile
 
-                }
-            ClassPosts(viewRouter: viewRouter)
-                .tabItem(){
-                    
-                    Button {
-                        viewRouter.CurrentViewState = .ClassPosts
-                    } label: {
+        enum Tab {
+            case profile
+            case classPosts
+        }
+
+        var body: some View {
+            TabView(selection: $selectedTab) {
+                UserProfileView(viewRouter: viewRouter)
+                    .tabItem() {
+                        Image(systemName: "person")
+                        Text("Profile")
+                            .font(.title)
+                            .lineLimit(1) // Set maximum number of lines
+                            .minimumScaleFactor(0.5) // Set minimum scale factor for text
+                            .padding(.horizontal, 5)
+                    }
+                    .tag(Tab.profile)
+                
+                ClassPosts(viewRouter: viewRouter)
+                    .tabItem() {
                         Image(systemName: "list.bullet")
                         Text("Class Posts")
+                            .font(.title)
+                            .lineLimit(1) // Set maximum number of lines
+                            .minimumScaleFactor(0.5) // Set minimum scale factor for text
+                            .padding(.horizontal, 5)
                     }
-
-                }
+                    .tag(Tab.classPosts)
+            }
+            .accentColor(Color.Purple) // Set accent color to clear color
+            .onAppear {
+                // Set the tab bar background color
+                UITabBar.appearance().backgroundColor = UIColor(Color.gray)
+            }
+            // Set foreground color of non-selected items
+            .foregroundColor(selectedTab == .profile ? .white : .black)
         }
-    }
 }
 
     

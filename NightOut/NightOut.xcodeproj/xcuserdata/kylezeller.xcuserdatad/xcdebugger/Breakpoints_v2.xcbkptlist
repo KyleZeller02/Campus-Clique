@@ -46,8 +46,8 @@
             filePath = "NightOut/UserProfile/UserProfileView.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "51"
-            endingLineNumber = "51"
+            startingLineNumber = "52"
+            endingLineNumber = "52"
             landmarkName = "body"
             landmarkType = "24">
             <Locations>
@@ -180,46 +180,46 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "98F198F4-45B1-4165-8FBE-2B11F1E73319"
+            uuid = "2741465E-3E83-4BB2-847C-6C85B2F464FC"
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "NightOut/ClassPosts/ClassPostsView.swift"
+            filePath = "NightOut/Onboarding/Onboarding Views/LoginView.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "487"
-            endingLineNumber = "487"
+            startingLineNumber = "130"
+            endingLineNumber = "130"
             landmarkName = "body"
             landmarkType = "24">
             <Locations>
                <Location
-                  uuid = "98F198F4-45B1-4165-8FBE-2B11F1E73319 - b9555a919f3259f"
+                  uuid = "2741465E-3E83-4BB2-847C-6C85B2F464FC - a7496a0537961234"
                   shouldBeEnabled = "Yes"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
-                  symbolName = "closure #5 () -&gt; () in NightOut.DetailView.body.getter : some"
+                  symbolName = "NightOut.LoginView.body.getter : some"
                   moduleName = "NightOut"
                   usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/kylezeller/Desktop/NO/NightOut/NightOut/ClassPosts/ClassPostsView.swift"
+                  urlString = "file:///Users/kylezeller/Desktop/NO/NightOut/NightOut/Onboarding/Onboarding%20Views/LoginView.swift"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "313"
-                  endingLineNumber = "313"
-                  offsetFromSymbolStart = "152">
+                  startingLineNumber = "130"
+                  endingLineNumber = "130"
+                  offsetFromSymbolStart = "744">
                </Location>
                <Location
-                  uuid = "98F198F4-45B1-4165-8FBE-2B11F1E73319 - e1284752c115654d"
+                  uuid = "2741465E-3E83-4BB2-847C-6C85B2F464FC - e266655daebc68a0"
                   shouldBeEnabled = "Yes"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
-                  symbolName = "closure #1 @Swift.MainActor () -&gt; () in closure #5 () -&gt; () in NightOut.DetailView.body.getter : some"
+                  symbolName = "closure #2 () -&gt; () in NightOut.LoginView.body.getter : some"
                   moduleName = "NightOut"
                   usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/kylezeller/Desktop/NO/NightOut/NightOut/ClassPosts/ClassPostsView.swift"
+                  urlString = "file:///Users/kylezeller/Desktop/NO/NightOut/NightOut/Onboarding/Onboarding%20Views/LoginView.swift"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "314"
-                  endingLineNumber = "314"
+                  startingLineNumber = "131"
+                  endingLineNumber = "131"
                   offsetFromSymbolStart = "36">
                </Location>
             </Locations>

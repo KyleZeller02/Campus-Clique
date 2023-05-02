@@ -90,39 +90,7 @@ struct OnboardingDatabaseManager {
     }
     
     
-    /// this method uplaods a profile picture url to Fireabse Storage, and adds a field to user document in "Users" with a url to the photo in storage
-    /// - Parameter selectedImage: the selected image. this should not ever be null, but the guard statement is just in case
-   static func addProfilePhotoToDocument(selectedImage: UIImage?){
-        //check to make sure the image passed in is not nil
-        guard selectedImage != nil else{
-            return
-        }
-        // get reference to the firebase storage
-        let storageRef = Storage.storage().reference()
-        // get the data from the image and compress it
-        let imageData = selectedImage!.jpegData(compressionQuality: 0.8)
-        // guard to make sure we were able to parse the data from the image
-        //if we were unable to,we return from the function
-        guard imageData != nil else{return}
-        //the path of the image. this is the value for the field that we upload
-        let path = "Images/\(UUID().uuidString).jpg"
-        let fileRef =  storageRef.child("images/\(UUID().uuidString).jpg")
-        //here we upload the photo
-        let uploadTask = fileRef.putData(imageData!, metadata: nil){
-            metadata, error in
-            // if there was no error and we have the meta data,
-            if error == nil && metadata != nil{
-                //get refernce to the firebase
-                let db = Firestore.firestore()
-                //the static email var that is found in Settings
-                let email = Settings.Email
-                //get reference to the document for the user in "Users"
-                let docRef = db.collection("Users").document(email)
-                //add a field with the url string and add it to the document, while keeping existing data in the document
-                docRef.setData(["ProfilePhotoURL" : path],merge: true)
-            }
-        }
-    }
+    
     
 }
 

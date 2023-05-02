@@ -6,8 +6,10 @@
 //
 
 import SwiftUI
+import Firebase
 
 struct UserBirthdayAcquisition: View {
+    @Environment (\.colorScheme) var colorScheme
     @State var Birthday: String = ""
     @State private var ProfileViewIsActive:Bool = false
     @StateObject var viewRouter: ViewRouter
@@ -44,9 +46,13 @@ struct UserBirthdayAcquisition: View {
                 
                 Button(action:
                         { if Birthday != "" {
-                            let email = Settings.Email
-                            OnboardingDatabaseManager.addBirthdayToDocument(birthday: Birthday, email: email)
-                            viewRouter.CurrentViewState = .InAppViews
+                            let user = Auth.auth().currentUser
+                            if let user = user{
+                                let email = user.email
+                                OnboardingDatabaseManager.addBirthdayToDocument(birthday: Birthday, email: email ?? "")
+                                viewRouter.CurrentViewState = .InAppViews
+                            }
+                            
                             
                         }
                     else{

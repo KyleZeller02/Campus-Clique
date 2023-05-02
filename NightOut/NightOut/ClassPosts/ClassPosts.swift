@@ -15,7 +15,7 @@ class ClassPost: Identifiable, ObservableObject {
     var email: String
     var postAuthor: String
     var forClass:String
-    var replies: [Replies] = []
+    @Published var replies: [Replies] = []
     @Published var votes:Int64
     let id: String
     var DatePosted: Double = 0.0

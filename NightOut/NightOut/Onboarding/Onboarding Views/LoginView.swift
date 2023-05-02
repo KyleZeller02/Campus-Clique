@@ -13,7 +13,7 @@ struct LoginView: View {
     @State var password: String = ""
     @StateObject var viewRouter: ViewRouter
     @State private var showingAlert: Bool = false
-    @AppStorage("Email") var SavedEmail: String?
+    
     var body: some View {
         ZStack{
             Color.Gray
@@ -41,7 +41,7 @@ struct LoginView: View {
                 //Login Button
                 Button(action:
                         {
-                    print(SavedEmail ?? "")
+                    
                     if  !email.isEmpty, !password.isEmpty {
                         //attempt login
                         Auth.auth().signIn(withEmail: email, password: password) {  authResult, error in
@@ -53,7 +53,7 @@ struct LoginView: View {
                             //otherwise, save the email, change the view
                             else{
                                 //saves email to Settings struct
-                                SavedEmail = email
+                                
                                 //changes view
                                 viewRouter.CurrentViewState = .InAppViews
                             }
@@ -86,7 +86,7 @@ struct LoginView: View {
                                //if there is no error, save email to Setting struct, add document to "Users" collection in firebase, change view
                                else{
                                    //saves the email in app storage
-                                   Settings.Email = email
+                                   
                                    //creates a user document with email
                                    OnboardingDatabaseManager.addDocumentWithEmail(email: email)
                                    //send the data to firebase
@@ -128,9 +128,11 @@ struct LoginView: View {
             
         }
         .onAppear{
-        if SavedEmail != nil{
-            viewRouter.CurrentViewState = .InAppViews
-        }
+            let user = Auth.auth().currentUser
+            if user != nil{
+                viewRouter.CurrentViewState = .InAppViews
+            }
+       
     }
     }
         

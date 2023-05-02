@@ -11,7 +11,7 @@ import SwiftUI
 struct ViewNavigator: View {
     @State var CurrentState :ViewState = ViewState.LoginView
     @StateObject var viewRouter: ViewRouter
-    @AppStorage("savedEmail") var SavedEmail:String?
+    
     
     var body: some View {
         switch viewRouter.CurrentViewState {

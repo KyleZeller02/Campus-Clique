@@ -54,7 +54,7 @@ struct ProfilePictureAcquisition: View {
                 //Make Profile Button
                 Button {
                     if selectedImage != nil{
-                        OnboardingDatabaseManager.addProfilePhotoToDocument(selectedImage: selectedImage)
+                       // OnboardingDatabaseManager.addProfilePhotoToDocument(selectedImage: selectedImage)
                         viewRouter.CurrentViewState = .ClassPosts
                     }
                     else{

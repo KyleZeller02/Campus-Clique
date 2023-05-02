@@ -15,7 +15,7 @@ class UserProfileViewModel: ObservableObject{
     @Published var usersPosts: [ClassPost] = []
     
     
-    @AppStorage("Email") var SavedEmail: String?
+    
     
     let db = Firestore.firestore()
    

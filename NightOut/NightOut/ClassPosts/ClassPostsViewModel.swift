@@ -54,7 +54,7 @@ class ClassPostsViewModel: ObservableObject{
     func getDocument(email: String?, completion: @escaping ((UserDocument) -> ())) {
         let doc = db.collection("Users").document(email ?? "")
         doc.getDocument { [weak self] document, error in
-            guard let self = self else { return } // Add weak self capture list to avoid retain cycle
+            guard self != nil else { return } // Add weak self capture list to avoid retain cycle
             if let document = document, document.exists {
                 let data = document.data()
                 let firstName = data?["FirstName"] as? String ?? ""
@@ -103,7 +103,7 @@ class ClassPostsViewModel: ObservableObject{
         // Gather documents
         g.enter()
         postLocation.order(by: "datePosted", descending: true).getDocuments() { [weak self] (querySnapshot, err) in
-            guard let self = self else { return }
+            guard self != nil else { return }
             if let err = err {
                 print("Something went wrong getting posts from Firebase: \(err.localizedDescription)")
                 g.leave()
@@ -411,6 +411,7 @@ class ClassPostsViewModel: ObservableObject{
         batch.commit { (error) in
             if let error = error {
                 // Handle error
+                print(error.localizedDescription)
             } else {
                 // Make other local changes
                 let reply: Replies = Replies(replyBody: body, replyAuthor: self.profileVM.userDocument.FullName, forClass: self.selectedClass, votes: 0,id: replyDocument.documentID)

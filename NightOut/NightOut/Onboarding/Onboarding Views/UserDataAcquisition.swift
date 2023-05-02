@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Firebase
 
 struct UserDataAcquisition: View {
     @StateObject var viewRouter: ViewRouter
@@ -97,10 +98,14 @@ struct UserDataAcquisition: View {
                         {
                     if Major != "" , Classes != ""{
                         //if user gives data, upload data to document in firebase
-                        let email = Settings.Email
-                        OnboardingDatabaseManager.addClassesMajorToDocument(Classes: Classes, Major: Major, email: email)
+                        let user = Auth.auth().currentUser
+                        if let user = user{
+                            let email = user.email
+                        
+                        OnboardingDatabaseManager.addClassesMajorToDocument(Classes: Classes, Major: Major, email: email ?? "")
                         //change state
                         viewRouter.CurrentViewState = .UserBirthdayAcquistion
+                        }
                     }
                     //if there is missing data from user, show alert
                     else{

@@ -7,6 +7,7 @@
 //
 
 import SwiftUI
+import Firebase
 
 
 struct CreateUserProfile: View {
@@ -57,10 +58,14 @@ struct CreateUserProfile: View {
                 Button(action:
                         { if FirstName != "" && LastName != "" && College != ""{
                             //add data to document
-                            let email = Settings.Email
-                            OnboardingDatabaseManager.addFirstLastCollegeToDocument(firstName: FirstName, lastName: LastName, college: College, email: email)
+                            let user = Auth.auth().currentUser
+                            if let user = user{
+                                let email = user.email
+                                OnboardingDatabaseManager.addFirstLastCollegeToDocument(firstName: FirstName, lastName: LastName, college: College, email: email ?? "")
                                 //change view
                             viewRouter.CurrentViewState = .UserDataAcquisition
+                            }
+                           
                         }
                     //if there is missing data, show alert
                     else{
