@@ -356,6 +356,7 @@ struct DetailView: View{
     var body: some View{
         
         ZStack(alignment: .topLeading) {
+           
              // Ignore safe area to cover entire view
            
             VStack(alignment: .leading) {
@@ -370,7 +371,7 @@ struct DetailView: View{
                     .cornerRadius(10.0)
                     // Add padding to the text
                     // Add corner radius to the text
-                Spacer().frame(height: 20)
+                Spacer()
                 Text("\(selectedPost.postAuthor)")
                     .padding(EdgeInsets(top: 10, leading: 10, bottom: 10, trailing: 10))
                     .background(Color.Purple)
@@ -379,7 +380,8 @@ struct DetailView: View{
                     .cornerRadius(10.0)
                 Spacer().frame(height: 20)
             }
-            .frame(maxWidth: .infinity, alignment: .leading)
+            .frame(height: UIScreen.main.bounds.height / 3)
+            
             .background(Color.Gray)
             .cornerRadius(10) // Add corner radius to round the corners
             //.padding(EdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 10))
@@ -397,7 +399,7 @@ struct DetailView: View{
                 }
             }
         }
-
+        
 
         
        if !viewModel.curReplies.isEmpty{
@@ -484,6 +486,7 @@ struct DetailView: View{
             }
             
             .background(Color.Black)
+          
             .listStyle(GroupedListStyle())
             .toolbar{
                 if canEdit{
@@ -544,10 +547,10 @@ struct DetailView: View{
                 }
                 Spacer()
             }
+            
                     }
+        
         else{
-
-
                 Text("Replies will show up here")
                     .padding(.bottom, 10)
                     .padding(.leading, 10)
@@ -563,6 +566,7 @@ struct DetailView: View{
 
 
         }
+            
         
         
     }
@@ -599,3 +603,6 @@ struct CustomNavigationBarTitle: View {
         
     }
 }
+
+
+

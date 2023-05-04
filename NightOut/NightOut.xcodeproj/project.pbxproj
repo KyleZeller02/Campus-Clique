@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0205E4DD2A03745A00A9E98E /* DirectMessagesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0205E4DC2A03745A00A9E98E /* DirectMessagesView.swift */; };
+		0205E4DF2A03748B00A9E98E /* MessageModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0205E4DE2A03748B00A9E98E /* MessageModel.swift */; };
+		0205E4E12A03761200A9E98E /* DirectMessagingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0205E4E02A03761200A9E98E /* DirectMessagingViewModel.swift */; };
+		0205E4E32A03769000A9E98E /* ConversationModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0205E4E22A03769000A9E98E /* ConversationModel.swift */; };
 		023C29F92883A9210045904F /* UserDataAcquisition.swift in Sources */ = {isa = PBXBuildFile; fileRef = 023C29F82883A9200045904F /* UserDataAcquisition.swift */; };
 		023C29FB2883A9670045904F /* CreateUserPofile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 023C29FA2883A9670045904F /* CreateUserPofile.swift */; };
 		023C2A0028AFF3DC0045904F /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 023C29FF28AFF3DC0045904F /* FirebaseFirestore */; };
@@ -64,6 +68,10 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		0205E4DC2A03745A00A9E98E /* DirectMessagesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DirectMessagesView.swift; sourceTree = "<group>"; };
+		0205E4DE2A03748B00A9E98E /* MessageModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageModel.swift; sourceTree = "<group>"; };
+		0205E4E02A03761200A9E98E /* DirectMessagingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DirectMessagingViewModel.swift; sourceTree = "<group>"; };
+		0205E4E22A03769000A9E98E /* ConversationModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConversationModel.swift; sourceTree = "<group>"; };
 		023C29F82883A9200045904F /* UserDataAcquisition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDataAcquisition.swift; sourceTree = "<group>"; };
 		023C29FA2883A9670045904F /* CreateUserPofile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateUserPofile.swift; sourceTree = "<group>"; };
 		023C2A0428B1B7180045904F /* UserProfileModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileModel.swift; sourceTree = "<group>"; };
@@ -131,6 +139,17 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		0205E4DB2A03744000A9E98E /* Messages */ = {
+			isa = PBXGroup;
+			children = (
+				0205E4DC2A03745A00A9E98E /* DirectMessagesView.swift */,
+				0205E4DE2A03748B00A9E98E /* MessageModel.swift */,
+				0205E4E02A03761200A9E98E /* DirectMessagingViewModel.swift */,
+				0205E4E22A03769000A9E98E /* ConversationModel.swift */,
+			);
+			path = Messages;
+			sourceTree = "<group>";
+		};
 		023C29F72883A8C40045904F /* Views */ = {
 			isa = PBXGroup;
 			children = (
@@ -227,6 +246,7 @@
 		02947E662879F727005133D5 /* NightOut */ = {
 			isa = PBXGroup;
 			children = (
+				0205E4DB2A03744000A9E98E /* Messages */,
 				02943C35296E2F7E00DB7DF6 /* UserProfile */,
 				02943C32296E0A2F00DB7DF6 /* Onboarding */,
 				02947E7A28834509005133D5 /* Info.plist */,
@@ -393,8 +413,10 @@
 				02D7C15C29BBE1AA002F8223 /* InAppView.swift in Sources */,
 				02943C2B2953AB6900DB7DF6 /* ImagePicker.swift in Sources */,
 				023C29FB2883A9670045904F /* CreateUserPofile.swift in Sources */,
+				0205E4E32A03769000A9E98E /* ConversationModel.swift in Sources */,
 				023C2A0528B1B7180045904F /* UserProfileModel.swift in Sources */,
 				02943C892972299600DB7DF6 /* ClassPostsView.swift in Sources */,
+				0205E4DD2A03745A00A9E98E /* DirectMessagesView.swift in Sources */,
 				02943C2D29664CED00DB7DF6 /* DatabaseFetcherSender.swift in Sources */,
 				02943BEE2952850300DB7DF6 /* ViewNavigator.swift in Sources */,
 				023C29F92883A9210045904F /* UserDataAcquisition.swift in Sources */,
@@ -403,10 +425,12 @@
 				02943C31296D09F000DB7DF6 /* Settings.swift in Sources */,
 				02943B2229526CF000DB7DF6 /* UserProfileView.swift in Sources */,
 				02947E6A2879F727005133D5 /* LoginView.swift in Sources */,
+				0205E4DF2A03748B00A9E98E /* MessageModel.swift in Sources */,
 				02943C34296E2B3D00DB7DF6 /* Constants.swift in Sources */,
 				02947E682879F727005133D5 /* NightOutApp.swift in Sources */,
 				023C2A0D28B28B820045904F /* UserBirthdayAcquisition.swift in Sources */,
 				02943C8B297229E500DB7DF6 /* ClassPostsViewModel.swift in Sources */,
+				0205E4E12A03761200A9E98E /* DirectMessagingViewModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
