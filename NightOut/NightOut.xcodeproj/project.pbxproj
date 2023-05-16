@@ -16,6 +16,7 @@
 		023C2A0028AFF3DC0045904F /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 023C29FF28AFF3DC0045904F /* FirebaseFirestore */; };
 		023C2A0528B1B7180045904F /* UserProfileModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 023C2A0428B1B7180045904F /* UserProfileModel.swift */; };
 		023C2A0D28B28B820045904F /* UserBirthdayAcquisition.swift in Sources */ = {isa = PBXBuildFile; fileRef = 023C2A0C28B28B820045904F /* UserBirthdayAcquisition.swift */; };
+		027196852A0F06FE006FAD50 /* Edit Profile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 027196842A0F06FE006FAD50 /* Edit Profile.swift */; };
 		02943B2229526CF000DB7DF6 /* UserProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02943B2129526CEF00DB7DF6 /* UserProfileView.swift */; };
 		02943BEE2952850300DB7DF6 /* ViewNavigator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02943BED2952850300DB7DF6 /* ViewNavigator.swift */; };
 		02943BF0295398FB00DB7DF6 /* ProfilePictureAcquisition.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02943BEF295398FB00DB7DF6 /* ProfilePictureAcquisition.swift */; };
@@ -76,6 +77,7 @@
 		023C29FA2883A9670045904F /* CreateUserPofile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateUserPofile.swift; sourceTree = "<group>"; };
 		023C2A0428B1B7180045904F /* UserProfileModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileModel.swift; sourceTree = "<group>"; };
 		023C2A0C28B28B820045904F /* UserBirthdayAcquisition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserBirthdayAcquisition.swift; sourceTree = "<group>"; };
+		027196842A0F06FE006FAD50 /* Edit Profile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Edit Profile.swift"; sourceTree = "<group>"; };
 		02943B2129526CEF00DB7DF6 /* UserProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileView.swift; sourceTree = "<group>"; };
 		02943BED2952850300DB7DF6 /* ViewNavigator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewNavigator.swift; sourceTree = "<group>"; };
 		02943BEF295398FB00DB7DF6 /* ProfilePictureAcquisition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfilePictureAcquisition.swift; sourceTree = "<group>"; };
@@ -194,6 +196,7 @@
 				023C2A0428B1B7180045904F /* UserProfileModel.swift */,
 				02943B2129526CEF00DB7DF6 /* UserProfileView.swift */,
 				02943C36296E2FCA00DB7DF6 /* UserProfileViewModel.swift */,
+				027196842A0F06FE006FAD50 /* Edit Profile.swift */,
 			);
 			path = UserProfile;
 			sourceTree = "<group>";
@@ -411,6 +414,7 @@
 			files = (
 				02943BF0295398FB00DB7DF6 /* ProfilePictureAcquisition.swift in Sources */,
 				02D7C15C29BBE1AA002F8223 /* InAppView.swift in Sources */,
+				027196852A0F06FE006FAD50 /* Edit Profile.swift in Sources */,
 				02943C2B2953AB6900DB7DF6 /* ImagePicker.swift in Sources */,
 				023C29FB2883A9670045904F /* CreateUserPofile.swift in Sources */,
 				0205E4E32A03769000A9E98E /* ConversationModel.swift in Sources */,

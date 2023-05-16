@@ -15,31 +15,27 @@ class UserProfileViewModel: ObservableObject{
     @Published var usersPosts: [ClassPost] = []
     
     
-    
-    
     let db = Firestore.firestore()
-   
+    private var listener: ListenerRegistration?
     
-    func getPostsForUser(for user: String, completion: @escaping(([ClassPost]) -> ())) {
-        self.usersPosts.removeAll()
-        var posts: [ClassPost] = []
-        let g = DispatchGroup()
-        
-        let college = userDocument.College
-        let path = db.collection("Colleges").document(college)
-        let classes: [String] = userDocument.Classes ?? []
-        
-        for c in classes {
-            let fullPath = path.collection(c)
-            g.enter()
-            fullPath.whereField("email", isEqualTo: user).getDocuments { (querySnapshot, err) in
-                if let err = err {
-                    print("Error getting documents in getPostsForUser() in userprofileVM: \(err.localizedDescription)")
-                } else {
-                    let documents = querySnapshot?.documents ?? []
-                    let dispatchGroup = DispatchGroup()
-                    for document in documents {
-                        dispatchGroup.enter()
+    
+    func getPostsForUser(for user: String, completion: @escaping ([ClassPost]) -> ()) {
+            self.usersPosts.removeAll()
+            var posts: [ClassPost] = []
+            let college = userDocument.College
+            let path = db.collection("Colleges").document(college)
+            let classes: [String] = userDocument.Classes ?? []
+            
+            for c in classes {
+                let fullPath = path.collection(c)
+                let query = fullPath.whereField("email", isEqualTo: user).order(by: "votes")
+                let registration = query.addSnapshotListener { querySnapshot, error in
+                    guard let documents = querySnapshot?.documents else {
+                        print("Error getting documents in getPostsForUser(): \(error?.localizedDescription ?? "")")
+                        return
+                    }
+                    
+                    documents.forEach { document in
                         let data = document.data()
                         let author = data["author"] as? String ?? ""
                         let postBody = data["postBody"] as? String ?? ""
@@ -50,47 +46,98 @@ class UserProfileViewModel: ObservableObject{
                         let usersLiked = data["UsersLiked"] as? [String] ?? []
                         let usersDisliked = data["UsersDisliked"] as? [String] ?? []
                         let email = data["email"] as? String ?? ""
-                        let post = ClassPost(postBody: postBody, postAuthor: author, forClass: forClass, DatePosted: date, votes:votes, id: id,usersLiked: Set(usersLiked), usersDisliked: Set(usersDisliked),email: email)
+                        let college = data["college"] as? String ?? ""
+                        
+                        let post = ClassPost(
+                            postBody: postBody,
+                            postAuthor: author,
+                            forClass: forClass,
+                            DatePosted: date,
+                            votes: votes,
+                            id: id,
+                            usersLiked: Set(usersLiked),
+                            usersDisliked: Set(usersDisliked),
+                            email: email,
+                            college: college
+                        )
                         posts.append(post)
-                        dispatchGroup.leave()
                     }
-                    dispatchGroup.notify(queue: .main) {
-                        g.leave()
-                    }
+                    
+                    completion(posts)
+                    self.objectWillChange.send()
                 }
+                
+                listener = registration
             }
         }
-        
-        g.notify(queue:.main) {
-            completion(posts)
-            self.objectWillChange.send()
+    
+    func getReplies(forPost post: ClassPost, inClass c:String, completion: @escaping ([Replies]) -> ()) {
+        post.replies.removeAll()
+
+        let college: String = self.userDocument.College
+        let postLocation = db.collection("Colleges").document(college).collection(c).document(post.id).collection("Replies")
+
+        postLocation.order(by: "date", descending: false).addSnapshotListener { (querySnapshot, err) in
+            if let err = err {
+                print("Something went wrong getting replies on post from Firebase: \(err.localizedDescription)")
+                completion([])
+            } else {
+                var tempReplies: [Replies] = []
+
+                for document in querySnapshot!.documents {
+                    let data = document.data()
+                    let author = data["author"] as? String ?? ""
+                    let forClass = data["forClass"] as? String ?? ""
+                    let id = data["id"] as? String ?? ""
+                    let postBody = data["postBody"] as? String ?? ""
+                    let votes = data["votes"] as? Int64 ?? 0
+                    let usersLiked = data["UsersLiked"] as? [String] ?? []
+                    let usersDisliked = data["UsersDisliked"] as? [String] ?? []
+                    let date = data["datePosted"] as? Double ?? 0.0
+                    let reply = Replies(replyBody: postBody, replyAuthor: author, forClass: forClass, DatePosted: date, votes: votes, id: id, usersLiked: Set(usersLiked), usersDisliked: Set(usersDisliked))
+                    tempReplies.append(reply)
+                }
+
+                completion(tempReplies)
+            }
         }
     }
+
+
 
     
     func getDocument(user: String, completion: @escaping ((UserDocument) -> ())) {
         let doc = db.collection("Users").document(user)
-        doc.getDocument { (document, error) in
-            if let document = document, document.exists {
-                let data = document.data()
-                let firstName = data?["FirstName"] as? String ?? ""
-                let lastName = data?["LastName"] as? String ?? ""
-                let college = data?["College"] as? String ?? ""
-                let birthday = data?["Birthday"] as? String ?? ""
-                let major = data?["Major"] as? [String] ?? []
-                let classes = data?["Classes"] as? [String] ?? []
-                let email = data?["Email"] as? String ?? ""
-                let retrievedDoc = UserDocument(FirstName: firstName, LastName: lastName, College: college, Birthday: birthday, Major: major, Classes: classes, Email: email)
-                completion(retrievedDoc)
-            } else {
-                print("Document does not exist")
+        
+        doc.addSnapshotListener { documentSnapshot, error in
+            if let error = error {
+                print("Error fetching document: \(error)")
                 completion(UserDocument(FirstName: "", LastName: "", College: "", Birthday: "", Major: [], Classes: [], Email: ""))
+                return
             }
+            
+            guard let data = documentSnapshot?.data(),
+                  let firstName = data["FirstName"] as? String,
+                  let lastName = data["LastName"] as? String,
+                  let college = data["College"] as? String,
+                  let birthday = data["Birthday"] as? String,
+                  let major = data["Major"] as? [String],
+                  let classes = data["Classes"] as? [String],
+                  let email = data["Email"] as? String
+            else {
+                print("Invalid document data or missing fields")
+                completion(UserDocument(FirstName: "", LastName: "", College: "", Birthday: "", Major: [], Classes: [], Email: ""))
+                return
+            }
+            
+            let retrievedDoc = UserDocument(FirstName: firstName, LastName: lastName, College: college, Birthday: birthday, Major: major, Classes: classes, Email: email)
+            completion(retrievedDoc)
         }
     }
 
+
     
-    func handleEdit(firstName: String, lastName: String, college: String, birthday: String, major: String, classes: [String]) {
+    func handleEdit(college: String, classes: [String]) {
         // Get reference to location in Firebase
         let userDocLocation = db.collection("Users").document(userDocument.Email)
 
@@ -98,24 +145,11 @@ class UserProfileViewModel: ObservableObject{
         var updatedFields: [String: Any] = [:]
 
         // Update field values if they are different from current values
-        if firstName != userDocument.FirstName {
-            updatedFields["FirstName"] = firstName
-        }
-        if lastName != userDocument.LastName {
-            updatedFields["LastName"] = lastName
-        }
         if college != userDocument.College {
             updatedFields["College"] = college
         }
-        let majorArr = parseMajor(major: major)
-        if !majorArr.elementsEqual(userDocument.Major) {
-            updatedFields["Major"] = majorArr
-        }
         if !classes.elementsEqual(userDocument.Classes ?? []) {
             updatedFields["Classes"] = classes
-        }
-        if birthday != userDocument.Birthday {
-            updatedFields["Birthday"] = birthday
         }
 
         // Update values in Firebase if there are any changes
@@ -124,11 +158,25 @@ class UserProfileViewModel: ObservableObject{
         }
 
         // Update local user document
-        userDocument = UserDocument(FirstName: firstName, LastName: lastName, College: college, Birthday: birthday, Major: majorArr, Classes: classes, Email: userDocument.Email)
+        userDocument.College = college
+        userDocument.Classes = classes
 
         // Send objectWillChange notification
         objectWillChange.send()
     }
+ 
+    func refresh() {
+        guard let userEmail = Auth.auth().currentUser?.email else {
+            return
+        }
+        
+        if userEmail == userDocument.Email {
+            getPostsForUser(for: userDocument.Email) { posts in
+                self.usersPosts = posts
+            }
+        }
+    }
+
 
     
     init() {
@@ -141,6 +189,7 @@ class UserProfileViewModel: ObservableObject{
                 self.sortUsersPost()
             }
         }
+        
 
         if let classes = self.userDocument.Classes {
             self.userDocument.Classes = classes.sorted() // Sort classes in place

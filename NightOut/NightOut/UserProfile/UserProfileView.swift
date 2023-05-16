@@ -13,468 +13,428 @@ struct UserProfileView: View {
     
     @StateObject var viewRouter: ViewRouter
     @StateObject var profileVM: UserProfileViewModel = UserProfileViewModel()
-    @State var showingProfileEdit = false
-    
-    @State private var showEditView = false
-    @State var newFirstName: String = ""
-    @State var newLastName: String = ""
-    @State var newCollege: String = ""
-    @State var newBirthday: String = ""
-    @State var newMajors: String = ""
-    @State var newClass1: String = ""
-    @State var newClass2: String = ""
-    @State var newClass3: String = ""
-    @State var newClass4: String = ""
-    @State var newClass5: String = ""
-    @State var newClass6: String = ""
-    @State private var showingAlert: Bool = false
-    @State var curReplies: [Replies] = []
-    
     @StateObject var posts: ClassPostsViewModel = ClassPostsViewModel()
-    
-    
+    //EditProfileView Variables
+    @State private var showingEditProfile: Bool = false
+    @State private var newCollege:String = ""
+    @State private var newClass1:String = ""
+    @State private var newClass2:String = ""
+    @State private var newClass3:String = ""
+    @State private var newClass4:String = ""
+    @State private var newClass5:String = ""
+    @State private var newClass6:String = ""
+    @State private var injectedClasses: [String] = []
+    private func removeClass(at index: Int) {
+        withAnimation {
+            injectedClasses.remove(at: index)
+        }
+    }
     
     var body: some View {
-        
-        ZStack{
-            VStack(alignment: .leading){
+        NavigationView{
+            ZStack {
+                Color.black
+                    .ignoresSafeArea()
                 
-                
-                HStack(spacing: 50){
-                    Text("\(profileVM.userDocument.FirstName) \(profileVM.userDocument.LastName)")
-                        .foregroundColor(.black)
-                        .multilineTextAlignment(.leading)
-                        .font(.system(size:30))
-                        .padding(.bottom)
+                VStack {
                     
-                    Button {
-                        
-                        
-                        
-                        let user = Auth.auth().currentUser
-                        if let user = user{
-                            let email = user.email
-                            if email == profileVM.CurUser(){
-                                self.showEditView = true
+                    VStack(spacing: 0) {
+                        HStack {
+                            
+                            //User Name---------------------------------------------------------------------
+                            Text("\(profileVM.userDocument.FullName)")
+                                .font(.headline)
+                                .padding(10)
+                                .background(Color.indigo)
+                                .foregroundColor(.white)
+                                .cornerRadius(10)
+                                .padding(EdgeInsets(top: 10, leading: 20, bottom: 10, trailing: 20))
+                            //-------------------------------------------------------------------------------
+                            Spacer()
+                            //Settings-----------------------------------------------------------------------
+                            HStack {
+                                Button(action: {
+                                    // Handle settings action
+                                    
+                                }) {
+                                    Text("Settings")
+                                        .font(.headline)
+                                        .padding(EdgeInsets(top: 10, leading: 20, bottom: 10, trailing: 20))
+                                        .background(Color.indigo)
+                                        .foregroundColor(.white)
+                                        .cornerRadius(10)
+                                }
+                                
+                                Button(action: {
+                                    // Handle edit profile action
+                                    self.showingEditProfile = true
+                                }) {
+                                    Text("Edit Profile")
+                                        .font(.headline)
+                                        .padding(EdgeInsets(top: 10, leading: 20, bottom: 10, trailing: 20))
+                                        .background(Color.indigo)
+                                        .foregroundColor(.white)
+                                        .cornerRadius(10)
+                                }
+                                //EDIT PROFILEVIEW-----------------------------------------------------------------
+                                .fullScreenCover(isPresented: $showingEditProfile){
+                                    
+                                    ZStack{
+                                        Color.black
+                                            .ignoresSafeArea()
+                                        VStack{
+                                            //College-------------------------------------------------------
+                                            HStack(){
+                                                Text("College:")
+                                                    .padding()
+                                                    .background(Color.indigo)
+                                                    .foregroundColor(.white)
+                                                    .cornerRadius(5.0)
+                                                    .padding(.bottom, 10)
+                                                    .padding(.leading,10)
+                                                    .font(.headline)
+                                                TextField("College", text: $newCollege)
+                                                    .padding()
+                                                    .background(Color.gray)
+                                                    .foregroundColor(Color.black)
+                                                    .cornerRadius(5.0)
+                                                    .padding(.bottom, 10)
+                                                    .padding(.trailing,10)
+                                                    .minimumScaleFactor(0.7)
+                                            }
+                                            //End College-------------------------------------------------------
+                                            
+                                            //Add Class Button-------------------------------------------------------
+                                            
+                                            Button(action: {
+                                                // Handle settings action
+                                                if self.injectedClasses.count < 6{
+                                                    //check if there are any blank inputs, do not allow new item if flag is true
+                                                    
+                                                    let hasBlankOrWhitespace = injectedClasses.contains { element in
+                                                        let trimmedElement = element.trimmingCharacters(in: .whitespacesAndNewlines)
+                                                        return trimmedElement.isEmpty
+                                                    }
+                                                    //we can add the element
+                                                    if !hasBlankOrWhitespace{
+                                                        self.injectedClasses.append("")
+                                                    }
+                                                    
+                                                }
+                                                
+                                                
+                                            }) {
+                                                Text("Add Class")
+                                                    .padding()
+                                                    .background(Color.indigo)
+                                                    .foregroundColor(.white)
+                                                    .cornerRadius(5.0)
+                                                    .padding(EdgeInsets(top: 5, leading: 10, bottom: 5, trailing: 10))
+                                                    .font(.headline)
+                                            }
+                                            //End Add Class Button-------------------------------------------------------
+                                            
+                                            // Class Scroll View-------------------------------------------------------
+                                            
+                                            ScrollView {
+                                                VStack(spacing: 5) {
+                                                    ForEach(injectedClasses.indices, id: \.self) { index in
+                                                        
+                                                        HStack {
+                                                            Text("Class:")
+                                                                .padding()
+                                                                .background(Color.indigo)
+                                                                .foregroundColor(.white)
+                                                                .cornerRadius(5.0)
+                                                                .padding(EdgeInsets(top: 10, leading: 10, bottom: 10, trailing: 10))
+                                                                .font(.headline)
+                                                            
+                                                            TextField("Class", text: Binding(
+                                                                get: {
+                                                                    // Return the current value from your data source
+                                                                    return injectedClasses[index]
+                                                                },
+                                                                set: { newValue in
+                                                                    // Update the value in your data source
+                                                                    // newValue is the new value entered in the text field
+                                                                    // You may need to update the value in your 'injectedClasses' array
+                                                                    injectedClasses[index] = newValue
+                                                                }
+                                                            ))
+                                                            .padding()
+                                                            .background(Color.gray)
+                                                            .foregroundColor(.black)
+                                                            .cornerRadius(5.0)
+                                                            .padding(EdgeInsets(top: 10, leading: 10, bottom: 10, trailing: 10))
+                                                            .minimumScaleFactor(0.7)
+                                                            
+                                                            // Delete class Button
+                                                            Button(action: {
+                                                                if injectedClasses.count > 0{
+                                                                    // Remove the corresponding element from the 'injectedClasses' array
+                                                                    removeClass(at: index)
+                                                                }
+                                                                
+                                                                
+                                                            }) {
+                                                                Image(systemName: "minus.circle")
+                                                                    .padding(EdgeInsets(top: 10, leading: 10, bottom: 10, trailing: 10))
+                                                                    .foregroundColor(Color.white)
+                                                            }
+                                                        }
+                                                    }
+                                                    .background(Color.gray)
+                                                    .cornerRadius(15)
+                                                    .padding(EdgeInsets(top: 5, leading: 10, bottom: 5, trailing: 10))
+                                                }
+                                            }
+                                            
+                                            
+                                            // Class Scroll View-------------------------------------------------------
+                                            HStack{
+                                                Button(action: {
+                                                    // Handle settings action
+                                                    profileVM.handleEdit(college: newCollege, classes: injectedClasses)
+                                                    self.showingEditProfile = false
+                                                }) {
+                                                    Text("Finalize Changes")
+                                                        .padding()
+                                                        .background(Color.indigo)
+                                                        .foregroundColor(.white)
+                                                        .cornerRadius(10)
+                                                        .padding(EdgeInsets(top: 10, leading: 10, bottom: 10, trailing: 10))
+                                                        .font(.headline)
+                                                }
+                                                Button(action: {
+                                                    self.showingEditProfile = false
+                                                }) {
+                                                    Text("Cancel")
+                                                        .padding()
+                                                        .background(Color.indigo)
+                                                        .foregroundColor(.white)
+                                                        .cornerRadius(10)
+                                                        .padding(EdgeInsets(top: 10, leading: 10, bottom: 10, trailing: 10))
+                                                        .font(.headline)
+                                                }
+                                            }
+                                            
+                                        }
+                                    }
+                                    .onAppear(){
+                                        self.injectedClasses.removeAll()
+                                        let classCount = profileVM.userDocument.Classes?.count ?? 0
+                                        self.newCollege = profileVM.userDocument.College
+
+                                        for index in 0..<min(classCount, 6) {
+                                            if let newClass = profileVM.userDocument.Classes?[index] {
+                                                self.injectedClasses.append(newClass)
+                                            }
+                                        }
+
+                                        
+                                    }
+                                }
+                                //END EDIT PROFILEVIEW-----------------------------------------------------------------
                             }
+                            
+                            
+                            
                         }
+                        .frame(minHeight: 70)
+                        .background(Color.Gray)
                         
+                        //College ----------------------------------------------------------------------------
+                        HStack {
+                            
+                            Text("My College:")
+                                .font(.headline)
+                                .padding(10)
+                                .background(Color.indigo)
+                                .foregroundColor(.white)
+                                .cornerRadius(10)
+                                .padding(EdgeInsets(top: 10, leading: 20, bottom: 10, trailing: 20))
+                            
+                            
+                            Spacer()
+                            Text("\(profileVM.userDocument.College)")
+                                .font(.headline)
+                                .padding()
+                                .background(Color.gray)
+                                .foregroundColor(Color.white)
+                                .cornerRadius(10)
+                                .padding(EdgeInsets(top: 10, leading: 20, bottom: 10, trailing: 20))
+                                .lineLimit(1)
+                                .minimumScaleFactor(0.5)
+                            
+                        }
+                        .frame(minHeight: 70)
+                        .background(Color.Gray)
+                        //----------------------------------------------------------------------------
                         
-                        
-                        
-                    } label: {
-                        Text("Edit Profile")
+                    }
+                    .clipShape(RoundedRectangle(cornerRadius: 10))
+                    
+                    
+                    
+                    //----------------------------------------------------------------------Classes
+                    HStack {
+                        Text("My Classes")
                             .font(.headline)
+                            .padding(10)
+                            .background(Color.indigo)
                             .foregroundColor(.white)
-                            .padding()
-                            .frame(width: 150, height: 50)
-                            .background(.indigo)
-                            .cornerRadius(15.0)
+                            .cornerRadius(10)
+                        
+                        VStack(spacing: 0) {
+                            let classesCount = profileVM.userDocument.Classes?.count ?? 0
+                            
+                            VStack(spacing: 0) {
+                                HStack(spacing: 0) {
+                                    if classesCount > 0 {
+                                        Text("\(profileVM.userDocument.Classes?[0] ?? "")")
+                                            .modifier(ClassTextModifier())
+                                            .padding(EdgeInsets(top: 10, leading: 10, bottom: 20, trailing: 10))
+                                    }
+                                    if classesCount > 1 {
+                                        Text("\(profileVM.userDocument.Classes?[1] ?? "")")
+                                            .modifier(ClassTextModifier())
+                                            .padding(EdgeInsets(top: 10, leading: 10, bottom: 20, trailing: 10))
+                                    }
+                                    if classesCount > 2 {
+                                        Text("\(profileVM.userDocument.Classes?[2] ?? "")")
+                                            .modifier(ClassTextModifier())
+                                            .padding(EdgeInsets(top: 10, leading: 10, bottom: 20, trailing: 10))
+                                    }
+                                }
+                                .padding(5)
+                                
+                                VStack(spacing: 0) {
+                                    HStack(spacing: 0) {
+                                        if classesCount > 3 {
+                                            Text("\(profileVM.userDocument.Classes?[3] ?? "")")
+                                                .modifier(ClassTextModifier())
+                                                .padding(EdgeInsets(top: 10, leading: 10, bottom: 20, trailing: 10))
+                                        }
+                                        if classesCount > 4 {
+                                            Text("\(profileVM.userDocument.Classes?[4] ?? "")")
+                                                .modifier(ClassTextModifier())
+                                                .padding(EdgeInsets(top: 10, leading: 10, bottom: 20, trailing: 10))
+                                        }
+                                        if classesCount > 5 {
+                                            Text("\(profileVM.userDocument.Classes?[5] ?? "")")
+                                                .modifier(ClassTextModifier())
+                                                .padding(EdgeInsets(top: 10, leading: 10, bottom: 20, trailing: 10))
+                                        }
+                                    }
+                                    .padding(5)
+                                }
+                            }
+                        }
+                        
+                        
+                        
+                        Spacer()
                     }
-                    .fullScreenCover(isPresented: $showEditView) {
-                        ZStack(alignment: .leading){
-                            VStack(){
-                                HStack{
-                                    Text("First Name:")
-                                        .padding()
-                                        .background(Color.indigo)
-                                        .foregroundColor(.white)
+                    .frame(minHeight: 70)
+                    .background(Color.Gray)
+                    .clipShape(RoundedRectangle(cornerRadius: 10))
+                    //END CLASSES----------------------------------------------------------------------
+                    
+                    //Posts by User---------------------------------------------------------
+                    Text("My Posts")
+                        .font(.headline)
+                        .padding(10)
+                        .background(Color.gray)
+                        .foregroundColor(Color.White)
+                        .cornerRadius(10)
+                    
+                    ScrollView {
+                        LazyVStack(spacing: 10) {
+                            ForEach(profileVM.usersPosts) { post in
+                                NavigationLink(destination: DetailView(selectedPost: post, viewModel: posts, canEdit: false)) {
                                     
-                                        .cornerRadius(5.0)
-                                        .padding(.bottom, 20)
-                                        .padding(.leading,10)
-                                        .font(.headline)
-                                    
-                                    TextField("First Name", text: $newFirstName)
-                                        .padding()
-                                        .background(Color.Gray)
-                                        .cornerRadius(5.0)
-                                        .padding(.bottom, 20)
-                                        .padding(.trailing,10)
-                                        .minimumScaleFactor(0.7)
-                                }
-                                HStack(){
-                                    Text("Last Name:")
-                                        .padding()
-                                        .background(Color.indigo)
-                                        .foregroundColor(.white)
-                                        .cornerRadius(5.0)
-                                        .padding(.bottom, 20)
-                                        .padding(.leading,10)
-                                        .font(.headline)
-                                    
-                                    TextField("Last Name", text: $newLastName)
-                                        .padding()
-                                        .background(Color.Gray)
-                                        .cornerRadius(5.0)
-                                        .padding(.bottom, 20)
-                                        .padding(.trailing,10)
-                                        .minimumScaleFactor(0.7)
-                                }
-                                HStack(){
-                                    Text("College:")
-                                        .padding()
-                                        .background(Color.indigo)
-                                        .foregroundColor(.white)
-                                        .cornerRadius(5.0)
-                                        .padding(.bottom, 20)
-                                        .padding(.leading,10)
-                                        .font(.headline)
-                                    
-                                    TextField("College", text: $newCollege)
-                                        .padding()
-                                        .background(Color.Gray)
-                                        .cornerRadius(5.0)
-                                        .padding(.bottom, 20)
-                                        .padding(.trailing,10)
-                                        .minimumScaleFactor(0.7)
-                                }
-                                HStack(){
-                                    Text("Birthday:")
-                                        .padding()
-                                        .background(Color.indigo)
-                                        .foregroundColor(.white)
-                                        .cornerRadius(5.0)
-                                        .padding(.bottom, 20)
-                                        .padding(.leading,10)
-                                        .font(.headline)
-                                    
-                                    TextField("Birthday", text: $newBirthday)
-                                        .padding()
-                                        .background(Color.Gray)
-                                        .cornerRadius(5.0)
-                                        .padding(.bottom, 20)
-                                        .padding(.trailing,10)
-                                        .minimumScaleFactor(0.7)
-                                }
-                                HStack(){
-                                    Text("Major(s)")
-                                        .padding()
-                                        .background(Color.indigo)
-                                        .foregroundColor(.white)
-                                        .cornerRadius(5.0)
-                                        .padding(.bottom, 20)
-                                        .padding(.leading,10)
-                                        .font(.headline)
-                                    
-                                    TextField("Major", text: $newMajors)
-                                        .padding()
-                                        .background(Color.Gray)
-                                        .cornerRadius(5.0)
-                                        .padding(.bottom, 20)
-                                        .padding(.trailing,10)
-                                        .minimumScaleFactor(0.7)
-                                    
-                                }
-                                HStack(){
-                                    Text("Classes:")
-                                        .padding()
-                                        .background(Color.indigo)
-                                        .foregroundColor(.white)
-                                        .cornerRadius(5.0)
-                                        .padding(.bottom, 20)
-                                        .padding(.leading,10)
-                                        .font(.headline)
-                                    
-                                    VStack(spacing: 0){
-                                        VStack(spacing: 0){
-                                            HStack(spacing: 0){
-                                                TextField("Class", text: $newClass1)
-                                                    .padding()
-                                                    .background(Color.Gray)
+                                    VStack(alignment: .leading) {
+                                        // post author
+                                        HStack {
+                                            Text("\(post.postAuthor)")
+                                                .padding(EdgeInsets(top: 10, leading: 10, bottom: 10, trailing: 10))
+                                                .background(Color.Purple)
+                                                .foregroundColor(Color.White)
+                                                .font(.headline)
+                                                .cornerRadius(10.0)
+                                            Spacer()
+                                            Text("\(post.forClass)")
+                                                .padding(EdgeInsets(top: 10, leading: 10, bottom: 10, trailing: 10))
+                                                .background(Color.Purple)
+                                                .foregroundColor(Color.White)
+                                                .font(.headline)
+                                                .cornerRadius(10.0)
+                                            
+                                        }
+                                        // spacer to separate the post text and post voting
+                                        Spacer().frame(height: 20)
+                                        // post body with rounded background color
+                                        ZStack {
+                                            Color.gray // Background color with rounded corners
+                                                .cornerRadius(10) // Add corner radius to round the corners
+                                                .padding(EdgeInsets(top: 0, leading: 5, bottom: 0, trailing: 5)) // Adjust padding to not go to the edge
+                                            HStack {
+                                                Text("\(post.postBody)")
+                                                    .padding(EdgeInsets(top: 10, leading: 10, bottom: 10, trailing: 10))
+                                                    .foregroundColor(Color.White)
                                                     .cornerRadius(5.0)
-                                                    .padding(.bottom, 20)
-                                                    .padding(.trailing,10)
-                                                    .minimumScaleFactor(0.7)
-                                                TextField("Class", text: $newClass2)
-                                                    .padding()
-                                                    .background(Color.Gray)
-                                                    .cornerRadius(5.0)
-                                                    .padding(.bottom, 20)
-                                                    .padding(.trailing,10)
-                                                    .minimumScaleFactor(0.7)
-                                                TextField("Class", text: $newClass3)
-                                                    .padding()
-                                                    .background(Color.Gray)
-                                                    .cornerRadius(5.0)
-                                                    .padding(.bottom, 20)
-                                                    .padding(.trailing,10)
-                                                    .minimumScaleFactor(0.7)
+                                                    .font(.headline)
+                                                    .frame(minWidth: 0, maxWidth: .infinity, alignment: .leading) // Push text all the way to the left
                                             }
                                         }
-                                        VStack(spacing: 0){
-                                            HStack(spacing: 0){
-                                                TextField("Class", text: $newClass4)
-                                                    .padding()
-                                                    .background(Color.Gray)
-                                                    .cornerRadius(5.0)
-                                                    .padding(.bottom, 20)
-                                                    .padding(.trailing,10)
-                                                    .minimumScaleFactor(0.7)
-                                                TextField("Class", text: $newClass5)
-                                                    .padding()
-                                                    .background(Color.Gray)
-                                                    .cornerRadius(5.0)
-                                                    .padding(.bottom, 20)
-                                                    .padding(.trailing,10)
-                                                    .minimumScaleFactor(0.7)
-                                                TextField("Class", text: $newClass6)
-                                                    .padding()
-                                                    .background(Color.Gray)
-                                                    .cornerRadius(5.0)
-                                                    .padding(.bottom, 20)
-                                                    .padding(.trailing,10)
-                                                    .minimumScaleFactor(0.7)
-                                            }
-                                        }
+                                        Spacer().frame(height: 20)
                                         
-                                    }
-                                    
-                                }
-                                Button {
-                                    if newFirstName.isEmpty || newLastName.isEmpty || newCollege.isEmpty || newMajors.isEmpty || newClass1.isEmpty ||
-                                        newBirthday.isEmpty{
-                                        
-                                        self.showingAlert = true
-                                    }
-                                    else{
-                                        var ClassArray:[String] = []
-                                        if newClass1 != ""{
-                                            ClassArray.append(newClass1)
+                                        HStack() {
+                                            // votes on the post
+                                            Text("\(post.votes)")
+                                                .cornerRadius(1)
+                                            
                                         }
-                                        if newClass2 != ""{
-                                            ClassArray.append(newClass2)
-                                        }
-                                        if newClass3 != ""{
-                                            ClassArray.append(newClass3)
-                                        }
-                                        if newClass4 != ""{
-                                            ClassArray.append(newClass4)
-                                        }
-                                        if newClass5 != ""{
-                                            ClassArray.append(newClass5)
-                                        }
-                                        if newClass6 != ""{
-                                            ClassArray.append(newClass6)
-                                        }
-                                        profileVM.handleEdit(firstName: newFirstName, lastName: newLastName, college: newCollege, birthday: newBirthday, major: newMajors, classes: ClassArray)
-                                        self.showEditView = false
-                                    }
-                                    
-                                } label: {
-                                    Text("Finalize Changes")
+                                        .padding(EdgeInsets(top: 10, leading: 10, bottom: 10, trailing: 10))
+                                        .background(Color.Purple)
+                                        .foregroundColor(Color.White)
+                                        .cornerRadius(15)
                                         .font(.headline)
-                                        .foregroundColor(.white)
-                                        .padding()
-                                        .frame(width: 220, height: 60)
-                                        .background(.indigo)
-                                        .cornerRadius(15.0)
-                                }
-                                .alert(isPresented: $showingAlert) {
-                                    Alert(title: Text("Please Enter Values For All Fields"), dismissButton: .default(Text("Got it!")))
-                                    
-                                }
-                                Button {
-                                    self.showEditView = false
-                                } label: {
-                                    Text("Cancel")
-                                        .font(.headline)
-                                        .foregroundColor(.white)
-                                        .padding()
-                                        .frame(width: 220, height: 60)
-                                        .background(.indigo)
-                                        .cornerRadius(15.0)
-                                }
-                                
-                                
-                                
-                            }
-                            
-                            
-                        }
-                        .onAppear(){
-                            DispatchQueue.main.async {
-                                let classCount = profileVM.userDocument.Classes?.count ?? 0
-                                self.newFirstName = profileVM.userDocument.FirstName
-                                self.newLastName = profileVM.userDocument.LastName
-                                self.newCollege = profileVM.userDocument.College
-                                self.newBirthday = profileVM.userDocument.Birthday
-                                self.newMajors = profileVM.userDocument.Major.joined(separator: ",")
-                                
-                                if classCount > 0{
-                                    self.newClass1 = profileVM.userDocument.Classes?[0] ?? ""
-                                }
-                                if classCount > 1{
-                                    self.newClass2 = profileVM.userDocument.Classes?[1] ?? ""
-                                }
-                                if classCount > 2{
-                                    self.newClass3 = profileVM.userDocument.Classes?[2] ?? ""
-                                }
-                                if classCount > 3{
-                                    self.newClass4 = profileVM.userDocument.Classes?[3] ?? ""
-                                }
-                                if classCount > 4{
-                                    self.newClass5 = (profileVM.userDocument.Classes?[4]) ?? ""
-                                }
-                                if classCount > 5{
-                                    self.newClass6 = profileVM.userDocument.Classes?[5] ?? ""
-                                }
-                                
-                                
-                                
-                                
-                                
-                                
-                            }
-                            
-                        }
-                    }
-                    
-                    
-                }
-                
-                
-                
-                Text("Enrolled At")
-                    .foregroundColor(.black)
-                    .font(.system(size:20))
-                    .multilineTextAlignment(.leading)
-                
-                Text("\(profileVM.userDocument.College)")
-                    .foregroundColor(.black)
-                    .multilineTextAlignment(.leading)
-                    .font(.system(size:15))
-                    .padding(.bottom)
-                
-                if(profileVM.userDocument.Major.count > 1){
-                    Text("My Majors:")
-                        .foregroundColor(.black)
-                        .font(.system(size:20))
-                        .multilineTextAlignment(.leading)
-                    ForEach(profileVM.userDocument.Major, id: \.self) {majors in
-                        Text("\(majors)")
-                            .foregroundColor(.black)
-                            .multilineTextAlignment(.leading)
-                            .font(.system(size:8))
-                            .padding(.bottom)
-                        
-                    }
-                }
-                else{
-                    Text("My Major:")
-                        .foregroundColor(.black)
-                        .font(.system(size:20))
-                        .multilineTextAlignment(.leading)
-                    ForEach(profileVM.userDocument.Major, id: \.self) {majors in
-                        Text("\(majors)")
-                            .foregroundColor(.black)
-                            .multilineTextAlignment(.leading)
-                            .font(.system(size:15))
-                        
-                            .padding(.bottom)
-                        
-                    }
-                }
-                
-                Text("My Classes:")
-                    .foregroundColor(.black)
-                    .font(.system(size:20))
-                    .multilineTextAlignment(.leading)
-                
-                ForEach(profileVM.userDocument.Classes ?? [], id: \.self) {enrolledClass in
-                    Text(" \(enrolledClass)")
-                        .foregroundColor(.black)
-                    
-                        .font(.system(size:15))
-                        .multilineTextAlignment(.leading)
-                    
-                }
-                
-                Text("My Posts")
-                    .font(.system(size:20))
-                    .multilineTextAlignment(.center)
-                
-                
-                
-                NavigationView{
-                    List{
-                        ForEach(profileVM.usersPosts){ post in
-                            NavigationLink( destination: DetailView(selectedPost: post ,viewModel: posts, canEdit: false, repliesArray: curReplies) , label: {
-                                LazyVStack(alignment: .leading){
-                                    // post author and post body
-                                    HStack{
-                                        //the author of the ppost
-                                        Text("\(post.postAuthor)")
-                                            .padding(5)
-                                            .background(Color.Gray)
-                                        //the body of the post
-                                        Text("\(post.postBody)")
-                                            .foregroundColor(Color.Black)
-                                        
-                                        
-                                        
                                     }
-                                    //spacer to seperate the post text and post voting
-                                    Spacer()
-                                    // vote buttons
-                                    HStack{
-                                        //votes on the post
-                                        Text("\(post.votes)")
-                                        Spacer()
-                                        
+                                    .frame(maxWidth: .infinity, alignment: .leading)
+                                    .background(Color.Gray)
+                                    .cornerRadius(10) // Add corner radius to round the corners
+                                    .padding(EdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 10))
+                                    
+                                }
+                                .simultaneousGesture(TapGesture().onEnded{
+                                    profileVM.getReplies(forPost: post, inClass: post.forClass) { returnedReplies in
+                                        post.replies = returnedReplies
                                     }
-                                    
-                                    .padding(.bottom,10)
-                                    
-                                    
-                                }
-                                
-                            })
-                            .simultaneousGesture(TapGesture().onEnded{
-                                posts.getReplies(forPost: post) { replies in
-                                    self.curReplies = replies
-                                }
-                            })
-                            
-                            
+                                })
+                            }
                         }
                         
                         
                         
                     }
-                    
-                    .padding(EdgeInsets(top: -10, leading: -20, bottom: -10, trailing: -20))
-                    .clipShape(Rectangle())
-                    .listStyle(PlainListStyle())
-                    
+                    .background(Color.Black)
+                    .refreshable {
+                        profileVM.refresh()
+                        
+                    }
                 }
-                
                 
             }
-            
         }
         
-        .frame(minWidth: 0,maxWidth: .infinity,minHeight: 0,maxHeight: .infinity, alignment: .topLeading)
-        .padding(.leading)
-        .refreshable {
-            let user = Auth.auth().currentUser
-            let userEmail = user?.email
-            profileVM.getPostsForUser(for: userEmail ?? ""){ posts in
-                profileVM.usersPosts = posts
-                profileVM.sortUsersPost()
-            }
-        }
+        
+        
+        //END SCROLL VIEW------------------------------------------------------------------------
         
         
         
     }
-    
-    
-    
-    
-    
-    
-    
 }
 
 
@@ -484,3 +444,18 @@ struct UserProfileView_Previews: PreviewProvider {
         UserProfileView(viewRouter: ViewRouter())
     }
 }
+struct ClassTextModifier: ViewModifier {
+    func body(content: Content) -> some View {
+        content
+            .font(.headline)
+            .lineLimit(1)
+            .minimumScaleFactor(0.5)
+            .padding(5)
+            .background(Color.gray)
+            .foregroundColor(Color.white)
+            .cornerRadius(10)
+        
+    }
+}
+
+
