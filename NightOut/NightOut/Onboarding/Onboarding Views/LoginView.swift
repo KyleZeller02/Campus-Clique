@@ -109,20 +109,7 @@ struct LoginView: View {
                     
                 }
                 
-                ///this HStack will be uncommeneted when we are ready to login in other ways than email
-                //                        HStack {
-                //                            //sign in with apple id
-                //                            Button(action:
-                //                                    {print("Button tapped")}) {
-                //                                LoginWithAppleID()
-                //                            }
-                //                            //sign in with phone number
-                //                            Button(action:
-                //                                    {print("Button tapped")}) {
-                //                                LoginWithPhoneNumber()
-                //                            }
-                //
-                //                        }
+                
                 
             } .padding()
             
@@ -151,12 +138,16 @@ struct ContentView_Previews: PreviewProvider{
 struct Title: View {
     var body: some View {
         Text("\(ProgramConstants.AppName)")
-            .font(.system(size: 75))
-            .fontWeight(.semibold)
+            .font(.system(size: UIScreen.main.bounds.width * 0.2))
+            .minimumScaleFactor(0.1)
+            .lineLimit(1)
             .padding(.bottom, 20)
             .foregroundColor(Color.Purple)
+
     }
 }
+
+
 
 struct Logo: View {
     var body: some View {
@@ -167,6 +158,7 @@ struct Logo: View {
             .clipped()
             .cornerRadius(150)
             .padding()
+            
     }
 }
 
