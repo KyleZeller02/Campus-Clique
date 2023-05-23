@@ -169,7 +169,7 @@ struct LoginButton: View {
             .foregroundColor(.white)
             .padding()
             .frame(width: 220, height: 60)
-            .background(.indigo)
+            .background(Color.Purple)
             .cornerRadius(15.0)
     }
 }
@@ -181,7 +181,7 @@ struct SIGNUP: View {
             .foregroundColor(.white)
             .padding()
             .frame(width: 220, height: 60)
-            .background(.indigo)
+            .background(Color.Purple)
             .cornerRadius(15.0)
     }
 }
@@ -192,7 +192,7 @@ struct LoginWithAppleID: View {
             .foregroundColor(.white)
             .padding()
             .frame(width: 190, height: 60)
-            .background(.indigo)
+            .background(Color.Purple)
             .cornerRadius(15.0)
     }
 }
@@ -204,7 +204,7 @@ struct LoginWithPhoneNumber: View {
             .foregroundColor(.white)
             .padding()
             .frame(width: 190, height: 60)
-            .background(.indigo)
+            .background(Color.Purple)
             .cornerRadius(15.0)
     }
 }

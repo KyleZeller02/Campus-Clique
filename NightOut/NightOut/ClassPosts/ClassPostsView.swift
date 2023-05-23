@@ -134,43 +134,7 @@ struct ClassPosts: View {
                         }
                         .sheet(isPresented: $isShowingSheet)
                         {
-                            ZStack{
-                                VStack{
-                                    Text("Share A Post With Your Classmates!")
-                                        .padding(30)
-                                        .font(.system(size:40))
-                                    TextField("Your Post", text: $addedPost)
-                                        .autocapitalization(UITextAutocapitalizationType.words)
-                                        .padding()
-                                        .background(Color.Gray)
-                                        .cornerRadius(5.0)
-                                        .padding(.leading, 20)
-                                        .padding(.trailing, 20)
-                                        .frame(minWidth: 200, maxWidth: .infinity,minHeight: 50,maxHeight: .infinity)
-                                    Button {
-                                        //send to firebase and update view
-                                        if addedPost == ""{
-                                            self.isShowingSheet.toggle()
-                                            //Probably needs to get rid of this posts.add
-                                            //posts.addPost(postBody: addedPost)
-                                        }
-                                        else{
-                                            posts.addPost(postBody: addedPost)
-                                            addedPost = ""
-                                            self.isShowingSheet.toggle()
-                                        }
-                                    } label: {
-                                        Text("Share Post")
-                                            .font(.system(size:30))
-                                            .foregroundColor(.white)
-                                            .padding()
-                                            .frame(width: 190, height: 60)
-                                            .background(Color.Purple)
-                                            .cornerRadius(15.0)
-                                    }
-                                }
-                            }
-                            Spacer()
+                            AddPostView()
                         }
                         Menu {
                             ForEach(profileVM.userDocument.Classes ?? [], id: \.self){ curClass in
@@ -180,7 +144,7 @@ struct ClassPosts: View {
                                     DispatchQueue.main.async {
                                         posts.getPosts(selectedClass: posts.selectedClass){ p in
                                             posts.postsArray = p
-                                            print("\(posts.postsArray[0].postBody)")
+                                            
                                             posts.objectWillChange.send()
                                         }
                                     }
@@ -420,7 +384,7 @@ struct DetailView: View{
                 HStack{
                     Image(systemName: "arrow.left")
                         
-                    Text("Go Back")
+                    
                         
                 }
                 .padding(.bottom, 10)

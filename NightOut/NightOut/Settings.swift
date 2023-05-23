@@ -8,3 +8,6 @@
 import Foundation
 
 
+enum FocusedField {
+        case TextEditor
+    }

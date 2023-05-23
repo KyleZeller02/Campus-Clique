@@ -18,7 +18,7 @@ struct ProfileSettings: View {
                 VStack{
                     Text("Preferences")
                         .padding()
-                        .background(Color.indigo)
+                        .background(Color.Purple)
                         .foregroundColor(.white)
                         .cornerRadius(5.0)
                         .padding(EdgeInsets(top: 5, leading: 10, bottom: 5, trailing: 10))
@@ -34,7 +34,7 @@ struct ProfileSettings: View {
                     }) {
                         Text("Log Out")
                             .padding()
-                            .background(Color.indigo)
+                            .background(Color.Purple)
                             .foregroundColor(.white)
                             .cornerRadius(5.0)
                             .padding(EdgeInsets(top: 5, leading: 10, bottom: 5, trailing: 10))
@@ -48,7 +48,7 @@ struct ProfileSettings: View {
                     }) {
                         Text("Delete My Account")
                             .padding()
-                            .background(Color.indigo)
+                            .background(Color.Purple)
                             .foregroundColor(.white)
                             .cornerRadius(5.0)
                             .padding(EdgeInsets(top: 5, leading: 10, bottom: 5, trailing: 10))

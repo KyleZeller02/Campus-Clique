@@ -20,56 +20,60 @@ class UserProfileViewModel: ObservableObject{
     
     
     func getPostsForUser(for user: String, completion: @escaping ([ClassPost]) -> ()) {
-            self.usersPosts.removeAll()
-            var posts: [ClassPost] = []
-            let college = userDocument.College
-            let path = db.collection("Colleges").document(college)
-            let classes: [String] = userDocument.Classes ?? []
+        self.usersPosts.removeAll()
+        var posts: [ClassPost] = []
+        let college = userDocument.College
+        let path = db.collection("Colleges").document(college)
+        let classes: [String] = userDocument.Classes ?? []
+        
+        for c in classes {
+            let fullPath = path.collection(c)
+            let query = fullPath.whereField("email", isEqualTo: user)
             
-            for c in classes {
-                let fullPath = path.collection(c)
-                let query = fullPath.whereField("email", isEqualTo: user).order(by: "votes")
-                let registration = query.addSnapshotListener { querySnapshot, error in
-                    guard let documents = querySnapshot?.documents else {
-                        print("Error getting documents in getPostsForUser(): \(error?.localizedDescription ?? "")")
-                        return
-                    }
-                    
-                    documents.forEach { document in
-                        let data = document.data()
-                        let author = data["author"] as? String ?? ""
-                        let postBody = data["postBody"] as? String ?? ""
-                        let forClass = data["forClass"] as? String ?? ""
-                        let date = data["datePosted"] as? Double ?? 0.0
-                        let votes = data["votes"] as? Int64 ?? 0
-                        let id = data["id"] as? String ?? ""
-                        let usersLiked = data["UsersLiked"] as? [String] ?? []
-                        let usersDisliked = data["UsersDisliked"] as? [String] ?? []
-                        let email = data["email"] as? String ?? ""
-                        let college = data["college"] as? String ?? ""
-                        
-                        let post = ClassPost(
-                            postBody: postBody,
-                            postAuthor: author,
-                            forClass: forClass,
-                            DatePosted: date,
-                            votes: votes,
-                            id: id,
-                            usersLiked: Set(usersLiked),
-                            usersDisliked: Set(usersDisliked),
-                            email: email,
-                            college: college
-                        )
-                        posts.append(post)
-                    }
-                    
-                    completion(posts)
-                    self.objectWillChange.send()
+            query.getDocuments { querySnapshot, error in
+                guard let documents = querySnapshot?.documents else {
+                    print("Error getting documents in getPostsForUser(): \(error?.localizedDescription ?? "")")
+                    return
                 }
                 
-                listener = registration
+                documents.forEach { document in
+                    
+                    let data = document.data()
+                    let author = data["author"] as? String ?? ""
+                    let postBody = data["postBody"] as? String ?? ""
+                    let forClass = data["forClass"] as? String ?? ""
+                    let date = data["datePosted"] as? Double ?? 0.0
+                    let votes = data["votes"] as? Int64 ?? 0
+                    let id = data["id"] as? String ?? ""
+                    let usersLiked = data["UsersLiked"] as? [String] ?? []
+                    let usersDisliked = data["UsersDisliked"] as? [String] ?? []
+                    let email = data["email"] as? String ?? ""
+                    let college = data["college"] as? String ?? ""
+                    
+                    let post = ClassPost(
+                        postBody: postBody,
+                        postAuthor: author,
+                        forClass: forClass,
+                        DatePosted: date,
+                        votes: votes,
+                        id: id,
+                        usersLiked: Set(usersLiked),
+                        usersDisliked: Set(usersDisliked),
+                        email: email,
+                        college: college
+                    )
+                    posts.append(post)
+                }
+                //this needs to be fixed by creating an index in firebase. this is a lazy fix for now:
+               
+                completion(posts)
+                self.objectWillChange.send()
             }
         }
+        self.sortUsersPost()
+    }
+
+   
     
     func getReplies(forPost post: ClassPost, inClass c:String, completion: @escaping ([Replies]) -> ()) {
         post.replies.removeAll()
@@ -109,7 +113,7 @@ class UserProfileViewModel: ObservableObject{
     func getDocument(user: String, completion: @escaping ((UserDocument) -> ())) {
         let doc = db.collection("Users").document(user)
         
-        doc.addSnapshotListener { documentSnapshot, error in
+        doc.getDocument { documentSnapshot, error in
             if let error = error {
                 print("Error fetching document: \(error)")
                 completion(UserDocument(FirstName: "", LastName: "", College: "", Birthday: "", Major: [], Classes: [], Email: ""))
@@ -134,6 +138,7 @@ class UserProfileViewModel: ObservableObject{
             completion(retrievedDoc)
         }
     }
+
 
 
     
