@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-import FirebaseStorage
+import Firebase
 import FirebaseFirestore
 
 struct ProfilePictureAcquisition: View {
