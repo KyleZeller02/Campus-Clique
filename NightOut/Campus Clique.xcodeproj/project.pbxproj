@@ -33,7 +33,6 @@
 		02943BF0295398FB00DB7DF6 /* ProfilePictureAcquisition.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02943BEF295398FB00DB7DF6 /* ProfilePictureAcquisition.swift */; };
 		02943C2B2953AB6900DB7DF6 /* ImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02943C2A2953AB6900DB7DF6 /* ImagePicker.swift */; };
 		02943C2D29664CED00DB7DF6 /* DatabaseFetcherSender.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02943C2C29664CEC00DB7DF6 /* DatabaseFetcherSender.swift */; };
-		02943C31296D09F000DB7DF6 /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02943C30296D09F000DB7DF6 /* Settings.swift */; };
 		02943C34296E2B3D00DB7DF6 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02943C33296E2B3D00DB7DF6 /* Constants.swift */; };
 		02943C37296E2FCA00DB7DF6 /* UserProfileViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02943C36296E2FCA00DB7DF6 /* UserProfileViewModel.swift */; };
 		02943C66296F887400DB7DF6 /* ClassPostViewModelTesting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02943C65296F887400DB7DF6 /* ClassPostViewModelTesting.swift */; };
@@ -57,6 +56,8 @@
 		02947E6F2879F72A005133D5 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 02947E6E2879F72A005133D5 /* Preview Assets.xcassets */; };
 		02947E7C28834581005133D5 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 02947E7B28834581005133D5 /* GoogleService-Info.plist */; };
 		02D7C15C29BBE1AA002F8223 /* InAppView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02D7C15B29BBE1AA002F8223 /* InAppView.swift */; };
+		02FDBF4F2A1C5F480020A6BD /* DatabaseActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02FDBF4E2A1C5F480020A6BD /* DatabaseActions.swift */; };
+		02FDBF532A1C694C0020A6BD /* AddReplyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02FDBF522A1C694C0020A6BD /* AddReplyView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -85,15 +86,14 @@
 		02943BEF295398FB00DB7DF6 /* ProfilePictureAcquisition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfilePictureAcquisition.swift; sourceTree = "<group>"; };
 		02943C2A2953AB6900DB7DF6 /* ImagePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePicker.swift; sourceTree = "<group>"; };
 		02943C2C29664CEC00DB7DF6 /* DatabaseFetcherSender.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseFetcherSender.swift; sourceTree = "<group>"; };
-		02943C30296D09F000DB7DF6 /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
 		02943C33296E2B3D00DB7DF6 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		02943C36296E2FCA00DB7DF6 /* UserProfileViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileViewModel.swift; sourceTree = "<group>"; };
-		02943C63296F887400DB7DF6 /* NightOutTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = NightOutTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		02943C63296F887400DB7DF6 /* Campus CliqueTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Campus CliqueTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		02943C65296F887400DB7DF6 /* ClassPostViewModelTesting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClassPostViewModelTesting.swift; sourceTree = "<group>"; };
 		02943C882972299600DB7DF6 /* ClassPostsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClassPostsView.swift; sourceTree = "<group>"; };
 		02943C8A297229E500DB7DF6 /* ClassPostsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClassPostsViewModel.swift; sourceTree = "<group>"; };
 		02943C8C2972320400DB7DF6 /* ClassPosts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClassPosts.swift; sourceTree = "<group>"; };
-		02947E642879F727005133D5 /* NightOut.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = NightOut.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		02947E642879F727005133D5 /* Campus Clique.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Campus Clique.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		02947E672879F727005133D5 /* NightOutApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NightOutApp.swift; sourceTree = "<group>"; };
 		02947E692879F727005133D5 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		02947E6B2879F72A005133D5 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -101,6 +101,8 @@
 		02947E7A28834509005133D5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		02947E7B28834581005133D5 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		02D7C15B29BBE1AA002F8223 /* InAppView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppView.swift; sourceTree = "<group>"; };
+		02FDBF4E2A1C5F480020A6BD /* DatabaseActions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseActions.swift; sourceTree = "<group>"; };
+		02FDBF522A1C694C0020A6BD /* AddReplyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddReplyView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -225,6 +227,7 @@
 				02943C8A297229E500DB7DF6 /* ClassPostsViewModel.swift */,
 				02943C8C2972320400DB7DF6 /* ClassPosts.swift */,
 				027196862A15AEF0006FAD50 /* AddPostView.swift */,
+				02FDBF522A1C694C0020A6BD /* AddReplyView.swift */,
 			);
 			path = ClassPosts;
 			sourceTree = "<group>";
@@ -243,8 +246,8 @@
 		02947E652879F727005133D5 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				02947E642879F727005133D5 /* NightOut.app */,
-				02943C63296F887400DB7DF6 /* NightOutTests.xctest */,
+				02947E642879F727005133D5 /* Campus Clique.app */,
+				02943C63296F887400DB7DF6 /* Campus CliqueTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -261,9 +264,9 @@
 				023C29F72883A8C40045904F /* Views */,
 				02947E6B2879F72A005133D5 /* Assets.xcassets */,
 				02947E6D2879F72A005133D5 /* Preview Content */,
-				02943C30296D09F000DB7DF6 /* Settings.swift */,
 				02943C33296E2B3D00DB7DF6 /* Constants.swift */,
 				02943C86297228A100DB7DF6 /* ClassPosts */,
+				02FDBF4E2A1C5F480020A6BD /* DatabaseActions.swift */,
 			);
 			path = NightOut;
 			sourceTree = "<group>";
@@ -279,9 +282,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		02943C62296F887400DB7DF6 /* NightOutTests */ = {
+		02943C62296F887400DB7DF6 /* Campus CliqueTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 02943C69296F887400DB7DF6 /* Build configuration list for PBXNativeTarget "NightOutTests" */;
+			buildConfigurationList = 02943C69296F887400DB7DF6 /* Build configuration list for PBXNativeTarget "Campus CliqueTests" */;
 			buildPhases = (
 				02943C5F296F887400DB7DF6 /* Sources */,
 				02943C60296F887400DB7DF6 /* Frameworks */,
@@ -292,7 +295,7 @@
 			dependencies = (
 				02943C68296F887400DB7DF6 /* PBXTargetDependency */,
 			);
-			name = NightOutTests;
+			name = "Campus CliqueTests";
 			packageProductDependencies = (
 				02943C6E296F8A8B00DB7DF6 /* FirebaseAuth */,
 				02943C70296F8B1400DB7DF6 /* FirebaseMessaging */,
@@ -307,12 +310,12 @@
 				02943C82296F8B8700DB7DF6 /* FirebaseAuthCombine-Community */,
 			);
 			productName = NightOutTests;
-			productReference = 02943C63296F887400DB7DF6 /* NightOutTests.xctest */;
+			productReference = 02943C63296F887400DB7DF6 /* Campus CliqueTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		02947E632879F727005133D5 /* NightOut */ = {
+		02947E632879F727005133D5 /* Campus Clique */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 02947E722879F72A005133D5 /* Build configuration list for PBXNativeTarget "NightOut" */;
+			buildConfigurationList = 02947E722879F72A005133D5 /* Build configuration list for PBXNativeTarget "Campus Clique" */;
 			buildPhases = (
 				02947E602879F727005133D5 /* Sources */,
 				02947E612879F727005133D5 /* Frameworks */,
@@ -322,7 +325,7 @@
 			);
 			dependencies = (
 			);
-			name = NightOut;
+			name = "Campus Clique";
 			packageProductDependencies = (
 				02618F662A1C508A00885900 /* FirebaseAnalytics */,
 				02618F682A1C509F00885900 /* FirebaseMessaging */,
@@ -337,7 +340,7 @@
 				02618F7A2A1C511A00885900 /* FirebaseAuthCombine-Community */,
 			);
 			productName = NightOut;
-			productReference = 02947E642879F727005133D5 /* NightOut.app */;
+			productReference = 02947E642879F727005133D5 /* Campus Clique.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -359,7 +362,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 02947E5F2879F727005133D5 /* Build configuration list for PBXProject "NightOut" */;
+			buildConfigurationList = 02947E5F2879F727005133D5 /* Build configuration list for PBXProject "Campus Clique" */;
 			compatibilityVersion = "Xcode 13.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -376,8 +379,8 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				02947E632879F727005133D5 /* NightOut */,
-				02943C62296F887400DB7DF6 /* NightOutTests */,
+				02947E632879F727005133D5 /* Campus Clique */,
+				02943C62296F887400DB7DF6 /* Campus CliqueTests */,
 			);
 		};
 /* End PBXProject section */
@@ -427,12 +430,13 @@
 				02943C2D29664CED00DB7DF6 /* DatabaseFetcherSender.swift in Sources */,
 				02943BEE2952850300DB7DF6 /* ViewNavigator.swift in Sources */,
 				023C29F92883A9210045904F /* UserDataAcquisition.swift in Sources */,
+				02FDBF4F2A1C5F480020A6BD /* DatabaseActions.swift in Sources */,
 				02943C8D2972320400DB7DF6 /* ClassPosts.swift in Sources */,
 				02943C37296E2FCA00DB7DF6 /* UserProfileViewModel.swift in Sources */,
-				02943C31296D09F000DB7DF6 /* Settings.swift in Sources */,
 				02943B2229526CF000DB7DF6 /* UserProfileView.swift in Sources */,
 				02947E6A2879F727005133D5 /* LoginView.swift in Sources */,
 				0205E4DF2A03748B00A9E98E /* MessageModel.swift in Sources */,
+				02FDBF532A1C694C0020A6BD /* AddReplyView.swift in Sources */,
 				02943C34296E2B3D00DB7DF6 /* Constants.swift in Sources */,
 				02947E682879F727005133D5 /* NightOutApp.swift in Sources */,
 				023C2A0D28B28B820045904F /* UserBirthdayAcquisition.swift in Sources */,
@@ -447,7 +451,7 @@
 /* Begin PBXTargetDependency section */
 		02943C68296F887400DB7DF6 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 02947E632879F727005133D5 /* NightOut */;
+			target = 02947E632879F727005133D5 /* Campus Clique */;
 			targetProxy = 02943C67296F887400DB7DF6 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -469,7 +473,7 @@
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/NightOut.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/NightOut";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Campus Clique.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Campus Clique";
 			};
 			name = Debug;
 		};
@@ -489,7 +493,7 @@
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/NightOut.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/NightOut";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Campus Clique.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Campus Clique";
 			};
 			name = Release;
 		};
@@ -547,6 +551,7 @@
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "Campus Clique";
 				SDKROOT = iphoneos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -600,6 +605,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 15.5;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "Campus Clique";
 				SDKROOT = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
@@ -676,7 +682,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		02943C69296F887400DB7DF6 /* Build configuration list for PBXNativeTarget "NightOutTests" */ = {
+		02943C69296F887400DB7DF6 /* Build configuration list for PBXNativeTarget "Campus CliqueTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				02943C6A296F887400DB7DF6 /* Debug */,
@@ -685,7 +691,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		02947E5F2879F727005133D5 /* Build configuration list for PBXProject "NightOut" */ = {
+		02947E5F2879F727005133D5 /* Build configuration list for PBXProject "Campus Clique" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				02947E702879F72A005133D5 /* Debug */,
@@ -694,7 +700,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		02947E722879F72A005133D5 /* Build configuration list for PBXNativeTarget "NightOut" */ = {
+		02947E722879F72A005133D5 /* Build configuration list for PBXNativeTarget "Campus Clique" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				02947E732879F72A005133D5 /* Debug */,

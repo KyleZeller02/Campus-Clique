@@ -12,6 +12,7 @@ import SwiftUI
 /// -Kyle Zeller Thursday Dec 22
 class UserDocument:Identifiable,ObservableObject{
     
+    /// Properties for the UserDocument, htey are set in the constructor, except for FullName, it is a computed property
     var FirstName: String
     var LastName: String
     var College: String
@@ -25,6 +26,7 @@ class UserDocument:Identifiable,ObservableObject{
     
     
     
+    /// constructor for the user document
     init(FirstName: String, LastName: String, College: String, Birthday: String, Major: [String], Classes: [String], Email: String ) {
         self.FirstName = FirstName
         self.LastName = LastName
@@ -33,8 +35,6 @@ class UserDocument:Identifiable,ObservableObject{
         self.Major = Major
         self.Classes = Classes
         self.Email = Email
-        
-        
     }
     
     

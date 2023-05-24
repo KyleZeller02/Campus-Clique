@@ -15,7 +15,7 @@ class AppDelegate: NSObject, UIApplicationDelegate {
                    didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
     FirebaseApp.configure()
       let db = Firestore.firestore()
-      print("Firebase DB = \(db)")
+      
     return true
   }
 }
@@ -28,6 +28,16 @@ struct NightOutApp: App {
     var body: some Scene {
         WindowGroup {
             ViewNavigator(viewRouter: viewRouter)
+            // Handle settings action
+            //                                    let firebaseAuth = Auth.auth()
+            //                                    do{
+            //                                        try firebaseAuth.signOut()
+            //
+            //                                    }
+            //                                    catch let singoutError as NSError{
+            //                                        print("Error Signing out: \(singoutError)")
+            //                                    }
+            //                                    viewRouter.CurrentViewState = .LoginView
         }
     }
 }

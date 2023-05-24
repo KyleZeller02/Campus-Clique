@@ -14,7 +14,13 @@ struct UserDataAcquisition: View {
     
     @State var Major: String = ""
     // Classes will need to be parsed to a string array
-    @State var Classes: String = ""
+    @State var Class1: String = ""
+    @State var Class2: String = ""
+    @State var Class3: String = ""
+    @State var Class4: String = ""
+    @State var Class5: String = ""
+    @State var Class6: String = ""
+    
     var body: some View {
         ZStack{
             Color.Gray
@@ -42,21 +48,21 @@ struct UserDataAcquisition: View {
                 VStack(spacing: 0){
                     VStack(spacing: 0){
                         HStack(spacing: 0){
-                            TextField("Class", text: $Classes)
+                            TextField("Class", text: $Class1)
                                 .padding()
                                 .background(Color.Gray)
                                 .cornerRadius(5.0)
                                 .padding(.bottom, 20)
                                 .padding(.trailing,10)
                                 .minimumScaleFactor(0.7)
-                            TextField("Class", text: $Classes)
+                            TextField("Class", text: $Class2)
                                 .padding()
                                 .background(Color.Gray)
                                 .cornerRadius(5.0)
                                 .padding(.bottom, 20)
                                 .padding(.trailing,10)
                                 .minimumScaleFactor(0.7)
-                            TextField("Class", text: $Classes)
+                            TextField("Class", text: $Class3)
                                 .padding()
                                 .background(Color.Gray)
                                 .cornerRadius(5.0)
@@ -67,21 +73,21 @@ struct UserDataAcquisition: View {
                     }
                     VStack(spacing: 0){
                         HStack(spacing: 0){
-                            TextField("Class", text: $Classes)
+                            TextField("Class", text: $Class4)
                                 .padding()
                                 .background(Color.Gray)
                                 .cornerRadius(5.0)
                                 .padding(.bottom, 20)
                                 .padding(.trailing,10)
                                 .minimumScaleFactor(0.7)
-                            TextField("Class", text: $Classes)
+                            TextField("Class", text: $Class5)
                                 .padding()
                                 .background(Color.Gray)
                                 .cornerRadius(5.0)
                                 .padding(.bottom, 20)
                                 .padding(.trailing,10)
                                 .minimumScaleFactor(0.7)
-                            TextField("Class", text: $Classes)
+                            TextField("Class", text: $Class6)
                                 .padding()
                                 .background(Color.Gray)
                                 .cornerRadius(5.0)
@@ -96,11 +102,12 @@ struct UserDataAcquisition: View {
                 Spacer()
                 Button(action:
                         {
-                    if Major != "" , Classes != ""{
+                    if Major != "" , Class1 != ""{
                         //if user gives data, upload data to document in firebase
                         let user = Auth.auth().currentUser
                         if let user = user{
                             let email = user.email
+                            let Classes = "\(Class1),\(Class2),\(Class3),\(Class4),\(Class5),\(Class6)"
                         
                         OnboardingDatabaseManager.addClassesMajorToDocument(Classes: Classes, Major: Major, email: email ?? "")
                         //change state

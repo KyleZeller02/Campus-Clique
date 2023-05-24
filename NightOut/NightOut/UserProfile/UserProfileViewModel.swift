@@ -91,14 +91,14 @@ class UserProfileViewModel: ObservableObject{
                 for document in querySnapshot!.documents {
                     let data = document.data()
                     let author = data["author"] as? String ?? ""
-                    let forClass = data["forClass"] as? String ?? ""
+                   
                     let id = data["id"] as? String ?? ""
                     let postBody = data["postBody"] as? String ?? ""
                     let votes = data["votes"] as? Int64 ?? 0
                     let usersLiked = data["UsersLiked"] as? [String] ?? []
                     let usersDisliked = data["UsersDisliked"] as? [String] ?? []
                     let date = data["datePosted"] as? Double ?? 0.0
-                    let reply = Replies(replyBody: postBody, replyAuthor: author, forClass: forClass, DatePosted: date, votes: votes, id: id, usersLiked: Set(usersLiked), usersDisliked: Set(usersDisliked))
+                    let reply = Replies(replyBody: postBody, replyAuthor: author,  DatePosted: date, votes: votes, id: id, usersLiked: Set(usersLiked), usersDisliked: Set(usersDisliked))
                     tempReplies.append(reply)
                 }
 
@@ -178,6 +178,7 @@ class UserProfileViewModel: ObservableObject{
         if userEmail == userDocument.Email {
             getPostsForUser(for: userDocument.Email) { posts in
                 self.usersPosts = posts
+                self.sortUsersPost()
             }
         }
     }

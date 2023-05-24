@@ -10,10 +10,8 @@ import SwiftUI
 
 struct ProgramConstants{
      static let AppName = "Campus Clique"
-    //Cmapus Clique
-    
-    
 }
+
 extension Color {
     static let Purple = Color(red: 62/255, green:84/255 , blue: 172/255)
     static let White = Color(red: 238/255, green: 238/255, blue: 238/255)

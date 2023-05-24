@@ -15,11 +15,10 @@ class ClassPostsViewModel: ObservableObject{
     
     /// the array of posts that is retrieved from firebase for the specific class at a specific university
     @Published var postsArray: [ClassPost] = []
-    
     //userVM needs to be published incase the user edits their profile while viewing posts.
     //@Published var userVM: UserProfileViewModel = UserProfileViewModel()
     @Published var profileVM: UserProfileViewModel = UserProfileViewModel()
-    
+    @Published var userPosts: [ClassPost] = []
     
     @Published var selectedClass: String = "Selected Class"
     
@@ -40,6 +39,9 @@ class ClassPostsViewModel: ObservableObject{
                 self.postsArray = p
                 self.objectWillChange.send()
             }
+            self.getPostsForUser(for: self.profileVM.userDocument.Email){ p in
+                self.userPosts = p
+            }
         }
 
         profileVM.userDocument.Classes?.sort()
@@ -50,6 +52,64 @@ class ClassPostsViewModel: ObservableObject{
     func deletePost(){
         
     }
+    
+    func getPostsForUser(for user: String, completion: @escaping ([ClassPost]) -> ()) {
+        self.userPosts.removeAll()
+        var posts: [ClassPost] = []
+        let college = profileVM.userDocument.College
+        let path = db.collection("Colleges").document(college)
+        let classes: [String] = profileVM.userDocument.Classes ?? []
+        
+        for c in classes {
+            let fullPath = path.collection(c)
+            let query = fullPath.whereField("email", isEqualTo: user)
+            
+            query.getDocuments { querySnapshot, error in
+                guard let documents = querySnapshot?.documents else {
+                    print("Error getting documents in getPostsForUser(): \(error?.localizedDescription ?? "")")
+                    return
+                }
+                
+                documents.forEach { document in
+                    
+                    let data = document.data()
+                    let author = data["author"] as? String ?? ""
+                    let postBody = data["postBody"] as? String ?? ""
+                    let forClass = data["forClass"] as? String ?? ""
+                    let date = data["datePosted"] as? Double ?? 0.0
+                    let votes = data["votes"] as? Int64 ?? 0
+                    let id = data["id"] as? String ?? ""
+                    let usersLiked = data["UsersLiked"] as? [String] ?? []
+                    let usersDisliked = data["UsersDisliked"] as? [String] ?? []
+                    let email = data["email"] as? String ?? ""
+                    let college = data["college"] as? String ?? ""
+                    
+                    let post = ClassPost(
+                        postBody: postBody,
+                        postAuthor: author,
+                        forClass: forClass,
+                        DatePosted: date,
+                        votes: votes,
+                        id: id,
+                        usersLiked: Set(usersLiked),
+                        usersDisliked: Set(usersDisliked),
+                        email: email,
+                        college: college
+                    )
+                    posts.append(post)
+                }
+                //this needs to be fixed by creating an index in firebase. this is a lazy fix for now:
+               
+                completion(posts)
+                self.objectWillChange.send()
+            }
+        }
+        self.sortUsersPost()
+    }
+    
+    func sortUsersPost(){
+       self.userPosts.sort(by: {$0.votes > $1.votes})
+   }
     
     func getDocument(email: String?, completion: @escaping (Result<UserDocument, Error>) -> Void) {
         let doc = db.collection("Users").document(email ?? "")
@@ -148,9 +208,41 @@ class ClassPostsViewModel: ObservableObject{
     }
 
 
-    
-    func addPost(postBody: String) {
-        guard selectedClass != "Selected Class" else { return }
+    func addReply(forPost post: ClassPost, author: String, replyBody body: String, completion: @escaping ([Replies]) -> Void) {
+        let date = Date().timeIntervalSince1970
+        let replyCollection = db.collection("Colleges").document(profileVM.userDocument.College).collection(selectedClass).document(post.id).collection("Replies")
+        let replyDocument = replyCollection.document()
+        
+        let data: [String: Any] = [
+            "author": author,
+            "forClass": selectedClass,
+            "postBody": body,
+            "votes": 0,
+            "id": replyDocument.documentID,
+            "date": date
+        ]
+        
+        replyDocument.setData(data) { [weak self] error in
+            guard let self = self else { return }
+            
+            if let error = error {
+                // Handle error
+                print(error.localizedDescription)
+                completion(post.replies) // Return the current replies even in case of an error
+            } else {
+                let reply = Replies(replyBody: body, replyAuthor: author, votes: 0, id: replyDocument.documentID)
+                post.replies.append(reply)
+                self.objectWillChange.send()
+                
+                self.getReplies(forPost: post) { replies in
+                    completion(replies) // Return the updated replies
+                }
+            }
+        }
+    }
+
+    func addPost(postBody: String) -> Bool {
+        guard selectedClass != "Selected Class" else { return false }
         
         let college = profileVM.userDocument.College
         let postLocation = db.collection("Colleges").document(college).collection(selectedClass).document()
@@ -167,11 +259,14 @@ class ClassPostsViewModel: ObservableObject{
             "email": profileVM.userDocument.Email
         ]
         
+        var success = true
+        
         postLocation.setData(postProperties) { [weak self] error in
             guard let self = self else { return }
             
             if let error = error {
                 print("Error adding post to Firebase: \(error.localizedDescription)")
+                success = false
                 return
             }
             
@@ -180,7 +275,10 @@ class ClassPostsViewModel: ObservableObject{
             self.postsArray.append(newPost)
             self.sortPosts()
         }
+        
+        return success
     }
+
 
 
     
@@ -190,7 +288,7 @@ class ClassPostsViewModel: ObservableObject{
             return // Return if user is not logged in
         }
         
-        let ref = db.collection("Colleges").document(profileVM.userDocument.College).collection(selectedClass).document(post.id)
+        let ref = db.collection("Colleges").document(profileVM.userDocument.College).collection(post.forClass).document(post.id)
         switch vote {
             //ther user is trying to upvote
         case "up":
@@ -313,6 +411,10 @@ class ClassPostsViewModel: ObservableObject{
         default:
             break
         }
+        if let index = postsArray.firstIndex(where: { $0.id == post.id }) {
+            postsArray[index] = post
+                }
+        
     }
     
     func handleVoteOnReply(UpOrDown vote: String, onPost post: ClassPost ,onReply reply: Replies){
@@ -392,7 +494,39 @@ class ClassPostsViewModel: ObservableObject{
     }
 
     
-   
+    func getReplies(forPost post: ClassPost,completion: @escaping ([Replies]) -> Void) {
+        let postLocation = db.collection("Colleges").document(profileVM.userDocument.College).collection(selectedClass).document(post.id).collection("Replies")
+        
+        postLocation.order(by: "date", descending: false).getDocuments { [weak self] querySnapshot, error in
+            guard let self = self else { return }
+            
+            if let error = error {
+                print("Something went wrong getting replies on post from Firebase: \(error.localizedDescription)")
+                completion([])
+            } else {
+                var tempReplies: [Replies] = []
+                
+                for document in querySnapshot!.documents {
+                    let data = document.data()
+                    
+                    let author = data["author"] as? String ?? ""
+                   
+                    let id = data["id"] as? String ?? ""
+                    let postBody = data["postBody"] as? String ?? ""
+                    let votes = data["votes"] as? Int64 ?? 0
+                    let usersLiked = data["UsersLiked"] as? [String] ?? []
+                    let usersDisliked = data["UsersDisliked"] as? [String] ?? []
+                    let date = data["datePosted"] as? Double ?? 0.0
+                    let reply = Replies(replyBody: postBody, replyAuthor: author,  DatePosted: date, votes: votes, id: id, usersLiked: Set(usersLiked), usersDisliked: Set(usersDisliked))
+                    tempReplies.append(reply)
+                }
+                
+                
+                self.objectWillChange.send()
+                completion(tempReplies)
+            }
+        }
+    }
 
 
     

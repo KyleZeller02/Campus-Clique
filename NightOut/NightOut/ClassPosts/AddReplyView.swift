@@ -1,22 +1,22 @@
 //
-//  AddPostView.swift
+//  AddReplyView.swift
 //  NightOut
 //
-//  Created by Kyle Zeller on 5/17/23.
+//  Created by Kyle Zeller on 5/22/23.
 //
 
 import SwiftUI
 
-struct AddPostView: View {
+struct AddReplyView: View {
     @State private var postBody:String = ""
     @FocusState private var focused:Bool
     @Environment(\.presentationMode) var presentationMode
-    @ObservedObject var viewModel: ClassPostsViewModel
     
+    //@ObservedObject var viewModel: ClassPostsViewModel
     
-    init(viewModel: ClassPostsViewModel) {
+    init() {
             UITextView.appearance().backgroundColor = .clear
-        self.viewModel = viewModel
+        //self.viewModel = viewModel
         }
     func setFocus() {
             focused = true
@@ -28,14 +28,13 @@ struct AddPostView: View {
                 .ignoresSafeArea()
             VStack{
                 
-                Text("Add A Post to \(viewModel.selectedClass)")
+                Text("Reply To")
                     .padding()
                     .background(Color.Purple)
                     .foregroundColor(.white)
                     .cornerRadius(10)
                     .padding(EdgeInsets(top: 5, leading: 10, bottom: 5, trailing: 10))
                     .font(.headline)
-                
                 
                 VStack(alignment: .leading){
                     TextEditor(text: $postBody)
@@ -71,9 +70,9 @@ struct AddPostView: View {
                         }
                         Spacer()
                         Button(action: {
-                            if (viewModel.addPost(postBody: postBody)){
-                                presentationMode.wrappedValue.dismiss()
-                            }
+//                            if (viewModel.addPost(postBody: postBody)){
+//                                presentationMode.wrappedValue.dismiss()
+//                            }
                            
                            
                         }) {
@@ -97,16 +96,12 @@ struct AddPostView: View {
             }
         }
         .onAppear(perform: setFocus)
-       
-        
     }
-        
 }
 
-//struct AddPostView_Previews: PreviewProvider {
-//    static var previews: some View {
-//        AddPostView()
-//    }
-//}
-
-
+struct AddReplyView_Previews: PreviewProvider {
+    static var previews: some View {
+        //@ObservedObject var viewModel: ClassPostsViewModel = ClassPostsViewModel()
+        AddReplyView()
+    }
+}
