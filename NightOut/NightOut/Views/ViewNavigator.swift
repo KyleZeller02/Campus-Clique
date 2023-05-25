@@ -10,7 +10,8 @@ import SwiftUI
     
 struct ViewNavigator: View {
     @State var CurrentState :ViewState = ViewState.LoginView
-    @StateObject var viewRouter: ViewRouter
+    @ObservedObject var viewRouter: ViewRouter
+    
     
     
     var body: some View {
@@ -64,5 +65,6 @@ enum ViewState{
 
 class ViewRouter:ObservableObject{
     @Published var CurrentViewState: ViewState = .LoginView
+    @StateObject var onboardingVM: OnboardingViewModel = OnboardingViewModel()
 }
 

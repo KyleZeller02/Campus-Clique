@@ -20,113 +20,129 @@ struct UserDataAcquisition: View {
     @State var Class4: String = ""
     @State var Class5: String = ""
     @State var Class6: String = ""
+    @State private var navigateToNext = false
+    
     
     var body: some View {
-        ZStack{
-            Color.Gray
-                .ignoresSafeArea()
-            VStack{
-                Spacer()
-                Text("About You")
-                    .font(.system(size: 40))
-                    .fontWeight(.semibold)
-                    .foregroundColor(Color.Purple)
-                    .multilineTextAlignment(.center)
-                    .padding(.leading, 20)
-                    .padding(.trailing, 20)
-                Text("Declared Major: if undecided type Undecided")
-                Text("Use a comma to seperate your Majors if you have multiple")
-                TextField("Major", text: $Major)
-                    .autocapitalization(UITextAutocapitalizationType.words)
-                    .padding()
-                    .background(Color.Gray)
-                    .cornerRadius(5.0)
-                    .padding(.leading, 20)
-                    .padding(.trailing, 20)
-                Text("What classes are you taking? Type the class as it shows on your schedule, ie: CIS115, ECON110")
-                Text("Use a comma to seperate your classes")
-                VStack(spacing: 0){
+       
+            
+            ZStack{
+                Color.Gray
+                    .ignoresSafeArea()
+                VStack(alignment:.leading){
+                    
+                    Text("Major and Classes")
+                        .font(.system(size: 40))
+                        .fontWeight(.semibold)
+                        .foregroundColor(Color.Purple)
+                        .multilineTextAlignment(.center)
+                    
+                    
+                    TextField("Your major (or Undecided)", text: $Major)
+                        .autocapitalization(UITextAutocapitalizationType.words)
+                        .padding()
+                        .background(Color.Gray)
+                        .cornerRadius(5.0)
+                    
+                    Text("Enroll in up to 6 classes")
+                    
                     VStack(spacing: 0){
-                        HStack(spacing: 0){
-                            TextField("Class", text: $Class1)
-                                .padding()
-                                .background(Color.Gray)
-                                .cornerRadius(5.0)
-                                .padding(.bottom, 20)
-                                .padding(.trailing,10)
-                                .minimumScaleFactor(0.7)
-                            TextField("Class", text: $Class2)
-                                .padding()
-                                .background(Color.Gray)
-                                .cornerRadius(5.0)
-                                .padding(.bottom, 20)
-                                .padding(.trailing,10)
-                                .minimumScaleFactor(0.7)
-                            TextField("Class", text: $Class3)
-                                .padding()
-                                .background(Color.Gray)
-                                .cornerRadius(5.0)
-                                .padding(.bottom, 20)
-                                .padding(.trailing,10)
-                                .minimumScaleFactor(0.7)
+                        VStack(spacing: 0){
+                            HStack(spacing: 0){
+                                TextField("CIS115", text: $Class1)
+                                    .padding()
+                                    .background(Color.Gray)
+                                    .cornerRadius(5.0)
+                                    .padding(.bottom, 20)
+                                    .padding(.trailing,10)
+                                    .minimumScaleFactor(0.7)
+                                TextField("ECON500", text: $Class2)
+                                    .padding()
+                                    .background(Color.Gray)
+                                    .cornerRadius(5.0)
+                                    .padding(.bottom, 20)
+                                    .padding(.trailing,10)
+                                    .minimumScaleFactor(0.7)
+                                TextField("MRK367", text: $Class3)
+                                    .padding()
+                                    .background(Color.Gray)
+                                    .cornerRadius(5.0)
+                                    .padding(.bottom, 20)
+                                    .padding(.trailing,10)
+                                    .minimumScaleFactor(0.7)
+                            }
                         }
-                    }
-                    VStack(spacing: 0){
-                        HStack(spacing: 0){
-                            TextField("Class", text: $Class4)
-                                .padding()
-                                .background(Color.Gray)
-                                .cornerRadius(5.0)
-                                .padding(.bottom, 20)
-                                .padding(.trailing,10)
-                                .minimumScaleFactor(0.7)
-                            TextField("Class", text: $Class5)
-                                .padding()
-                                .background(Color.Gray)
-                                .cornerRadius(5.0)
-                                .padding(.bottom, 20)
-                                .padding(.trailing,10)
-                                .minimumScaleFactor(0.7)
-                            TextField("Class", text: $Class6)
-                                .padding()
-                                .background(Color.Gray)
-                                .cornerRadius(5.0)
-                                .padding(.bottom, 20)
-                                .padding(.trailing,10)
-                                .minimumScaleFactor(0.7)
+                        VStack(spacing: 0){
+                            HStack(spacing: 0){
+                                TextField("MATH222", text: $Class4)
+                                    .padding()
+                                    .background(Color.Gray)
+                                    .cornerRadius(5.0)
+                                    .padding(.bottom, 20)
+                                    .padding(.trailing,10)
+                                    .minimumScaleFactor(0.7)
+                                TextField("ARCH435", text: $Class5)
+                                    .padding()
+                                    .background(Color.Gray)
+                                    .cornerRadius(5.0)
+                                    .padding(.bottom, 20)
+                                    .padding(.trailing,10)
+                                    .minimumScaleFactor(0.7)
+                                TextField("BIO349", text: $Class6)
+                                    .padding()
+                                    .background(Color.Gray)
+                                    .cornerRadius(5.0)
+                                    .padding(.bottom, 20)
+                                    .padding(.trailing,10)
+                                    .minimumScaleFactor(0.7)
+                            }
                         }
+                        
                     }
                     
-                }
+                    
+                    Button(action: {
+                                            if Major != "" , Class1 != ""{
+                                                //if user gives data, upload data to document in firebase
+                                                let user = Auth.auth().currentUser
+                                                if let user = user{
+                                                    let email = user.email
+                                                    let Major = Major.trimmingCharacters(in: .whitespacesAndNewlines)
+                                                    Class1 = Class1.trimmingCharacters(in: .whitespacesAndNewlines)
+                                                    Class2 = Class2.trimmingCharacters(in: .whitespacesAndNewlines)
+                                                    Class3 = Class3.trimmingCharacters(in: .whitespacesAndNewlines)
+                                                    Class4 = Class4.trimmingCharacters(in: .whitespacesAndNewlines)
+                                                    Class5 = Class5.trimmingCharacters(in: .whitespacesAndNewlines)
+                                                    Class6 = Class6.trimmingCharacters(in: .whitespacesAndNewlines)
+                                                    var classes = [Class1, Class2, Class3, Class4, Class5, Class6]
+                                                    classes = classes.filter { !$0.isEmpty }
+                                                    let classesString = classes.joined(separator: ", ")
+
+                                                    
+                                                    OnboardingDatabaseManager.addClassesMajorToDocument(Classes: classesString, Major: Major, email: email ?? "")
+                                                //trigger navigation
+                                                    viewRouter.CurrentViewState = .UserBirthdayAcquistion
+                                                }
+                                            }
+                                            //if there is missing data from user, show alert
+                                            else{
+                                                self.showingAlert = true
+                                            }
+                                        }) {
+                                            NextButton()
+                                        }
+                                        .alert(isPresented: $showingAlert) {
+                                            Alert(title: Text("Please Answer Prompts"), dismissButton: .default(Text("Got it!")))
+                                        }
+                                        
+                                        Spacer()
+                                    }
+                                    .padding(.leading,20)
+                                    .padding(.trailing,20)
                 
-                Spacer()
-                Button(action:
-                        {
-                    if Major != "" , Class1 != ""{
-                        //if user gives data, upload data to document in firebase
-                        let user = Auth.auth().currentUser
-                        if let user = user{
-                            let email = user.email
-                            let Classes = "\(Class1),\(Class2),\(Class3),\(Class4),\(Class5),\(Class6)"
-                        
-                        OnboardingDatabaseManager.addClassesMajorToDocument(Classes: Classes, Major: Major, email: email ?? "")
-                        //change state
-                        viewRouter.CurrentViewState = .UserBirthdayAcquistion
-                        }
-                    }
-                    //if there is missing data from user, show alert
-                    else{
-                        self.showingAlert = true
-                    }
-                }) {
-                    NextButton()
-                }
-                .alert(isPresented: $showingAlert) {
-                    Alert(title: Text("Please Answer Prompts"), dismissButton: .default(Text("Got it!")))
-                }
-            }
+            
+            
         }
-        
     }
 }
 

@@ -14,74 +14,75 @@ struct CreateUserProfile: View {
     @State var FirstName: String = ""
     @State var LastName: String = ""
     @State var College: String = ""
-    @State private var User:Bool = false
-    @StateObject var viewRouter: ViewRouter
+    @State private var isReadyForNextView: Bool = false
     @State private var showingAlert: Bool = false
+    @StateObject var viewRouter: ViewRouter
     
-    
-    
+
     var body: some View {
-        ZStack{
-            Color.Gray
-                .ignoresSafeArea()
-            VStack{
-                Spacer()
-                Text("Create Your Profile")
-                    .font(.system(size: 40))
-                    .fontWeight(.semibold)
-                    .foregroundColor(Color.Purple)
-                    .multilineTextAlignment(.center)
-                TextField("First Name", text: $FirstName)
-                    .autocapitalization(UITextAutocapitalizationType.words)
-                    .padding()
-                    .background(Color.Gray)
-                    .cornerRadius(5.0)
-                    .padding(.leading, 20)
-                    .padding(.trailing, 20)
-                TextField("Last Name", text: $LastName)
-                    .autocapitalization(UITextAutocapitalizationType.words)
-                    .padding()
-                    .background(Color.Gray)
-                    .cornerRadius(5.0)
-                    .padding(.leading, 20)
-                    .padding(.trailing, 20)
-                //I want the college to be a search and select like how crowdmark did
-                TextField("Your College Initials, ie KSU", text: $College)
-                    .autocapitalization(UITextAutocapitalizationType.words)
-                    .padding()
-                    .background(Color.Gray)
-                    .cornerRadius(5.0)
-                    .padding(.leading, 20)
-                    .padding(.trailing, 20)
-                    .padding(.bottom, 20)
-                Spacer()
-                Button(action:
-                        { if FirstName != "" && LastName != "" && College != ""{
-                            //add data to document
+        NavigationView {
+            ZStack{
+                Color.Gray
+                    .ignoresSafeArea()
+                VStack(alignment: .leading){
+                    Text("Create Your Profile")
+                        .font(.system(size: 40))
+                        .fontWeight(.semibold)
+                        .foregroundColor(Color.Purple)
+                        .multilineTextAlignment(.leading)
+                    TextField("First Name", text: $FirstName)
+                        .autocapitalization(UITextAutocapitalizationType.words)
+                        .padding()
+                        .background(Color.Gray)
+                        .cornerRadius(5.0)
+                        
+                    TextField("Last Name", text: $LastName)
+                        .autocapitalization(UITextAutocapitalizationType.words)
+                        .padding()
+                        .background(Color.Gray)
+                        .cornerRadius(5.0)
+                        
+                    TextField("Your College" , text: $College)
+                        .autocapitalization(UITextAutocapitalizationType.words)
+                        .padding()
+                        .background(Color.Gray)
+                        .cornerRadius(5.0)
+                        
+                        .padding(.bottom, 20)
+
+                    
+                    Button(action: {
+                        if FirstName != "" && LastName != "" && College != ""{
+                           
                             let user = Auth.auth().currentUser
-                            if let user = user{
-                                let email = user.email
-                                OnboardingDatabaseManager.addFirstLastCollegeToDocument(firstName: FirstName, lastName: LastName, college: College, email: email ?? "")
+                            let email = user?.email
+                           FirstName = FirstName.trimmingCharacters(in: .whitespacesAndNewlines)
+                            LastName = LastName.trimmingCharacters(in: .whitespacesAndNewlines)
+                            College = College.trimmingCharacters(in: .whitespacesAndNewlines)
+                            OnboardingDatabaseManager.addFirstLastCollegeToDocument(firstName: FirstName, lastName: LastName, college: College, email: email ?? "")
+                                
                                 //change view
                             viewRouter.CurrentViewState = .UserDataAcquisition
-                            }
-                           
+                            
+                        } else {
+                            self.showingAlert = true
                         }
-                    //if there is missing data, show alert
-                    else{
-                        self.showingAlert = true
+                    }) {
+                        NextButton()
+                    }.alert(isPresented: $showingAlert) {
+                        Alert(title: Text("Please Answer Prompts"), dismissButton: .default(Text("Got it!")))
                     }
+                    Spacer()
                 }
-                ) {
-                    NextButton()
-                }.alert(isPresented: $showingAlert) {
-                    Alert(title: Text("Please Answer Prompts"), dismissButton: .default(Text("Got it!")))
-                    
-                }
+                .padding(.leading,20)
+                .padding(.trailing,20)
+                
+            }
         }
-        }
+        .accentColor(.Purple)
     }
 }
+
 
 struct ProfileSetUp_Previews: PreviewProvider {
     static var previews: some View {
@@ -96,7 +97,8 @@ struct NextButton: View {
             .foregroundColor(.white)
             .padding()
             .frame(width: 220, height: 60)
-            .background(.indigo)
+            .background(Color.Purple)
             .cornerRadius(15.0)
+            
     }
 }

@@ -9,46 +9,44 @@ import SwiftUI
 import Firebase
 
 struct UserBirthdayAcquisition: View {
-    @Environment (\.colorScheme) var colorScheme
+   
     @State var Birthday: String = ""
     @State private var ProfileViewIsActive:Bool = false
     @StateObject var viewRouter: ViewRouter
     @State private var showingAlert:Bool = false
+    
     var body: some View {
         ZStack{
             Color.Gray
                 .ignoresSafeArea()
-            VStack{
-                Spacer()
-                Text("When Is Your Birthday?")
+            VStack(alignment: .leading){
+                
+                Text("Date of Birth")
                     .font(.system(size: 40))
                     .fontWeight(.semibold)
                     .foregroundColor(Color.Purple)
                     .multilineTextAlignment(.center)
-                Text("""
-                     Enter in the format of "MM/DD/YYYY"
-                     """)
-                .multilineTextAlignment(.center)
-                .padding(.top)
                 
+               
                 
-                TextField("Birthday", text: $Birthday)
-                    .autocapitalization(UITextAutocapitalizationType.words)
+                TextField("02/01/2002", text: $Birthday)
+                    
                     .padding()
                     .background(Color.Gray)
                     .cornerRadius(5.0)
-                    .padding(.leading, 20)
-                    .padding(.trailing, 20)
+                   
                     .padding(.top)
                 
                
-                Spacer()
+              
                 
                 Button(action:
                         { if Birthday != "" {
                             let user = Auth.auth().currentUser
                             if let user = user{
                                 let email = user.email
+                                Birthday = Birthday.trimmingCharacters(in: .whitespacesAndNewlines)
+                                
                                 OnboardingDatabaseManager.addBirthdayToDocument(birthday: Birthday, email: email ?? "")
                                 viewRouter.CurrentViewState = .InAppViews
                             }
@@ -70,7 +68,8 @@ struct UserBirthdayAcquisition: View {
                 }
                 
                 Spacer()
-            }
+            } .padding(.leading, 20)
+                .padding(.trailing, 20)
         }
         
        
@@ -85,7 +84,7 @@ struct UserBirthdayAcquisition_Previews: PreviewProvider {
 }
 struct MakeProfile: View {
     var body: some View {
-        Text("Next")
+        Text("Make Account")
             .font(.headline)
             .foregroundColor(.white)
             .padding()

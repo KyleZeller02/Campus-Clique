@@ -54,7 +54,7 @@ class UserProfileViewModel: ObservableObject{
                         postBody: postBody,
                         postAuthor: author,
                         forClass: forClass,
-                        DatePosted: date,
+                        datePosted: date,
                         votes: votes,
                         id: id,
                         usersLiked: Set(usersLiked),

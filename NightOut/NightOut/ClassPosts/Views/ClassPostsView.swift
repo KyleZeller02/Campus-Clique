@@ -1,9 +1,3 @@
-//
-//  ClassPosts.swift
-//  NightOut
-//
-//  Created by Kyle Zeller on 1/13/23.
-//
 
 import SwiftUI
 import Firebase
@@ -23,14 +17,23 @@ struct ClassPosts: View {
         ZStack{
             //Color.Black
             NavigationView{
+                
                 ScrollView {
                     LazyVStack(spacing: 10) {
-                        ForEach(posts.postsArray) { post in
-                            NavigationLink(destination: DetailView(selectedPost: post, viewModel: posts)) {
-                                ClassPostViewPostCell(post: post, viewModel: posts)
-                                
+                        if posts.postsArray.isEmpty{
+                            Text("There might have been a problem fetching the posts, try reloading the app. Or, your the first to the party. You can get the party started!")
+                                .font(.headline)
+                                .foregroundColor(.White)
+                            
+                        }else{
+                            ForEach(posts.postsArray) { post in
+                                NavigationLink(destination: DetailView(selectedPost: post, viewModel: posts)) {
+                                    ClassPostViewPostCell(post: post, viewModel: posts)
+                                    
+                                }
                             }
                         }
+                        
                     }
                     
                     
@@ -41,10 +44,7 @@ struct ClassPosts: View {
                 
                 
                 .refreshable {
-                    posts.getPosts(selectedClass: posts.selectedClass){ p in
-                        posts.postsArray = p
-                        posts.objectWillChange.send()
-                    }
+                    posts.getPosts(selectedClass: posts.selectedClass)
                 }
                 
                 
@@ -78,11 +78,7 @@ struct ClassPosts: View {
                                 
                                 posts.selectedClass = curClass
                                 DispatchQueue.main.async {
-                                    posts.getPosts(selectedClass: posts.selectedClass){ p in
-                                        posts.postsArray = p
-                                        
-                                        posts.objectWillChange.send()
-                                    }
+                                    posts.getPosts(selectedClass: posts.selectedClass)
                                 }
                                 
                             } label: {
@@ -140,7 +136,7 @@ struct DetailView: View{
     @State var addingReply: Bool = false
     @State var addedReply: String = ""
     @FocusState private var focused:Bool
-    @State private var fetchedReplies: [Replies] = []
+    @State  var fetchedReplies: [Replies] = []
     @Environment (\.presentationMode) var presentationMode
     
     func setFocus() {
@@ -169,10 +165,7 @@ struct DetailView: View{
                             .font(.headline)
                             .cornerRadius(10.0)
                         Spacer()
-                        ZStack {
-                            Color.gray // Background color with rounded corners
-                                .cornerRadius(10) // Add corner radius to round the corners
-                                .padding(EdgeInsets(top: 0, leading: 5, bottom: 0, trailing: 5)) // Adjust padding to not go to the edge
+                       
                             HStack {
                                 Text("\(selectedPost.postBody)")
                                     .padding(EdgeInsets(top: 10, leading: 10, bottom: 10, trailing: 10))
@@ -181,7 +174,7 @@ struct DetailView: View{
                                     .font(.headline)
                                     .frame(minWidth: 0, maxWidth: .infinity, alignment: .leading) // Push text all the way to the left
                             }
-                        }
+                        
                         Spacer()
                         HStack() {
                             // votes on the post
@@ -234,7 +227,7 @@ struct DetailView: View{
                     
                     ScrollView{
                         LazyVStack(spacing: 10) {
-                            ForEach(fetchedReplies) { reply in
+                            ForEach(viewModel.curReplies) { reply in
                                 
                                 VStack(alignment: .leading) {
                                     
@@ -247,10 +240,7 @@ struct DetailView: View{
                                             .cornerRadius(10.0)
                                     }
                                     // post body with rounded background color
-                                    ZStack {
-                                        Color.gray // Background color with rounded corners
-                                            .cornerRadius(10) // Add corner radius to round the corners
-                                            .padding(EdgeInsets(top: 0, leading: 5, bottom: 0, trailing: 5)) // Adjust padding to not go to the edge
+                                    
                                         HStack {
                                             Text("\(reply.replyBody)")
                                                 .padding(EdgeInsets(top: 10, leading: 10, bottom: 10, trailing: 10))
@@ -259,7 +249,7 @@ struct DetailView: View{
                                                 .font(.headline)
                                                 .frame(minWidth: 0, maxWidth: .infinity, alignment: .leading) // Push text all the way to the left
                                         }
-                                    }
+                                    
                                     
                                     Spacer()
                                     // vote buttons
@@ -313,11 +303,7 @@ struct DetailView: View{
                     }
                     
                     .onAppear {
-                        viewModel.getReplies(forPost: selectedPost){ replies in
-                            DispatchQueue.main.async {
-                                fetchedReplies = replies
-                            }
-                        }
+                        viewModel.getReplies(forPost: selectedPost)
                     }
                     .navigationBarBackButtonHidden(true)
                     .navigationBarItems(leading:
@@ -347,7 +333,9 @@ struct DetailView: View{
                     .toolbar{
                         
                         Button {
+                            
                             self.addingReply = true
+                            
                         } label: {
                             Text("Add Reply")
                                 .padding(.bottom, 10)
@@ -361,10 +349,6 @@ struct DetailView: View{
                             
                                 .font(.headline)
                         }
-                        
-                        
-                        
-                        
                     }
                     
                     
@@ -395,9 +379,9 @@ struct DetailView: View{
                     
                 }
                 .onAppear {
-                    DispatchQueue.main.async {
-                        focused = true
-                    }
+                   
+                        setFocus()
+                    
                 }
                 .onChange(of: addedReply) { newValue in
                     if newValue.count > 300 {
@@ -411,10 +395,7 @@ struct DetailView: View{
                             let reply = addedReply.trimmingCharacters(in: .whitespacesAndNewlines)
                             if !reply.isEmpty{
                                 let author = viewModel.profileVM.userDocument.FullName
-                                viewModel.addReply(forPost: selectedPost, author: author, replyBody: addedReply ){r in
-                                    self.fetchedReplies = r
-                                    
-                                }
+                                viewModel.addReply(reply, to: selectedPost)
                             }
                             
                             self.addingReply = false
@@ -456,10 +437,7 @@ struct DetailView: View{
                         let reply = addedReply.trimmingCharacters(in: .whitespacesAndNewlines)
                         if !reply.isEmpty{
                             let author = viewModel.profileVM.userDocument.FullName
-                            viewModel.addReply(forPost: selectedPost, author: author, replyBody: addedReply ){r in
-                                self.fetchedReplies = r
-                                
-                            }
+                            viewModel.addReply(reply, to: selectedPost)
                         }
                         
                         self.addingReply = false
@@ -529,19 +507,17 @@ struct ClassPostViewPostCell: View {
             // spacer to separate the post text and post voting
             Spacer().frame(height: 20)
             // post body with rounded background color
-            ZStack {
-                Color.gray // Background color with rounded corners
-                    .cornerRadius(10) // Add corner radius to round the corners
-                    .padding(EdgeInsets(top: 0, leading: 5, bottom: 0, trailing: 5)) // Adjust padding to not go to the edge
+            
                 HStack {
                     Text("\(post.postBody)")
                         .padding(EdgeInsets(top: 10, leading: 10, bottom: 10, trailing: 10))
                         .foregroundColor(Color.White)
                         .cornerRadius(5.0)
                         .font(.headline)
-                        .frame(minWidth: 0, maxWidth: .infinity, alignment: .leading) // Push text all the way to the left
+                        .frame(minWidth: 0, maxWidth: .infinity, alignment: .leading)
+                        .multilineTextAlignment(.leading)// Push text all the way to the left
                 }
-            }
+            
             Spacer().frame(height: 20)
             // vote buttons
             HStack() {
@@ -586,7 +562,3 @@ struct ClassPostViewPostCell: View {
         .padding(EdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 10))
     }
 }
-
-
-
-

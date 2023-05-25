@@ -1,10 +1,3 @@
-//
-//  AddPostView.swift
-//  NightOut
-//
-//  Created by Kyle Zeller on 5/17/23.
-//
-
 import SwiftUI
 
 struct AddPostView: View {
@@ -71,9 +64,11 @@ struct AddPostView: View {
                         }
                         Spacer()
                         Button(action: {
-                            if (viewModel.addPost(postBody: postBody)){
-                                presentationMode.wrappedValue.dismiss()
-                            }
+                            let trimmedString = postBody.trimmingCharacters(in: .whitespacesAndNewlines)
+                                                       if !trimmedString.isEmpty {
+                                                           viewModel.addNewPost(postBody)
+                                                       }
+                                                       presentationMode.wrappedValue.dismiss()
                            
                            
                         }) {
@@ -108,5 +103,3 @@ struct AddPostView: View {
 //        AddPostView()
 //    }
 //}
-
-

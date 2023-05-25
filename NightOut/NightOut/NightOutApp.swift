@@ -28,16 +28,7 @@ struct NightOutApp: App {
     var body: some Scene {
         WindowGroup {
             ViewNavigator(viewRouter: viewRouter)
-            // Handle settings action
-            //                                    let firebaseAuth = Auth.auth()
-            //                                    do{
-            //                                        try firebaseAuth.signOut()
-            //
-            //                                    }
-            //                                    catch let singoutError as NSError{
-            //                                        print("Error Signing out: \(singoutError)")
-            //                                    }
-            //                                    viewRouter.CurrentViewState = .LoginView
+            
         }
     }
 }

@@ -34,8 +34,8 @@ struct UserProfileView: View {
                             Text("\(profileVM.userDocument.FullName)")
                                 .font(.headline)
                                 .padding(10)
-                                .background(Color.indigo)
-                                .foregroundColor(.white)
+                                .background(Color.Purple)
+                                .foregroundColor(.White)
                                 .cornerRadius(10)
                                 .padding(EdgeInsets(top: 10, leading: 20, bottom: 10, trailing: 20))
                             //-------------------------------------------------------------------------------
@@ -57,8 +57,8 @@ struct UserProfileView: View {
                                     Text("Settings")
                                         .font(.headline)
                                         .padding(EdgeInsets(top: 10, leading: 20, bottom: 10, trailing: 20))
-                                        .background(Color.indigo)
-                                        .foregroundColor(.white)
+                                        .background(Color.Purple)
+                                        .foregroundColor(.White)
                                         .cornerRadius(10)
                                 }
                                 
@@ -69,7 +69,7 @@ struct UserProfileView: View {
                                     Text("Edit Profile")
                                         .font(.headline)
                                         .padding(EdgeInsets(top: 10, leading: 20, bottom: 10, trailing: 20))
-                                        .background(Color.indigo)
+                                        .background(Color.Purple)
                                         .foregroundColor(.white)
                                         .cornerRadius(10)
                                 }
@@ -93,7 +93,7 @@ struct UserProfileView: View {
                             Text("My College:")
                                 .font(.headline)
                                 .padding(10)
-                                .background(Color.indigo)
+                                .background(Color.Purple)
                                 .foregroundColor(.white)
                                 .cornerRadius(10)
                                 .padding(EdgeInsets(top: 10, leading: 20, bottom: 10, trailing: 20))
@@ -103,8 +103,8 @@ struct UserProfileView: View {
                             Text("\(profileVM.userDocument.College)")
                                 .font(.headline)
                                 .padding()
-                                .background(Color.gray)
-                                .foregroundColor(Color.white)
+                                .background(Color.Gray)
+                                .foregroundColor(Color.White)
                                 .cornerRadius(10)
                                 .padding(EdgeInsets(top: 10, leading: 20, bottom: 10, trailing: 20))
                                 .lineLimit(1)
@@ -125,7 +125,7 @@ struct UserProfileView: View {
                         Text("My Classes")
                             .font(.headline)
                             .padding(10)
-                            .background(Color.indigo)
+                            .background(Color.Purple)
                             .foregroundColor(.white)
                             .cornerRadius(10)
                         
@@ -232,7 +232,7 @@ struct ClassTextModifier: ViewModifier {
             .minimumScaleFactor(0.5)
             .padding(5)
             .background(Color.gray)
-            .foregroundColor(Color.white)
+            .foregroundColor(Color.White)
             .cornerRadius(10)
         
     }
@@ -313,7 +313,7 @@ struct EditProfileView: View {
                         .font(.headline)
                 }
                
-                
+               
                 ScrollView {
                     VStack(spacing: 5) {
                         ForEach(injectedClasses.indices, id: \.self) { index in
@@ -435,24 +435,27 @@ struct UserProfilePostCell: View {
                     .foregroundColor(Color.White)
                     .font(.headline)
                     .cornerRadius(10.0)
+    
+                .multilineTextAlignment(.leading)// Push text all the way to the left
+
                 
             }
             // spacer to separate the post text and post voting
             Spacer().frame(height: 20)
             // post body with rounded background color
-            ZStack {
-                Color.gray // Background color with rounded corners
-                    .cornerRadius(10) // Add corner radius to round the corners
-                    .padding(EdgeInsets(top: 0, leading: 5, bottom: 0, trailing: 5)) // Adjust padding to not go to the edge
+            
                 HStack {
                     Text("\(post.postBody)")
                         .padding(EdgeInsets(top: 10, leading: 10, bottom: 10, trailing: 10))
                         .foregroundColor(Color.White)
                         .cornerRadius(5.0)
                         .font(.headline)
-                        .frame(minWidth: 0, maxWidth: .infinity, alignment: .leading) // Push text all the way to the left
+                        .frame(minWidth: 0, maxWidth: .infinity, alignment: .leading)
+                    
+                    .multilineTextAlignment(.leading)// Push text all the way to the left
+// Push text all the way to the left
                 }
-            }
+            
             Spacer().frame(height: 20)
             
             HStack() {
