@@ -58,7 +58,7 @@ class ClassPost: Identifiable, ObservableObject {
 class Replies: Identifiable, ObservableObject{
     var replyBody:String
     var replyAuthor: String
-    
+    var email:String
     @Published var votes:Int64
     let id: String
     var DatePosted:Double = 0.0
@@ -67,11 +67,11 @@ class Replies: Identifiable, ObservableObject{
     
     
     //this constructor is used when a new reply is made.
-    init(replyBody:String, replyAuthor:String, votes:Int64 ,id: String ){
+    init(replyBody:String, replyAuthor:String, votes:Int64 ,id: String, email:String ){
         
         self.replyBody = replyBody
         self.replyAuthor = replyAuthor
-        
+        self.email = email
         self.votes = votes
         self.id = id
         self.DatePosted = Date().timeIntervalSince1970
@@ -79,11 +79,11 @@ class Replies: Identifiable, ObservableObject{
     
     
     //this constructor is used when reading replies that have already been sent to firebase
-    init(replyBody:String, replyAuthor:String,  DatePosted: Double, votes:Int64,id: String,usersLiked: Set<String>, usersDisliked: Set<String>){
+    init(replyBody:String, replyAuthor:String,  DatePosted: Double, votes:Int64,id: String,usersLiked: Set<String>, usersDisliked: Set<String>, email:String){
        
         self.replyBody = replyBody
         self.replyAuthor = replyAuthor
-       
+        self.email = email
         self.DatePosted = DatePosted
         self.votes = votes
         self.id = id

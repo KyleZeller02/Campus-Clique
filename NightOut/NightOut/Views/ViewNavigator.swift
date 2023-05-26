@@ -65,6 +65,6 @@ enum ViewState{
 
 class ViewRouter:ObservableObject{
     @Published var CurrentViewState: ViewState = .LoginView
-    @StateObject var onboardingVM: OnboardingViewModel = OnboardingViewModel()
+    
 }
 

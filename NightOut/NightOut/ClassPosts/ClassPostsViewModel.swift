@@ -19,46 +19,142 @@ class ClassPostsViewModel: ObservableObject {
     @Published var selectedClass: String = "Selected Class"
     
     let db = Firestore.firestore()
-    
     init() {
         let curUser = profileVM.CurUser()
         profileVM.getDocument(user: curUser) { [weak self] doc in
             guard let self = self else { return }
+            
             self.profileVM.userDocument = doc
-            self.selectedClass = doc.Classes?.first ?? "Selected Class"
+            self.profileVM.userDocument.Classes?.sort()
+            
+            self.selectedClass = self.profileVM.userDocument.Classes?.first ?? "Selected Class"
+            
             self.getPosts(selectedClass: self.selectedClass)
-            self.getPostsForUser(for: self.profileVM.userDocument.Email)
+            self.getPostsForUser(for: self.profileVM.userDocument.Email){p in
+                self.userPosts = p
+            }
+        }
+    }
+
+    func refresh() {
+        guard let userEmail = Auth.auth().currentUser?.email else {
+            return
         }
         
-        profileVM.userDocument.Classes?.sort()
-    }
-    
-    func getPostsForUser(for user: String) {
-        self.userPosts.removeAll()
-        let college = profileVM.userDocument.College
-        let path = db.collection("Colleges").document(college)
-        let classes: [String] = profileVM.userDocument.Classes ?? []
-        
-        for c in classes {
-            let fullPath = path.collection(c)
-            let query = fullPath.whereField("email", isEqualTo: user)
-            
-            query.getDocuments { [weak self] querySnapshot, error in
-                guard let self = self, let documents = querySnapshot?.documents else { return }
-                
-                var posts: [ClassPost] = []
-                
-                documents.forEach { document in
-                    let data = document.data()
-                    let post = self.createPostFromData(data)
-                    posts.append(post)
-                }
-                
+        if userEmail == profileVM.userDocument.Email {
+            getPostsForUser(for: profileVM.userDocument.Email) { posts in
                 self.userPosts = posts
                 self.sortUsersPost()
             }
         }
     }
+    
+    func deletePostAndReplies(_ post: ClassPost) {
+        let college = profileVM.userDocument.College
+        let selectedClass = self.selectedClass
+
+        // Get the references to the post and its replies
+        let postRef = db.collection("Colleges").document(college).collection(selectedClass).document(post.id)
+        let repliesRef = postRef.collection("Replies")
+
+        // Create a batch to delete the post and all of its replies
+        let batch = db.batch()
+
+        // Delete all replies of the post
+        repliesRef.getDocuments { (querySnapshot, error) in
+            if let error = error {
+                print("Error getting replies: \(error)")
+            } else {
+                if !querySnapshot!.isEmpty {
+                    for document in querySnapshot!.documents {
+                        batch.deleteDocument(document.reference)
+                    }
+                }
+
+                // Delete the post itself
+                batch.deleteDocument(postRef)
+
+                // Commit the batch
+                batch.commit { (batchError) in
+                    if let batchError = batchError {
+                        print("Error executing batch: \(batchError)")
+                    } else {
+                        if let index = self.postsArray.firstIndex(where: { $0.id == post.id }) {
+                            self.postsArray.remove(at: index)
+                        }
+                        if let userPostIndex = self.userPosts.firstIndex(where: { $0.id == post.id }) {
+                            self.userPosts.remove(at: userPostIndex)
+                        }
+                        print("Post and replies successfully deleted!")
+                    }
+                }
+            }
+        }
+    }
+
+
+    
+    func deleteReply(_ reply: Replies, fromPost post: ClassPost) {
+        let college = profileVM.userDocument.College
+        let selectedClass = self.selectedClass
+
+        let replyPath = db.collection("Colleges")
+                          .document(college)
+                          .collection(selectedClass)
+                          .document(post.id)
+                          .collection("Replies")
+                          .document(reply.id)
+
+        replyPath.delete() { error in
+            if let error = error {
+                print("Error deleting reply: \(error)")
+            } else {
+                if let index = post.replies.firstIndex(where: { $0.id == reply.id }) {
+                    post.replies.remove(at: index)
+                }
+                if let userReplyIndex = self.curReplies.firstIndex(where: { $0.id == reply.id }) {
+                    self.curReplies.remove(at: userReplyIndex)
+                }
+                print("Reply successfully deleted!")
+            }
+        }
+    }
+
+
+    
+    func getPostsForUser(for user: String, completion: @escaping ([ClassPost]) -> Void) {
+        self.userPosts.removeAll()
+        let college = profileVM.userDocument.College
+        let path = db.collection("Colleges").document(college)
+        let classes: [String] = profileVM.userDocument.Classes ?? []
+        var posts: [ClassPost] = []
+
+        let dispatchGroup = DispatchGroup()
+
+        for c in classes {
+            dispatchGroup.enter()
+            let fullPath = path.collection(c)
+            let query = fullPath.whereField("email", isEqualTo: user)
+
+            query.getDocuments { [weak self] querySnapshot, error in
+                guard let self = self else { return }
+
+                querySnapshot?.documents.forEach { document in
+                    let data = document.data()
+                    let post = self.createPostFromData(data)
+                    posts.append(post)
+                }
+
+                dispatchGroup.leave()
+            }
+        }
+
+        dispatchGroup.notify(queue: .main) {
+           
+            completion(posts)
+        }
+    }
+
     
     func getPosts(selectedClass: String) {
         if selectedClass == "Selected Class" {
@@ -118,7 +214,7 @@ class ClassPostsViewModel: ObservableObject {
         userPosts.sort { $0.votes > $1.votes }
     }
     func sortReplies() {
-        curReplies.sort { $0.DatePosted > $1.DatePosted }
+        curReplies.sort { $0.DatePosted < $1.DatePosted }
     }
 
     
@@ -141,7 +237,7 @@ class ClassPostsViewModel: ObservableObject {
                 print("Error adding reply: \(error)")
             }
         }
-        let reply = Replies(replyBody: replyBody, replyAuthor:author, votes: 0, id: replyId)
+        let reply = Replies(replyBody: replyBody, replyAuthor:author, votes: 0, id: replyId,email: profileVM.userDocument.Email)
         self.curReplies.append(reply)
         self.sortReplies()
         self.objectWillChange.send()
@@ -298,7 +394,7 @@ class ClassPostsViewModel: ObservableObject {
         let usersDisliked = data["UsersDisliked"] as? [String] ?? []
         let date = data["datePosted"] as? Double ?? 0.0
         
-        return Replies(replyBody: postBody, replyAuthor: author, DatePosted: date, votes: votes, id: id, usersLiked: Set(usersLiked), usersDisliked: Set(usersDisliked))
+        return Replies(replyBody: postBody, replyAuthor: author, DatePosted: date, votes: votes, id: id, usersLiked: Set(usersLiked), usersDisliked: Set(usersDisliked),email: profileVM.userDocument.Email)
     }
 
     

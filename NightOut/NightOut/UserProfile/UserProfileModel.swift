@@ -17,7 +17,7 @@ class UserDocument:Identifiable,ObservableObject{
     var LastName: String
     var College: String
     var Birthday: String
-    var Major: [String]
+    var Major: String
     var Classes: [String]?
     var Email: String
     var FullName:String{
@@ -27,7 +27,7 @@ class UserDocument:Identifiable,ObservableObject{
     
     
     /// constructor for the user document
-    init(FirstName: String, LastName: String, College: String, Birthday: String, Major: [String], Classes: [String], Email: String ) {
+    init(FirstName: String, LastName: String, College: String, Birthday: String, Major: String, Classes: [String], Email: String ) {
         self.FirstName = FirstName
         self.LastName = LastName
         self.College = College

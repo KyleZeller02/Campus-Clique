@@ -10,12 +10,12 @@ import SwiftUI
     
 struct InAppView: View {
     @StateObject var viewRouter: ViewRouter
-    @StateObject var posts: ClassPostsViewModel = ClassPostsViewModel()
+    
     
     
     var body: some View {
         TabView() {
-            UserProfileView(viewRouter: viewRouter, posts: posts)
+            UserProfileView(viewRouter: viewRouter)
                 .tabItem {
                     Label("Profile", systemImage: "person")
                         .font(.title)
@@ -25,7 +25,7 @@ struct InAppView: View {
                 }
                 
             
-            ClassPosts(viewRouter: viewRouter, posts: posts)
+            ClassPosts(viewRouter: viewRouter)
                 .tabItem {
                     Label("Class Posts", systemImage: "list.bullet")
                         .font(.title)

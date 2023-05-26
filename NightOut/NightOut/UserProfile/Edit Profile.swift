@@ -1,70 +1,98 @@
-//
-//  Edit Profile.swift
-//  NightOut
-//
-//  Created by Kyle Zeller on 5/12/23.
-//
-
 import SwiftUI
 import Firebase
 
-struct ProfileSettings: View {
-    
+struct Settings: View {
+    @Binding var isPresented: Bool
+    @State var name: String = ""
+    @State var college: String = ""
+    @State var major: String = ""
+    @State var classes: [String] = Array(repeating: "", count: 6)
+    let backgroundColor = Color.black
+    let primaryColor = Color.purple
+    let textFieldColor = Color.white.opacity(0.1)
+
     var body: some View {
         ZStack{
-            Color.Black.ignoresSafeArea()
+            backgroundColor
+                .ignoresSafeArea()
             
             VStack{
-                VStack{
-                    Text("Preferences")
-                        .padding()
-                        .background(Color.Purple)
+                VStack {
+                    Text("Edit Profile")
+                        .font(.headline)
                         .foregroundColor(.white)
+                        .padding()
+                        .background(primaryColor)
                         .cornerRadius(5.0)
                         .padding(EdgeInsets(top: 5, leading: 10, bottom: 5, trailing: 10))
-                        .font(.headline)
+                    
+                    TextField("Name", text: $name)
+                        .textFieldStyle(RoundedBorderTextFieldStyle())
+                        .foregroundColor(.white)
+                        .padding(.horizontal, 10)
+                    
+                    TextField("College", text: $college)
+                        .textFieldStyle(RoundedBorderTextFieldStyle())
+                        .foregroundColor(.white)
+                        .padding(.horizontal, 10)
+
+                    TextField("Major", text: $major)
+                        .textFieldStyle(RoundedBorderTextFieldStyle())
+                        .foregroundColor(.white)
+                        .padding(.horizontal, 10)
+                    
+                    VStack(alignment: .leading, spacing: 10) {
+                        Text("Classes")
+                            .font(.headline)
+                            .foregroundColor(primaryColor)
+
+                        ForEach(0..<classes.count, id: \.self) { index in
+                            TextField("Class \(index + 1)", text: $classes[index])
+                                .textFieldStyle(RoundedBorderTextFieldStyle())
+                                .foregroundColor(.white)
+                        }
+                    }
+                    .padding(.horizontal, 10)
                 }
                 Spacer()
+
                 //Logout and Delete account Buttons
                 HStack{
-                    //LogOut Button----------------------------------------------------------------------
                     Button(action: {
-                        //logout method
                         AccountActions.LogOut()
                     }) {
                         Text("Log Out")
+                            .font(.headline)
                             .padding()
-                            .background(Color.Purple)
+                            .background(primaryColor)
                             .foregroundColor(.white)
                             .cornerRadius(5.0)
-                            .padding(EdgeInsets(top: 5, leading: 10, bottom: 5, trailing: 10))
-                            .font(.headline)
                     }
-                    //End LogOut Button----------------------------------------------------------------------
-                    //Delete Account Button------------------------------------------------------------------
+                    .padding(EdgeInsets(top: 5, leading: 10, bottom: 5, trailing: 10))
+
                     Button(action: {
-                        //Delete account method
                         AccountActions.deleteAccount()
                     }) {
                         Text("Delete My Account")
+                            .font(.headline)
                             .padding()
-                            .background(Color.Purple)
+                            .background(primaryColor)
                             .foregroundColor(.white)
                             .cornerRadius(5.0)
-                            .padding(EdgeInsets(top: 5, leading: 10, bottom: 5, trailing: 10))
-                            .font(.headline)
                     }
-                    //Delete Account Button------------------------------------------------------------------
+                    .padding(EdgeInsets(top: 5, leading: 10, bottom: 5, trailing: 10))
                 }
-               
-               
             }
         }
+        .navigationBarItems(leading: Button("Close") {
+            self.isPresented = false
+        })
+        .navigationBarTitle("Edit Profile", displayMode: .inline)
     }
 }
 
 struct AccountActions{
-     static func LogOut(){
+    static func LogOut(){
         do {
             try Auth.auth().signOut()
             // User has been successfully logged out
@@ -74,24 +102,17 @@ struct AccountActions{
         
     }
     
-    
     static func deleteAccount(){
         //first signout
         LogOut()
         //delete account
         let user = Auth.auth().currentUser
-       user?.delete { error in
-           if let error = error {
-               print("Error deleting account: \(error.localizedDescription)")
-           } else {
-               // Account has been successfully deleted
-           }
-       }
-    }
-}
-
-struct Edit_Profile_Previews: PreviewProvider {
-    static var previews: some View {
-        ProfileSettings()
+        user?.delete { error in
+            if let error = error {
+                print("Error deleting account: \(error.localizedDescription)")
+            } else {
+                // Account has been successfully deleted
+            }
+        }
     }
 }

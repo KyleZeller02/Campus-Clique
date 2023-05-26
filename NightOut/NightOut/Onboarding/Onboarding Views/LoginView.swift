@@ -27,7 +27,7 @@ struct LoginView: View {
     @State var email: String = ""
         @State var password: String = ""
         @StateObject var viewRouter: ViewRouter
-       
+        @StateObject var onboardingVM: OnboardingViewModel = OnboardingViewModel()
         @State var alertState = AlertState(showAlert: false, alertType: .invalidInput, message: "")
     
     var body: some View {
@@ -63,7 +63,7 @@ struct LoginView: View {
                                 self.alertState = AlertState(showAlert: true, alertType: .invalidInput, message: "Enter Email and Password")
                                 return
                             }
-                            viewRouter.onboardingVM.logIn(withEmail: email, withPassword: password){result in
+                            onboardingVM.logIn(withEmail: email, withPassword: password){result in
                                 DispatchQueue.main.async {
                                     switch result {
                                     case .success(_):
@@ -88,12 +88,12 @@ struct LoginView: View {
                                 self.alertState = AlertState(showAlert: true, alertType: .invalidInput, message: "Enter Email and Password")
                                 return
                             }
-                            viewRouter.onboardingVM.signUp(withEmail: email, withPassword: password) { result in
+                            onboardingVM.signUp(withEmail: email, withPassword: password) { result in
                             DispatchQueue.main.async {
                                 switch result {
                                 case .success(_):
                                     viewRouter.CurrentViewState = .CreateUserProfile
-                                    
+                                    OnboardingDatabaseManager.addDefaultData(email: email)
                                 case .failure(let error):
                                     alertState = AlertState(showAlert: true, alertType: .badSignUp, message: error.localizedDescription)
                                 }
@@ -114,13 +114,13 @@ struct LoginView: View {
                 
             }
             
-    //        .onAppear{
-    //            let user = Auth.auth().currentUser
-    //            if user != nil{
-    //                viewRouter.CurrentViewState = .InAppViews
-    //            }
-    //
-    //        }
+            .onAppear{
+                let user = Auth.auth().currentUser
+                if user != nil{
+                    viewRouter.CurrentViewState = .InAppViews
+                }
+    
+            }
             .onTapGesture {
                 hideKeyboard()
                 

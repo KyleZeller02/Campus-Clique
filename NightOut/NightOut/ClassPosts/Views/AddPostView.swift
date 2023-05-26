@@ -8,94 +8,88 @@ struct AddPostView: View {
     
     
     init(viewModel: ClassPostsViewModel) {
-            UITextView.appearance().backgroundColor = .clear
+        UITextView.appearance().backgroundColor = .clear
         self.viewModel = viewModel
-        }
+    }
     func setFocus() {
-            focused = true
-        }
+        focused = true
+    }
     var body: some View {
         
-        ZStack{
-            Color.Black
+        ZStack {
+            Color.black
                 .ignoresSafeArea()
-            VStack{
-                
+            
+            VStack(spacing: 0) {
                 Text("Add A Post to \(viewModel.selectedClass)")
-                    .padding()
-                    .background(Color.Purple)
-                    .foregroundColor(.white)
-                    .cornerRadius(10)
-                    .padding(EdgeInsets(top: 5, leading: 10, bottom: 5, trailing: 10))
-                    .font(.headline)
+                    .foregroundColor(.cyan)
+                    .font(.largeTitle)
+                    .multilineTextAlignment(.leading)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.leading,20)
                 
-                
-                VStack(alignment: .leading){
+                VStack {
+                   
                     TextEditor(text: $postBody)
-                        .frame(height: 300)
-                        .colorMultiply(.gray)
-                        .cornerRadius(10)
-                        .font(.headline)
-                        .onChange(of: postBody) { newValue in
-                            if newValue.count > 400 {
-                                postBody = String(newValue.prefix(400))
-                            }
-                        }
-                        .focused($focused)
-                    HStack{
-                        Text("\(400-postBody.count)")
-                            .padding(EdgeInsets(top: 10, leading: 10, bottom: 10, trailing: 10))
-                            .background(Color.Purple)
-                            .foregroundColor(.white)
-                            .cornerRadius(10)
-                            .font(.headline)
+                                            .frame(height: 300)
+                                            .colorMultiply(.gray)
+                                            .cornerRadius(10)
+                                            .font(.headline)
+                                            .onChange(of: postBody) { newValue in
+                                                if newValue.count > 400 {
+                                                    postBody = String(newValue.prefix(400))
+                                                }
+                                            }
+                                            
+                    
+                    HStack {
+                        Text("\(400 - postBody.count)")
+                            .foregroundColor(.cyan)
+                            .padding(.trailing, 10)
+                        
+                        Spacer()
                         
                         Button(action: {
                             presentationMode.wrappedValue.dismiss()
-                           
                         }) {
                             Text("Cancel")
-                                .font(.headline)
-                                .padding(EdgeInsets(top: 10, leading: 20, bottom: 10, trailing: 20))
-                                .background(Color.Purple)
-                                .foregroundColor(.white)
-                                .cornerRadius(10)
-                              
+                                .foregroundColor(.cyan)
                         }
-                        Spacer()
+                        .padding(.trailing, 10)
+                        
                         Button(action: {
                             let trimmedString = postBody.trimmingCharacters(in: .whitespacesAndNewlines)
-                                                       if !trimmedString.isEmpty {
-                                                           viewModel.addNewPost(postBody)
-                                                       }
-                                                       presentationMode.wrappedValue.dismiss()
-                           
-                           
+                            if !trimmedString.isEmpty {
+                                viewModel.addNewPost(postBody)
+                            }
+                            
+                            presentationMode.wrappedValue.dismiss()
+                            // Add your post submission logic here
                         }) {
                             Text("Send")
-                                .font(.headline)
-                                .padding(EdgeInsets(top: 10, leading: 20, bottom: 10, trailing: 20))
-                                .background(Color.Purple)
                                 .foregroundColor(.white)
-                                .cornerRadius(10)
-                              
+                                .padding()
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 10)
+                                        .stroke(Color.cyan, lineWidth: 2)
+                                )
                         }
-                        
+                        .padding(.trailing, 10)
                     }
-                    
-                     
+                    .padding(.horizontal)
                 }
+                .padding(.bottom)
+                
                 Spacer()
-                
-                
-                
             }
+            
         }
         .onAppear(perform: setFocus)
-       
+        
+        
         
     }
-        
+    
 }
 
 //struct AddPostView_Previews: PreviewProvider {

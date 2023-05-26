@@ -10,7 +10,7 @@ import Firebase
 
 class UserProfileViewModel: ObservableObject{
     
-    @Published var userDocument: UserDocument = UserDocument(FirstName: "Default", LastName: "", College: "", Birthday: "", Major: [], Classes: [], Email: "")
+    @Published var userDocument: UserDocument = UserDocument(FirstName: "Default", LastName: "", College: "", Birthday: "", Major: "", Classes: [], Email: "")
     
     @Published var usersPosts: [ClassPost] = []
     
@@ -98,7 +98,8 @@ class UserProfileViewModel: ObservableObject{
                     let usersLiked = data["UsersLiked"] as? [String] ?? []
                     let usersDisliked = data["UsersDisliked"] as? [String] ?? []
                     let date = data["datePosted"] as? Double ?? 0.0
-                    let reply = Replies(replyBody: postBody, replyAuthor: author,  DatePosted: date, votes: votes, id: id, usersLiked: Set(usersLiked), usersDisliked: Set(usersDisliked))
+                    let email = data["email"] as? String ?? ""
+                    let reply = Replies(replyBody: postBody, replyAuthor: author,  DatePosted: date, votes: votes, id: id, usersLiked: Set(usersLiked), usersDisliked: Set(usersDisliked),email: email)
                     tempReplies.append(reply)
                 }
 
@@ -116,7 +117,7 @@ class UserProfileViewModel: ObservableObject{
         doc.getDocument { documentSnapshot, error in
             if let error = error {
                 print("Error fetching document: \(error)")
-                completion(UserDocument(FirstName: "", LastName: "", College: "", Birthday: "", Major: [], Classes: [], Email: ""))
+                completion(UserDocument(FirstName: "", LastName: "", College: "", Birthday: "", Major: "", Classes: [], Email: ""))
                 return
             }
             
@@ -125,12 +126,12 @@ class UserProfileViewModel: ObservableObject{
                   let lastName = data["LastName"] as? String,
                   let college = data["College"] as? String,
                   let birthday = data["Birthday"] as? String,
-                  let major = data["Major"] as? [String],
+                  let major = data["Major"] as? String,
                   let classes = data["Classes"] as? [String],
                   let email = data["Email"] as? String
             else {
                 print("Invalid document data or missing fields")
-                completion(UserDocument(FirstName: "", LastName: "", College: "", Birthday: "", Major: [], Classes: [], Email: ""))
+                completion(UserDocument(FirstName: "", LastName: "", College: "", Birthday: "", Major: "", Classes: [], Email: ""))
                 return
             }
             
@@ -170,39 +171,81 @@ class UserProfileViewModel: ObservableObject{
         objectWillChange.send()
     }
  
-    func refresh() {
-        guard let userEmail = Auth.auth().currentUser?.email else {
-            return
-        }
+    
+    
+    func getPostsForUser(for user: String, college: String, classes: [String], completion: @escaping ([ClassPost]) -> ()) {
+        self.usersPosts.removeAll()
         
-        if userEmail == userDocument.Email {
-            getPostsForUser(for: userDocument.Email) { posts in
+        let path = db.collection("Colleges").document(college)
+        var posts: [ClassPost] = []
+
+        for c in classes {
+            let fullPath = path.collection(c)
+            let query = fullPath.whereField("email", isEqualTo: user)
+            
+            query.getDocuments { querySnapshot, error in
+                guard let documents = querySnapshot?.documents else {
+                    print("Error getting documents in getPostsForUser(): \(error?.localizedDescription ?? "")")
+                    return
+                }
+                
+               
+                documents.forEach { document in
+                    let data = document.data()
+                    let post = self.createPostFromData(data)
+                    posts.append(post)
+                }
+                
                 self.usersPosts = posts
                 self.sortUsersPost()
             }
         }
     }
-
+    func createPostFromData(_ data: [String: Any]) -> ClassPost {
+        let author = data["author"] as? String ?? ""
+        let postBody = data["postBody"] as? String ?? ""
+        let forClass = data["forClass"] as? String ?? ""
+        let date = data["datePosted"] as? Double ?? 0.0
+        let votes = data["votes"] as? Int64 ?? 0
+        let id = data["id"] as? String ?? ""
+        let usersLiked = data["UsersLiked"] as? [String] ?? []
+        let usersDisliked = data["UsersDisliked"] as? [String] ?? []
+        let email = data["email"] as? String ?? ""
+        let college = data["college"] as? String ?? ""
+        
+        return ClassPost(
+            postBody: postBody,
+            postAuthor: author,
+            forClass: forClass,
+            datePosted: date,
+            votes: votes,
+            id: id,
+            usersLiked: Set(usersLiked),
+            usersDisliked: Set(usersDisliked),
+            email: email,
+            college: college
+        )
+    }
 
     
     init() {
         let curUser = self.CurUser()
+
         self.getDocument(user: curUser) { [weak self] retrieved in
             guard let self = self else { return } // Add weak self capture list to avoid retain cycle
             self.userDocument = retrieved
-            self.getPostsForUser(for: curUser) { posts in
+
+            if let classes = self.userDocument.Classes {
+                self.userDocument.Classes = classes.sorted() // Sort classes in place
+            }
+
+            self.getPostsForUser(for: curUser, college: self.userDocument.College, classes: self.userDocument.Classes ?? []) { posts in
                 self.usersPosts = posts
                 self.sortUsersPost()
             }
         }
-        
-
-        if let classes = self.userDocument.Classes {
-            self.userDocument.Classes = classes.sorted() // Sort classes in place
-        }
-
-        
     }
+
     
     private func parseMajor(major: String) -> [String]{
         return major.components(separatedBy: ",")

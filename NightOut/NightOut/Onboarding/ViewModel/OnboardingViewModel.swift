@@ -68,47 +68,11 @@ class OnboardingViewModel: ObservableObject {
                 completion(.failure(error))
             } else {
                 completion(.success(true))
+                //set default values in the document in firebase
+               
             }
         }
-    }
-
-    func getFirstLastCollege(firstName first:String, lastName last:String, College college:String){
-        userInformation.firstName = first
-        userInformation.lastName = last
-        userInformation.college = college
-    }
-    func getMajorClasses(Classes c: [String], Major m: String){
-        userInformation.classes = c
-        userInformation.major = m
+        
     }
     
-    func getBirthday(Birthday b:String){
-        userInformation.birthday = b
-    }
-    
-    func sendAll() {
-       
-        let db = Firestore.firestore()
-        let email = userInformation.email
-        let path = db.collection("Users").document(email)
-
-        // Prepare the data
-        var data: [String: Any] = [:]
-        data["FirstName"] = userInformation.firstName
-        data["LastName"] = userInformation.lastName
-        data["College"] = userInformation.college
-        data["Classes"] = userInformation.classes
-        data["Major"] = userInformation.major
-        data["Birthday"] = userInformation.birthday
-        data["Email"] = userInformation.email
-
-        // Add the document
-        path.setData(data) { error in
-            if let error = error {
-                print("Error writing document: \(error)")
-            } else {
-                print("Document successfully written!")
-            }
-        }
-    }
 }

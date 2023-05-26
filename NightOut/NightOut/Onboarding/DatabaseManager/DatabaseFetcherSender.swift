@@ -89,6 +89,25 @@ struct OnboardingDatabaseManager {
         
     }
     
+    static func addDefaultData(email: String){
+        let db = Firestore.firestore()
+        let docRef = db.collection("Users").document(email)
+
+        // Set default data for the user
+        let defaultData: [String: Any] = [
+            "FirstName": "FirstName",
+            "LastName": "LastName",
+            "College": "Kansas State University",
+            "Classes": ["MATH100"],
+            "Major": ["Math"],
+            "Birthday": "01/01/2000"
+        ]
+
+        // setData for each field, merging so existing data is not overwritten
+        docRef.setData(defaultData, merge: true)
+    }
+
+    
     
     
     
