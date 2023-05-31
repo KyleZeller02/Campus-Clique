@@ -26,7 +26,7 @@ struct OnboardingDatabaseManager {
             }
             else{
                 //add it to the database
-                db.collection("Users").document(email).setData(["Email": email])
+                db.collection("Users").document(email).setData(["Email": email], merge: true)
             }
             
         }
@@ -55,23 +55,23 @@ struct OnboardingDatabaseManager {
     ///   - Classes: the classes input from the user. this is input as a string, but is parsed to a string array
     ///   - Major: the major or majors input from the user. this is input as a string, but is parsed to a string array.
     ///   - email: the email associated with the user. this is set when the user presses the signup button on the LoginView. This is found in the Settings file.
-    static func addClassesMajorToDocument(Classes:String,Major:String, email:String){
-        //get reference to database
+    static func addClassesMajorToDocument(Classes: String, Major: String, email: String) {
+        // get reference to database
         let db = Firestore.firestore()
-        //get reference to the document for the user
+        
+        // get reference to the document for the user
         let docRef = db.collection("Users").document(email)
-        // convert classes and major to arrays
+        
+        // convert classes to array
         let classesArray = Classes.split(separator: ",")
-        let trimmedClasses = classesArray.map{$0.trimmingCharacters(in: .whitespacesAndNewlines)}
-        let majorArray = Major.split(separator: ",")
-        let trimmedMajor = majorArray.map{$0.trimmingCharacters(in: .whitespacesAndNewlines)}
+        let trimmedClasses = classesArray.map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
         
-        //add fields, while keeping existing data
-        docRef.setData(["Classes": trimmedClasses, "Major": trimmedMajor],merge: true)
+        // Major is a string, no need to split or map.
         
-        
-        
+        // add fields, while keeping existing data
+        docRef.setData(["Classes": trimmedClasses, "Major": Major], merge: true)
     }
+
     
     
     /// this method adds a field for the user's Birthday to the document in the "Users" collection in the Firestore Data
@@ -89,23 +89,55 @@ struct OnboardingDatabaseManager {
         
     }
     
-    static func addDefaultData(email: String){
-        let db = Firestore.firestore()
-        let docRef = db.collection("Users").document(email)
+   
+    
+    static func uploadProfileImage(_ image: UIImage, forUserEmail email: String, completion: @escaping (_ url: URL?) -> ()) {
+        guard let imageData = image.pngData() else {
+            return
+        }
 
-        // Set default data for the user
-        let defaultData: [String: Any] = [
-            "FirstName": "FirstName",
-            "LastName": "LastName",
-            "College": "Kansas State University",
-            "Classes": ["MATH100"],
-            "Major": ["Math"],
-            "Birthday": "01/01/2000"
-        ]
+        let imageName = UUID().uuidString
+        let imageReference = Storage.storage().reference().child("profileImages/\(imageName)")
 
-        // setData for each field, merging so existing data is not overwritten
-        docRef.setData(defaultData, merge: true)
+        let metadata = StorageMetadata()
+        metadata.contentType = "image/png"
+
+        imageReference.putData(imageData, metadata: metadata) { _, error in
+            if let error = error {
+                assertionFailure(error.localizedDescription)
+                return completion(nil)
+            }
+
+            imageReference.downloadURL { url, error in
+                if let error = error {
+                    assertionFailure(error.localizedDescription)
+                    return completion(nil)
+                }
+                
+                guard let url = url else {
+                    return completion(nil)
+                }
+
+                // Updating user document with the profile picture URL
+                let db = Firestore.firestore()
+                db.collection("Users").document(email).updateData([
+                    "profile_picture": url.absoluteString
+                ]) { error in
+                    if let error = error {
+                        print("Error updating document: \(error)")
+                    } else {
+                        print("Document successfully updated")
+                    }
+                }
+
+                completion(url)
+            }
+        }
     }
+
+    
+
+    
 
     
     

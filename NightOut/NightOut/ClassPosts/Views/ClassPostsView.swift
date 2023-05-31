@@ -5,13 +5,9 @@ import Firebase
 struct ClassPosts: View {
     @StateObject var viewRouter: ViewRouter
     @StateObject var posts: ClassPostsViewModel = ClassPostsViewModel()
-    
+    @State private var isLoading:Bool = false
     @State private var isShowingSheet = false
     @State var addedPost: String = ""
-    @StateObject var profileVM: UserProfileViewModel = UserProfileViewModel()
-    
-    
-    
     var body: some View {
         
         ZStack{
@@ -19,6 +15,7 @@ struct ClassPosts: View {
             NavigationView{
                 
                 ScrollView {
+                    
                     LazyVStack(spacing: 10) {
                         if posts.postsArray.isEmpty{
                             Text("There might have been a problem fetching the posts, try reloading the app. Or, your the first to the party. You can get the party started!")
@@ -44,7 +41,7 @@ struct ClassPosts: View {
                 
                 
                 .refreshable {
-                    posts.getPosts(selectedClass: posts.selectedClass)
+                    //  posts.getPosts(selectedClass: posts.selectedClass)
                 }
                 
                 
@@ -64,12 +61,12 @@ struct ClassPosts: View {
                         AddPostView(viewModel: posts)
                     }
                     Menu {
-                        ForEach(profileVM.userDocument.Classes ?? [], id: \.self){ curClass in
+                        ForEach(UserManager.shared.currentUser?.Classes ?? [], id: \.self){ curClass in
                             Button {
                                 
                                 posts.selectedClass = curClass
                                 DispatchQueue.main.async {
-                                    posts.getPosts(selectedClass: posts.selectedClass)
+                                    posts.getPosts()
                                 }
                                 
                             } label: {
@@ -82,14 +79,9 @@ struct ClassPosts: View {
                         Text("Classes")
                             .foregroundColor(.cyan)
                     }
-                    .simultaneousGesture(TapGesture().onEnded() {
-                        let curUser = profileVM.CurUser()
-                        profileVM.getDocument(user: curUser){ doc in
-                            self.profileVM.userDocument = doc
-                            
-                        }
-                    })
+                    
                 }
+                
             }
             .onAppear {
                 let appearance = UINavigationBarAppearance()
@@ -104,13 +96,14 @@ struct ClassPosts: View {
             }
             
         }
-        .onAppear(){
-            
-        }
+        
         
         
     }
 }
+
+
+
 
 
 
@@ -134,7 +127,7 @@ struct DetailView: View{
 #endif
     }
     
-   
+    
     
     
     var body: some View{
@@ -181,7 +174,8 @@ struct DetailView: View{
                                 // upvote button
                                 Button(action: {
                                     DispatchQueue.main.async {
-                                        viewModel.handleVoteOnPost(UpOrDown: "up", onPost: selectedPost)
+                                        viewModel.handleVoteOnPost(UpOrDown: VoteType.up, onPost: selectedPost)
+                                        
                                     }
                                 }, label: {
                                     Image(systemName: "chevron.up")
@@ -189,14 +183,14 @@ struct DetailView: View{
                                 .padding(EdgeInsets(top: 10, leading: 10, bottom: 10, trailing: 10))
                                 .buttonStyle(BorderlessButtonStyle())
                                 
-                                .foregroundColor(selectedPost.usersLiked.contains(viewModel.profileVM.userDocument.Email) ? Color.green : Color.gray)
-                                .opacity(selectedPost.usersLiked.contains(viewModel.profileVM.userDocument.Email) ? 1 : 0.5)
+                                .foregroundColor(selectedPost.usersLiked.contains(UserManager.shared.currentUser?.Email ?? "") ? Color.green : Color.gray)
+                                .opacity(selectedPost.usersLiked.contains(UserManager.shared.currentUser?.Email ?? "") ? 1 : 0.5)
                                 .cornerRadius(10)
                                 
                                 // downvote button
                                 Button(action: {
                                     DispatchQueue.main.async {
-                                        viewModel.handleVoteOnPost(UpOrDown: "down", onPost: selectedPost)
+                                        viewModel.handleVoteOnPost(UpOrDown: VoteType.down, onPost: selectedPost)
                                     }
                                 }) {
                                     Image(systemName: "chevron.down")
@@ -204,8 +198,8 @@ struct DetailView: View{
                                 .padding(EdgeInsets(top: 10, leading: 10, bottom: 10, trailing: 10))
                                 .buttonStyle(BorderlessButtonStyle())
                                 
-                                .foregroundColor(selectedPost.usersDisliked.contains(viewModel.profileVM.userDocument.Email) ? Color.red : Color.gray)
-                                .opacity(selectedPost.usersDisliked.contains(viewModel.profileVM.userDocument.Email) ? 1 : 0.5)
+                                .foregroundColor(selectedPost.usersDisliked.contains(UserManager.shared.currentUser?.Email ?? "") ? Color.red : Color.gray)
+                                .opacity(selectedPost.usersDisliked.contains(UserManager.shared.currentUser?.Email ?? "") ? 1 : 0.5)
                                 .cornerRadius(10)
                             }
                             
@@ -251,13 +245,13 @@ struct DetailView: View{
                     
                     
                     
-                    if viewModel.curReplies.isEmpty{
+                    if selectedPost.replies.isEmpty{
                         Text("Replies will show up here")
                             .foregroundColor(.cyan)
                     }
                     ScrollView{
                         LazyVStack(spacing: 10) {
-                            ForEach(viewModel.curReplies) { reply in
+                            ForEach(selectedPost.replies) { reply in
                                 
                                 VStack(alignment: .leading) {
                                     // post author
@@ -298,7 +292,7 @@ struct DetailView: View{
                                             // upvote button
                                             Button(action: {
                                                 DispatchQueue.main.async {
-                                                    viewModel.handleVoteOnReply(UpOrDown: "up", onPost: selectedPost, onReply: reply)
+                                                    viewModel.handleVoteOnReply(VoteType.up, onPost: selectedPost, onReply: reply)
                                                 }
                                             }, label: {
                                                 Image(systemName: "chevron.up")
@@ -306,14 +300,14 @@ struct DetailView: View{
                                             .padding(EdgeInsets(top: 10, leading: 10, bottom: 10, trailing: 10))
                                             .buttonStyle(BorderlessButtonStyle())
                                             
-                                            .foregroundColor(reply.UsersLiked.contains(viewModel.profileVM.userDocument.Email) ? Color.green : Color.gray)
-                                            .opacity(reply.UsersLiked.contains(viewModel.profileVM.userDocument.Email) ? 1 : 0.5)
+                                            .foregroundColor(reply.UsersLiked.contains(UserManager.shared.currentUser?.Email ?? "") ? Color.green : Color.gray)
+                                            .opacity(reply.UsersLiked.contains(UserManager.shared.currentUser?.Email ?? "") ? 1 : 0.5)
                                             .cornerRadius(10)
                                             
                                             // downvote button
                                             Button(action: {
                                                 DispatchQueue.main.async {
-                                                    viewModel.handleVoteOnReply(UpOrDown: "down", onPost: selectedPost, onReply: reply)
+                                                    viewModel.handleVoteOnReply(VoteType.down, onPost: selectedPost, onReply: reply)
                                                 }
                                             }) {
                                                 Image(systemName: "chevron.down")
@@ -321,8 +315,8 @@ struct DetailView: View{
                                             .padding(EdgeInsets(top: 10, leading: 10, bottom: 10, trailing: 10))
                                             .buttonStyle(BorderlessButtonStyle())
                                             
-                                            .foregroundColor(reply.UserDownVotes.contains(viewModel.profileVM.userDocument.Email) ? Color.red : Color.gray)
-                                            .opacity(reply.UserDownVotes.contains(viewModel.profileVM.userDocument.Email) ? 1 : 0.5)
+                                            .foregroundColor(reply.UserDownVotes.contains(UserManager.shared.currentUser?.Email ?? "") ? Color.red : Color.gray)
+                                            .opacity(reply.UserDownVotes.contains(UserManager.shared.currentUser?.Email ?? "") ? 1 : 0.5)
                                             .cornerRadius(10)
                                         }
                                         
@@ -350,9 +344,9 @@ struct DetailView: View{
                                                 )
                                             }
                                         }
-
-
-                                     
+                                        
+                                        
+                                        
                                     }
                                     .padding(EdgeInsets(top: 10, leading: 10, bottom: 10, trailing: 10))
                                     
@@ -377,8 +371,10 @@ struct DetailView: View{
                     .padding(.leading, 10)
                     .padding(.trailing,10)
                     
-                    .onAppear {
-                        viewModel.getReplies(forPost: selectedPost)
+                    .onAppear(){
+                        selectedPost.getReplies(){r in
+                            selectedPost.replies = r
+                        }
                     }
                     .navigationBarBackButtonHidden(true)
                     .navigationBarItems(leading:
@@ -451,7 +447,7 @@ struct DetailView: View{
                         Button(action: {
                             let reply = addedReply.trimmingCharacters(in: .whitespacesAndNewlines)
                             if !reply.isEmpty{
-                               
+                                
                                 viewModel.addReply(reply, to: selectedPost)
                             }
                             self.addedReply = ""
@@ -493,7 +489,7 @@ struct DetailView: View{
                     Button(action: {
                         let reply = addedReply.trimmingCharacters(in: .whitespacesAndNewlines)
                         if !reply.isEmpty{
-                           
+                            
                             viewModel.addReply(reply, to: selectedPost)
                         }
                         self.addedReply = ""
@@ -507,6 +503,7 @@ struct DetailView: View{
                 }
             )
         }
+        
         
         
     }
@@ -547,7 +544,7 @@ func convertEpochTimeToDate(epochTime: Double) -> String {
     let date = Date(timeIntervalSince1970: epochTime)
     
     let dateFormatter = DateFormatter()
-    dateFormatter.dateFormat = "MM/dd hh:mm a"
+    dateFormatter.dateFormat = "MM/dd h:mm a"
     
     return dateFormatter.string(from: date)
 }
@@ -559,38 +556,33 @@ func convertEpochTimeToDate(epochTime: Double) -> String {
 
 
 struct ClassPostViewPostCell: View {
-    let post:ClassPost
+    let post: ClassPost
     @ObservedObject var viewModel: ClassPostsViewModel
     @State  private var showingDeleteAlert: Bool = false
+
     var body: some View {
         VStack(alignment: .leading) {
             // post author
             HStack {
                 Text("\(post.postAuthor)")
                     .padding(EdgeInsets(top: 10, leading: 10, bottom: 10, trailing: 10))
-                
                     .foregroundColor(.cyan)
-                
                     .cornerRadius(10.0)
                 Spacer()
                 Text("\(convertEpochTimeToDate(epochTime: post.datePosted))")
                     .foregroundColor(Color.White)
                     .padding(EdgeInsets(top: 10, leading: 10, bottom: 10, trailing: 10))
             }
-            // spacer to separate the post text and post voting
             Spacer().frame(height: 20)
             // post body with rounded background color
-            
             HStack {
                 Text("\(post.postBody)")
                     .padding(EdgeInsets(top: 10, leading: 10, bottom: 10, trailing: 10))
                     .foregroundColor(Color.White)
                     .cornerRadius(5.0)
-                
                     .frame(minWidth: 0, maxWidth: .infinity, alignment: .leading)
                     .multilineTextAlignment(.leading)// Push text all the way to the left
             }
-            
             Spacer().frame(height: 20)
             // vote buttons
             HStack() {
@@ -602,63 +594,57 @@ struct ClassPostViewPostCell: View {
                     // upvote button
                     Button(action: {
                         DispatchQueue.main.async {
-                            viewModel.handleVoteOnPost(UpOrDown: "up", onPost: post)
+                            viewModel.handleVoteOnPost(UpOrDown: VoteType.up, onPost: post)
                         }
                     }, label: {
                         Image(systemName: "chevron.up")
                     })
                     .padding(EdgeInsets(top: 10, leading: 10, bottom: 10, trailing: 10))
                     .buttonStyle(BorderlessButtonStyle())
-                    
-                    .foregroundColor(post.usersLiked.contains(viewModel.profileVM.userDocument.Email) ? Color.green : Color.gray)
-                    .opacity(post.usersLiked.contains(viewModel.profileVM.userDocument.Email) ? 1 : 0.5)
+                    .foregroundColor(post.usersLiked.contains(UserManager.shared.currentUser?.Email ?? "") ? Color.green : Color.gray)
+                    .opacity(post.usersLiked.contains(UserManager.shared.currentUser?.Email ?? "") ? 1 : 0.5)
                     .cornerRadius(10)
                     
                     // downvote button
                     Button(action: {
                         DispatchQueue.main.async {
-                            viewModel.handleVoteOnPost(UpOrDown: "down", onPost: post)
+                            viewModel.handleVoteOnPost(UpOrDown: VoteType.down, onPost: post)
                         }
                     }) {
                         Image(systemName: "chevron.down")
                     }
                     .padding(EdgeInsets(top: 10, leading: 10, bottom: 10, trailing: 10))
                     .buttonStyle(BorderlessButtonStyle())
-                    
-                    .foregroundColor(post.usersDisliked.contains(viewModel.profileVM.userDocument.Email) ? Color.red : Color.gray)
-                    .opacity(post.usersDisliked.contains(viewModel.profileVM.userDocument.Email) ? 1 : 0.5)
+                    .foregroundColor(post.usersDisliked.contains(UserManager.shared.currentUser?.Email ?? "") ? Color.red : Color.gray)
+                    .opacity(post.usersDisliked.contains(UserManager.shared.currentUser?.Email ?? "") ? 1 : 0.5)
                     .cornerRadius(10)
                 }
-                if isAuthorPost(ofPost: post) {
-                    Spacer()
-                    Button(action: {
-                        showingDeleteAlert = true
-                    }) {
-                        Image(systemName: "trash")
-                            .resizable()
-                            .frame(width: 20, height: 20)
-                            .padding()
-                            .foregroundColor(.red)
-                            .cornerRadius(10)
-                    }
-                    .alert(isPresented: $showingDeleteAlert) {
-                        Alert(
-                            title: Text("Delete Post"),
-                            message: Text("Are you sure you want to delete this post?"),
-                            primaryButton: .destructive(Text("Delete")) {
-                                viewModel.deletePostAndReplies(post)
-                            },
-                            secondaryButton: .cancel()
-                        )
-                    }
+                Spacer()
+                Button(action: {
+                    showingDeleteAlert = true
+                }) {
+                    Image(systemName: "trash")
+                        .resizable()
+                        .frame(width: 20, height: 20)
+                        .padding()
+                        .foregroundColor(.red)
+                        .cornerRadius(10)
                 }
+                .alert(isPresented: $showingDeleteAlert) {
+                    Alert(
+                        title: Text("Delete Post"),
+                        message: Text("Are you sure you want to delete this post?"),
+                        primaryButton: .destructive(Text("Delete")) {
+                            viewModel.deletePostAndReplies(post)
+                        },
+                        secondaryButton: .cancel()
+                    )
+                }
+                .opacity(isAuthorPost(ofPost: post) ? 1.0 : 0.0)  // Adjusts the opacity based on whether the post is authored by the current user
+                .disabled(!isAuthorPost(ofPost: post))  // Disables the button for posts not authored by the current user
             }
             .padding(EdgeInsets(top: 10, leading: 10, bottom: 10, trailing: 10))
-            
-            
             .cornerRadius(15)
-            
-            
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(Color.Gray)
@@ -666,6 +652,7 @@ struct ClassPostViewPostCell: View {
         .padding(EdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 10))
     }
 }
+
 func isAuthorPost(ofPost post:ClassPost) ->Bool{
     let user = Auth.auth().currentUser
     let email = user?.email

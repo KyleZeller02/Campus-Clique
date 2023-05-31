@@ -9,12 +9,15 @@
 import SwiftUI
 import Firebase
 
+
+
 struct UserProfileView: View {
     
     @StateObject var viewRouter: ViewRouter
-    @StateObject var profileVM: UserProfileViewModel = UserProfileViewModel()
+    @EnvironmentObject var profileVM: UserProfileViewModel
+    @EnvironmentObject var posts: ClassPostsViewModel
+    @StateObject var userManager = UserManager.shared
     
-    @StateObject var posts: ClassPostsViewModel = ClassPostsViewModel()
     //EditProfileView Variables
     @State private var showingEditProfile: Bool = false
     @State private var showingCover:Bool = false
@@ -26,26 +29,27 @@ struct UserProfileView: View {
             ZStack {
                 Color.black
                     .ignoresSafeArea()
-
+                
                 VStack {
-                    VStack(alignment: .leading, spacing: 20) {
-                        Text("\(profileVM.userDocument.College)")
+                    VStack(alignment: .leading, spacing: 20){
+                        
+                        Text("\(userManager.currentUser?.College ?? "")")
                             .font(.title2)
                             .fontWeight(.bold)
                             .foregroundColor(.white)
-
-                        Text("Studying \(profileVM.userDocument.Major)")
+                        
+                        Text("Studying \(userManager.currentUser?.Major ?? "")")
                             .font(.body)
                             .foregroundColor(.white)
-
+                        
                         Divider()
                             .background(Color.white.opacity(0.5))
                             .padding(.vertical, 20)
-
+                        
                         Text("My Posts")
                             .font(.title)
                             .foregroundColor(.white)
-
+                        
                         if profileVM.usersPosts.isEmpty {
                             Text("Posts you have made will show up here.")
                                 .font(.caption)
@@ -54,24 +58,40 @@ struct UserProfileView: View {
                         }
                     }
                     .padding(.horizontal, 20)
-
+                    
                     ScrollView {
                         LazyVStack(spacing: 10) {
-                            ForEach(posts.userPosts) { post in
+                            ForEach(profileVM.usersPosts) { post in
                                 NavigationLink(destination: DetailView(selectedPost: post, viewModel: posts)) {
-                                    UserProfilePostCell(post: post, viewModel: posts, profileVM: profileVM)
+                                    UserProfilePostCell(post: post, profileVM: profileVM)
                                 }
                             }
                         }
                     }
                     .background(Color.black)
-                    .refreshable {
-                        posts.refresh()
-                    }
+                    
                 }
                 .toolbar {
+                    ToolbarItem(placement: .navigationBarLeading) {
+                        Group {
+                            if let uiImage = UserManager.shared.currentUser?.profilePicture {
+                                Image(uiImage: uiImage)
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                                    .clipShape(Circle())
+                                    .frame(width: 100, height: 100)
+                            } else {
+                                // Default image in case profilePicture is nil
+                                Image("defaultProfile")
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                                    .clipShape(Circle())
+                                    .frame(width: 40, height: 40)
+                            }
+                        }
+                    }
                     ToolbarItem(placement: .principal) {
-                        Text("\(profileVM.userDocument.FullName)")
+                        Text("\(UserManager.shared.currentUser?.FullName ?? "")")
                             .font(.largeTitle)
                             .foregroundColor(.white)
                             .accessibilityHidden(true)
@@ -79,7 +99,6 @@ struct UserProfileView: View {
                     ToolbarItem(placement: .navigationBarTrailing) {
                         Button(action: {
                             showingCover = true
-                            
                         }) {
                             Image(systemName: "gear")
                                 .font(.title)
@@ -87,16 +106,16 @@ struct UserProfileView: View {
                         }
                     }
                 }
+
+
             }
         }
         .fullScreenCover(isPresented: $showingCover) {
-            SettingsView(profileVM: profileVM)
-                        }
+            SettingsView(viewRouter: viewRouter, profileVM: profileVM)
+        }
     }
-
+    
 }
-
-
 
 
 struct ClassTextModifier: ViewModifier {
@@ -119,13 +138,14 @@ struct ClassTextModifier: ViewModifier {
 struct SettingsView: View {
     @State private var isShowingEditProfileView = false
     @Environment(\.presentationMode) var presentationMode
+    @StateObject var viewRouter: ViewRouter
     let profileVM: UserProfileViewModel
-
+    
     var body: some View {
         ZStack {
             Color.Black
                 .ignoresSafeArea()
-
+            
             VStack {
                 HStack {
                     Button(action: {
@@ -144,7 +164,7 @@ struct SettingsView: View {
                     .bold()
                     .foregroundColor(.white)
                     .padding(.bottom, 50)
-
+                
                 Button(action: {
                     self.isShowingEditProfileView = true
                 }) {
@@ -167,9 +187,11 @@ struct SettingsView: View {
                 .fullScreenCover(isPresented: $isShowingEditProfileView, content: {
                     EditProfileView(profileVM: profileVM)
                 })
-
+                
                 Button(action: {
+                    
                     AccountActions.LogOut()
+                    viewRouter.CurrentViewState = .LoginView
                 }) {
                     HStack {
                         Image(systemName: "power")
@@ -187,9 +209,10 @@ struct SettingsView: View {
                     .cornerRadius(10)
                 }
                 .padding(.horizontal, 10)
-
+                
                 Button(action: {
                     AccountActions.deleteAccount()
+                    viewRouter.CurrentViewState = .LoginView
                 }) {
                     HStack {
                         Image(systemName: "trash.fill")
@@ -204,14 +227,14 @@ struct SettingsView: View {
                     .cornerRadius(10)
                 }
                 .padding(.horizontal, 10)
-
+                
                 Spacer()
             }
         }
     }
 }
 
-  
+
 
 
 struct EditProfileView: View {
@@ -235,51 +258,53 @@ struct EditProfileView: View {
     
     var body: some View {
         ZStack{
-            Color.black
+            Color.Black
                 .ignoresSafeArea()
             VStack{
                 //College-------------------------------------------------------
                 HStack(){
                     Text("College:")
-                        .padding()
-                        .background(Color.Purple)
-                        .foregroundColor(.White)
-                        .cornerRadius(5.0)
-                        .padding(.bottom, 10)
-                        .padding(.leading,10)
                         .font(.headline)
+                        .foregroundColor(Color.white)
+                        .padding(.horizontal)
+                    Spacer()
                     TextField("College", text: $newCollege)
                         .padding()
-                        .background(Color.gray)
-                        .foregroundColor(Color.Black)
-                        .cornerRadius(5.0)
-                        .padding(.bottom, 10)
-                        .padding(.trailing,10)
-                        .minimumScaleFactor(0.7)
+                        .background(Color.white)
+                        .cornerRadius(10)
+                        .foregroundColor(.black)
+                        .padding(.horizontal)
+                        .overlay(RoundedRectangle(cornerRadius: 10).stroke(Color.Purple, lineWidth: 1))
                 }
+                .padding(.vertical)
+                .background(Color.Purple)
+                .cornerRadius(10)
+                .padding(.horizontal)
+                
                 //End College-------------------------------------------------------
+                //Major-------------------------------------------------------
                 HStack(){
                     Text("Major:")
-                        .padding()
-                        .background(Color.Purple)
-                        .foregroundColor(.White)
-                        .cornerRadius(5.0)
-                        .padding(.bottom, 10)
-                        .padding(.leading,10)
                         .font(.headline)
+                        .foregroundColor(Color.white)
+                        .padding(.horizontal)
+                    Spacer()
                     TextField("Major", text: $newMajor)
                         .padding()
-                        .background(Color.gray)
-                        .foregroundColor(Color.Black)
-                        .cornerRadius(5.0)
-                        .padding(.bottom, 10)
-                        .padding(.trailing,10)
-                        .minimumScaleFactor(0.7)
+                        .background(Color.white)
+                        .cornerRadius(10)
+                        .foregroundColor(.black)
+                        .padding(.horizontal)
+                    
                 }
-                //Add Class Button-------------------------------------------------------
+                .padding(.vertical)
+                .background(Color.Purple)
+                .cornerRadius(10)
+                .padding(.horizontal)
+                //End Major-------------------------------------------------------
                 
+                //Add Class Button-------------------------------------------------------
                 Button(action: {
-                    // Handle settings action
                     if self.injectedClasses.count < 6{
                         //check if there are any blank inputs, do not allow new item if flag is true
                         
@@ -293,111 +318,88 @@ struct EditProfileView: View {
                         }
                         
                     }
-                    
-                    
                 }) {
                     Text("Add Class")
+                        .foregroundColor(.white)
                         .padding()
                         .background(Color.Purple)
-                        .foregroundColor(.White)
-                        .cornerRadius(5.0)
-                        .padding(EdgeInsets(top: 5, leading: 10, bottom: 5, trailing: 10))
-                        .font(.headline)
+                        .cornerRadius(10)
+                        .padding(.horizontal)
                 }
-               
-               
+                
                 ScrollView {
-                    VStack(spacing: 5) {
+                    VStack(spacing: 10) {
                         ForEach(injectedClasses.indices, id: \.self) { index in
-                            
                             HStack {
-                                Text("Class:")
-                                    .padding()
-                                    .background(Color.Purple)
-                                    .foregroundColor(.White)
-                                    .cornerRadius(5.0)
-                                    .padding(EdgeInsets(top: 10, leading: 10, bottom: 10, trailing: 10))
-                                    .font(.headline)
-                                
                                 TextField("Class", text: Binding(
                                     get: {
-                                        // Return the current value from your data source
                                         return injectedClasses[index]
                                     },
                                     set: { newValue in
-                                        // Update the value in your data source
-                                        // newValue is the new value entered in the text field
-                                        // You may need to update the value in your 'injectedClasses' array
                                         injectedClasses[index] = newValue
                                     }
                                 ))
                                 .padding()
-                                .background(Color.gray)
+                                .background(Color.white)
+                                .cornerRadius(10)
                                 .foregroundColor(.black)
-                                .cornerRadius(5.0)
-                                .padding(EdgeInsets(top: 10, leading: 10, bottom: 10, trailing: 10))
-                                .minimumScaleFactor(0.7)
+                                .overlay(RoundedRectangle(cornerRadius: 10).stroke(Color.Purple, lineWidth: 1))
                                 
                                 // Delete class Button
                                 Button(action: {
                                     if injectedClasses.count > 0{
-                                        // Remove the corresponding element from the 'injectedClasses' array
                                         removeClass(at: index)
                                     }
-                                    
-                                    
                                 }) {
                                     Image(systemName: "minus.circle")
-                                        .padding(EdgeInsets(top: 10, leading: 10, bottom: 10, trailing: 10))
-                                        .foregroundColor(Color.White)
+                                        .foregroundColor(Color.Purple)
                                 }
                             }
+                            .padding(.horizontal)
                         }
-                        .background(Color.Gray)
-                        .cornerRadius(15)
-                        .padding(EdgeInsets(top: 5, leading: 10, bottom: 5, trailing: 10))
                     }
                 }
+                .padding(.vertical)
                 
-                
-                // Class Scroll View-------------------------------------------------------
+                // Buttons-------------------------------------------------------
                 HStack{
                     Button(action: {
-                        // Handle settings action
-                        profileVM.handleEdit(college: newCollege, classes: injectedClasses)
+                        let injectedClasses = injectedClasses.filter { !$0.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty }
+                        UserManager.shared.handleEdit(college: newCollege, classes: injectedClasses)
                         presentationMode.wrappedValue.dismiss()
                     }) {
                         Text("Finalize Changes")
+                            .foregroundColor(.white)
                             .padding()
                             .background(Color.Purple)
-                            .foregroundColor(.White)
                             .cornerRadius(10)
-                            .padding(EdgeInsets(top: 10, leading: 10, bottom: 10, trailing: 10))
-                            .font(.headline)
                     }
+                    Spacer()
                     Button(action: {
                         presentationMode.wrappedValue.dismiss()
                     }) {
                         Text("Cancel")
+                            .foregroundColor(.white)
                             .padding()
                             .background(Color.Purple)
-                            .foregroundColor(.White)
                             .cornerRadius(10)
-                            .padding(EdgeInsets(top: 10, leading: 10, bottom: 10, trailing: 10))
-                            .font(.headline)
                     }
                 }
+                .padding(.horizontal)
+                .padding(.bottom)
                 
             }
+            .padding(.top)
         }
         .onAppear(){
             self.injectedClasses.removeAll()
-            let classCount = profileVM.userDocument.Classes?.count ?? 0
-            self.newCollege = profileVM.userDocument.College
-            self.newMajor = profileVM.userDocument.Major
+            let classCount = UserManager.shared.currentUser?.Classes.count ?? 0
+            self.newCollege = UserManager.shared.currentUser?.College ?? ""
+            self.newMajor = UserManager.shared.currentUser?.Major ?? ""
             
             for index in 0..<min(classCount, 6) {
-                if let newClass = profileVM.userDocument.Classes?[index] {
+                
+                if let newClass = UserManager.shared.currentUser?.Classes[index] {
                     self.injectedClasses.append(newClass)
                 }
             }
@@ -409,8 +411,9 @@ struct EditProfileView: View {
 
 struct UserProfilePostCell: View {
     let post:ClassPost
-    @ObservedObject var viewModel: ClassPostsViewModel
-    let profileVM: UserProfileViewModel
+    
+    
+    @ObservedObject var profileVM: UserProfileViewModel
     @State  private var showingDeleteAlert: Bool = false
     var body: some View {
         VStack(alignment: .leading) {
@@ -451,27 +454,27 @@ struct UserProfilePostCell: View {
                 
                 
                 
-                    Spacer()
-                    Button(action: {
-                        showingDeleteAlert = true
-                    }) {
-                        Image(systemName: "trash")
-                            .resizable()
-                            .frame(width: 20, height: 20)
-                            .padding()
-                            .foregroundColor(.red)
-                            .cornerRadius(10)
-                    }
-                    .alert(isPresented: $showingDeleteAlert) {
-                        Alert(
-                            title: Text("Delete Post"),
-                            message: Text("Are you sure you want to delete this post?"),
-                            primaryButton: .destructive(Text("Delete")) {
-                                viewModel.deletePostAndReplies(post)
-                            },
-                            secondaryButton: .cancel()
-                        )
-                    }
+                Spacer()
+                Button(action: {
+                    showingDeleteAlert = true
+                }) {
+                    Image(systemName: "trash")
+                        .resizable()
+                        .frame(width: 20, height: 20)
+                        .padding()
+                        .foregroundColor(.red)
+                        .cornerRadius(10)
+                }
+                .alert(isPresented: $showingDeleteAlert) {
+                    Alert(
+                        title: Text("Delete Post"),
+                        message: Text("Are you sure you want to delete this post?"),
+                        primaryButton: .destructive(Text("Delete")) {
+                            profileVM.deletePostAndReplies(post)
+                        },
+                        secondaryButton: .cancel()
+                    )
+                }
                 
             }
             .padding(EdgeInsets(top: 10, leading: 10, bottom: 10, trailing: 10))

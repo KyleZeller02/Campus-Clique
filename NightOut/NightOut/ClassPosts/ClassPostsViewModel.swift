@@ -12,493 +12,206 @@ import Firebase
 class ClassPostsViewModel: ObservableObject {
     
     @Published var postsArray: [ClassPost] = []
-    @Published var profileVM: UserProfileViewModel = UserProfileViewModel()
-    @Published var userPosts: [ClassPost] = []
-    @Published var curReplies: [Replies] = []
+    private var userManager: UserManager
+    let firebaseManager = FirestoreService()
     
-    @Published var selectedClass: String = "Selected Class"
+    @Published var isLoading: Bool = false
+    @Published var selectedClass:String = ""
+    
     
     let db = Firestore.firestore()
-    init() {
-        let curUser = profileVM.CurUser()
-        profileVM.getDocument(user: curUser) { [weak self] doc in
+    init(userManager: UserManager = UserManager.shared) {
+        self.userManager = userManager
+        guard let curUser = userManager.currentUser?.Email else { return }
+        self.userManager.getDocument(user: curUser) { [weak self] doc in
             guard let self = self else { return }
             
-            self.profileVM.userDocument = doc
-            self.profileVM.userDocument.Classes?.sort()
+            UserManager.shared.currentUser = doc
+            UserManager.shared.currentUser?.Classes.sort()
             
-            self.selectedClass = self.profileVM.userDocument.Classes?.first ?? "Selected Class"
+            self.selectedClass = UserManager.shared.currentUser?.Classes.first ?? ""
             
-            self.getPosts(selectedClass: self.selectedClass)
-            self.getPostsForUser(for: self.profileVM.userDocument.Email){p in
-                self.userPosts = p
+            self.getPosts()
+            
+        }
+    }
+    
+ //getting posts somehow reads email address wrong on init
+    func getPosts() {
+        guard !self.selectedClass.isEmpty, let college = self.userManager.currentUser?.College else {
+            print("Error: Class or college is undefined")
+            return
+        }
+
+        firebaseManager.fetchPosts(fromClass: self.selectedClass, fromCollege: college) { [weak self] (posts, error) in
+            if let error = error {
+                print("Error fetching documents: \(error)")
+                return
             }
+
+            self?.postsArray = posts ?? []
         }
     }
 
-    func refresh() {
-        guard let userEmail = Auth.auth().currentUser?.email else {
-            return
-        }
-        
-        if userEmail == profileVM.userDocument.Email {
-            getPostsForUser(for: profileVM.userDocument.Email) { posts in
-                self.userPosts = posts
-                self.sortUsersPost()
-            }
-        }
-    }
+
     
     func deletePostAndReplies(_ post: ClassPost) {
-        let college = profileVM.userDocument.College
-        let selectedClass = self.selectedClass
-
-        // Get the references to the post and its replies
-        let postRef = db.collection("Colleges").document(college).collection(selectedClass).document(post.id)
-        let repliesRef = postRef.collection("Replies")
-
-        // Create a batch to delete the post and all of its replies
-        let batch = db.batch()
-
-        // Delete all replies of the post
-        repliesRef.getDocuments { (querySnapshot, error) in
-            if let error = error {
-                print("Error getting replies: \(error)")
+        firebaseManager.deletePostAndReplies(post) { success in
+            if success {
+                print("Post and replies successfully deleted!")
             } else {
-                if !querySnapshot!.isEmpty {
-                    for document in querySnapshot!.documents {
-                        batch.deleteDocument(document.reference)
-                    }
-                }
-
-                // Delete the post itself
-                batch.deleteDocument(postRef)
-
-                // Commit the batch
-                batch.commit { (batchError) in
-                    if let batchError = batchError {
-                        print("Error executing batch: \(batchError)")
-                    } else {
-                        if let index = self.postsArray.firstIndex(where: { $0.id == post.id }) {
-                            self.postsArray.remove(at: index)
-                        }
-                        if let userPostIndex = self.userPosts.firstIndex(where: { $0.id == post.id }) {
-                            self.userPosts.remove(at: userPostIndex)
-                        }
-                        print("Post and replies successfully deleted!")
-                    }
-                }
+                print("Error deleting post and replies.")
             }
         }
     }
 
-
     
-    func deleteReply(_ reply: Replies, fromPost post: ClassPost) {
-        let college = profileVM.userDocument.College
-        let selectedClass = self.selectedClass
-
-        let replyPath = db.collection("Colleges")
-                          .document(college)
-                          .collection(selectedClass)
-                          .document(post.id)
-                          .collection("Replies")
-                          .document(reply.id)
-
-        replyPath.delete() { error in
-            if let error = error {
-                print("Error deleting reply: \(error)")
-            } else {
-                if let index = post.replies.firstIndex(where: { $0.id == reply.id }) {
-                    post.replies.remove(at: index)
-                }
-                if let userReplyIndex = self.curReplies.firstIndex(where: { $0.id == reply.id }) {
-                    self.curReplies.remove(at: userReplyIndex)
-                }
-                print("Reply successfully deleted!")
-            }
-        }
-    }
 
 
     
-    func getPostsForUser(for user: String, completion: @escaping ([ClassPost]) -> Void) {
-        self.userPosts.removeAll()
-        let college = profileVM.userDocument.College
-        let path = db.collection("Colleges").document(college)
-        let classes: [String] = profileVM.userDocument.Classes ?? []
-        var posts: [ClassPost] = []
-
-        let dispatchGroup = DispatchGroup()
-
-        for c in classes {
-            dispatchGroup.enter()
-            let fullPath = path.collection(c)
-            let query = fullPath.whereField("email", isEqualTo: user)
-
-            query.getDocuments { [weak self] querySnapshot, error in
-                guard let self = self else { return }
-
-                querySnapshot?.documents.forEach { document in
-                    let data = document.data()
-                    let post = self.createPostFromData(data)
-                    posts.append(post)
-                }
-
-                dispatchGroup.leave()
-            }
-        }
-
-        dispatchGroup.notify(queue: .main) {
-           
-            completion(posts)
-        }
-    }
-
     
-    func getPosts(selectedClass: String) {
-        if selectedClass == "Selected Class" {
-            return
-        }
-        
-        let college: String = profileVM.userDocument.College
-        let postLocation = db.collection("Colleges").document(college).collection(selectedClass)
-        
-        postLocation.order(by: "datePosted", descending: true).getDocuments() { [weak self] querySnapshot, error in
-            guard let self = self, let documents = querySnapshot?.documents else { return }
-            
-            var posts: [ClassPost] = []
-            
-            documents.forEach { document in
-                let data = document.data()
-                let post = self.createPostFromData(data)
-                posts.append(post)
-            }
-            
-            self.postsArray = posts
-            self.sortPosts()
-        }
-    }
-    
-    func createPostFromData(_ data: [String: Any]) -> ClassPost {
-        let author = data["author"] as? String ?? ""
-        let postBody = data["postBody"] as? String ?? ""
-        let forClass = data["forClass"] as? String ?? ""
-        let date = data["datePosted"] as? Double ?? 0.0
-        let votes = data["votes"] as? Int64 ?? 0
-        let id = data["id"] as? String ?? ""
-        let usersLiked = data["UsersLiked"] as? [String] ?? []
-        let usersDisliked = data["UsersDisliked"] as? [String] ?? []
-        let email = data["email"] as? String ?? ""
-        let college = data["college"] as? String ?? ""
-        
-        return ClassPost(
-            postBody: postBody,
-            postAuthor: author,
-            forClass: forClass,
-            datePosted: date,
-            votes: votes,
-            id: id,
-            usersLiked: Set(usersLiked),
-            usersDisliked: Set(usersDisliked),
-            email: email,
-            college: college
-        )
-    }
-    
-    func sortPosts() {
-        postsArray.sort { $0.datePosted > $1.datePosted }
-    }
-    
-    func sortUsersPost() {
-        userPosts.sort { $0.votes > $1.votes }
-    }
-    func sortReplies() {
-        curReplies.sort { $0.DatePosted < $1.DatePosted }
-    }
+
 
     
     func addReply(_ replyBody: String, to post: ClassPost) {
-        let college = profileVM.userDocument.College
-        let postPath = db.collection("Colleges").document(college).collection(post.forClass).document(post.id)
-        let replyPath = postPath.collection("Replies").document()
-        let replyId = replyPath.documentID
-        let author = profileVM.userDocument.FullName
-        
-        let replyData: [String: Any] = [
-            "author": author,
-            "replyBody": replyBody,
-            "datePosted": Date().timeIntervalSince1970,
-            "id": replyId
-        ]
-        
-        replyPath.setData(replyData) { error in
-            if let error = error {
+        guard let author = userManager.currentUser?.FullName,
+              let email = userManager.currentUser?.Email else {
+            print("Error: Missing User Info")
+            return
+        }
+
+        let datePosted = Date().timeIntervalSince1970
+
+        firebaseManager.addReply(replyBody, to: post, author: author, email: email) { [weak self] result in
+            switch result {
+            case .success(let reply):
+                post.replies.append(reply)
+                self?.objectWillChange.send()
+            case .failure(let error):
                 print("Error adding reply: \(error)")
             }
         }
-        let reply = Replies(replyBody: replyBody, replyAuthor:author, votes: 0, id: replyId,email: profileVM.userDocument.Email)
-        self.curReplies.append(reply)
-        self.sortReplies()
-        self.objectWillChange.send()
-        
-        
     }
+
+
+
     
     func addNewPost(_ postBody: String) {
-        let college = profileVM.userDocument.College
-        let selectedClass = self.selectedClass
-        let email = profileVM.userDocument.Email
-        let name = profileVM.userDocument.FullName
-        
-        let postPath = db.collection("Colleges").document(college).collection(selectedClass).document()
-        let postId = postPath.documentID
-        
-        let postData: [String: Any] = [
-            "author":profileVM.userDocument.FullName,
-            "postBody": postBody,
-            "forClass": selectedClass,
-            "datePosted": Date().timeIntervalSince1970,
-            "votes": 0,
-            "id": postId,
-            "email": email as Any,
-            "college": college
-        ]
-        
-        postPath.setData(postData) { error in
-            if let error = error {
-                print("Error adding new post: \(error)")
-            }
+        guard let college = userManager.currentUser?.College,
+              let email = userManager.currentUser?.Email,
+              let name = userManager.currentUser?.FullName else {
+            print("Error: Missing User Info")
+            return
         }
-        let newPost = ClassPost(postBody: postBody, postAuthor: name, forClass: selectedClass, votes: 0, id: postId, email: email, college: college)
-        self.postsArray.append(newPost)
-        self.sortPosts()
-        self.userPosts.append(newPost)
-        self.sortUsersPost()
-        self.objectWillChange.send()
-        
-    }
-    
-    
-    func getReplies(forPost post: ClassPost) {
-        let postLocation = db.collection("Colleges").document(profileVM.userDocument.College).collection(selectedClass).document(post.id).collection("Replies")
-        
-        postLocation.order(by: "datePosted", descending: false).getDocuments() { [weak self] querySnapshot, error in
-            guard let self = self, let documents = querySnapshot?.documents else { return }
-            
-            var replies: [Replies] = []
-            
-            documents.forEach { document in
-                let data = document.data()
-                let reply = self.createReplyFromData(data)
-                replies.append(reply)
+
+        let selectedClass = self.selectedClass
+
+        firebaseManager.addNewPost(author: name, postBody: postBody, forClass: selectedClass, college: college, email: email) { result in
+            if let result = result {
+                let (postId, success) = result
+                if success {
+                    print("Post \(postId) added successfully.")
+                    self.getPosts()
+                } else {
+                    print("Error adding new post.")
+                }
+            } else {
+                print("Error adding new post.")
             }
-            
-            self.curReplies = replies
-            
         }
     }
 
-    
-    func handleVoteOnPost(UpOrDown vote: String, onPost post: ClassPost) {
-        guard let user = Auth.auth().currentUser, let email = user.email else {
+
+    func handleVoteOnPost(UpOrDown voteType: VoteType, onPost post: ClassPost) {
+        guard let user = Auth.auth().currentUser else {
             return // Return if user is not logged in
         }
-        
-        let ref = db.collection("Colleges").document(profileVM.userDocument.College).collection(post.forClass).document(post.id)
-        
-        switch vote {
-        case "up":
-            if post.usersLiked.contains(email) {
-                // Revoke the upvote
-                post.usersLiked.remove(email)
-                castDownVote(for: post)
-                ref.updateData([
-                    "votes": FieldValue.increment(Int64(-1)),
-                    "UsersLiked": FieldValue.arrayRemove([email])
-                ])
-            } else if post.usersDisliked.contains(email) {
-                // Revoke the downvote and cast an upvote
-                castUpVote(for: post)
-                castUpVote(for: post)
-                post.usersDisliked.remove(email)
-                post.usersLiked.insert(email)
-                ref.updateData([
-                    "votes": FieldValue.increment(Int64(2)),
-                    "UsersLiked": FieldValue.arrayUnion([email]),
-                    "UsersDisliked": FieldValue.arrayRemove([email])
-                ])
+
+        firebaseManager.performAction(vote: voteType, post: post, user: user) { success, error in
+            if success {
+                // Fetch the updated post from Firestore
+                self.firebaseManager.fetchPost(byId: post.id) { updatedPost, error in
+                    if let updatedPost = updatedPost {
+                        DispatchQueue.main.async {
+                            self.updatePostArray(with: updatedPost)
+                            self.objectWillChange.send()
+                        }
+                    } else {
+                        print(error?.localizedDescription ?? "Error fetching updated post.")
+                    }
+                }
             } else {
-                // Cast an upvote
-                post.usersLiked.insert(email)
-                castUpVote(for: post)
-                ref.updateData([
-                    "votes": FieldValue.increment(Int64(1)),
-                    "UsersLiked": FieldValue.arrayUnion([email])
-                ])
+                // Handle error here
+                print(error?.localizedDescription ?? "Error updating vote.")
             }
-            ref.updateData([
-                "UsersDisliked": FieldValue.arrayRemove([email])
-            ])
-            post.usersDisliked.remove(email)
-            
-        case "down":
-            if post.usersDisliked.contains(email) {
-                // Revoke the downvote
-                castUpVote(for: post)
-                post.usersDisliked.remove(email)
-                ref.updateData([
-                    "votes": FieldValue.increment(Int64(1)),
-                    "UsersDisliked": FieldValue.arrayRemove([email])
-                ])
-            } else if post.usersLiked.contains(email) {
-                // Revoke the upvote and cast a downvote
-                castDownVote(for: post)
-                castDownVote(for: post)
-                post.usersLiked.remove(email)
-                post.usersDisliked.insert(email)
-                ref.updateData([
-                    "votes": FieldValue.increment(Int64(-2)),
-                    "UsersLiked": FieldValue.arrayRemove([email]),
-                    "UsersDisliked": FieldValue.arrayUnion([email])
-                ])
-            } else {
-                // Cast a downvote
-                castDownVote(for: post)
-                post.usersDisliked.insert(email)
-                ref.updateData([
-                    "votes": FieldValue.increment(Int64(-1)),
-                    "UsersDisliked": FieldValue.arrayUnion([email])
-                ])
-            }
-            ref.updateData([
-                "UsersLiked": FieldValue.arrayRemove([email])
-            ])
-            post.usersLiked.remove(email)
-            
-        default:
-            break
         }
-        
-        if let index = postsArray.firstIndex(where: { $0.id == post.id }) {
-            postsArray[index] = post
-        }
-    }
-    
-    func createReplyFromData(_ data: [String: Any]) -> Replies {
-        let author = data["author"] as? String ?? ""
-        let id = data["id"] as? String ?? ""
-        let postBody = data["replyBody"] as? String ?? ""
-        let votes = data["votes"] as? Int64 ?? 0
-        let usersLiked = data["UsersLiked"] as? [String] ?? []
-        let usersDisliked = data["UsersDisliked"] as? [String] ?? []
-        let date = data["datePosted"] as? Double ?? 0.0
-        
-        return Replies(replyBody: postBody, replyAuthor: author, DatePosted: date, votes: votes, id: id, usersLiked: Set(usersLiked), usersDisliked: Set(usersDisliked),email: profileVM.userDocument.Email)
     }
 
-    
-    func handleVoteOnReply(UpOrDown vote: String, onPost post: ClassPost ,onReply reply: Replies){
-            guard let user = Auth.auth().currentUser, let email = user.email else {
+    private func updatePostArray(with post: ClassPost) {
+           if let index = postsArray.firstIndex(where: { $0.id == post.id }) {
+               postsArray[index] = post
+           }
+       }
+
+
+    func handleVoteOnReply(_ vote: VoteType, onPost post: ClassPost, onReply reply: Replies) {
+            guard let user = Auth.auth().currentUser else {
                 return // Return if user is not logged in
             }
-            
-            let ref = db.collection("Colleges").document(profileVM.userDocument.College).collection(selectedClass).document(post.id).collection("Replies").document(reply.id)
-            
-            // Update vote count and user vote status based on the vote type
-            switch vote {
-            case "up":
-                if reply.UsersLiked.contains(email) { // If already upvoted, remove upvote
-                    reply.UsersLiked.remove(email)
-                    castDownVoteReply(for: reply)
-                    ref.updateData([
-                        "votes": FieldValue.increment(Int64(-1)),
-                        "UsersLiked": FieldValue.arrayRemove([email])
-                    ])
-                } else if reply.UserDownVotes.contains(email) { // If already downvoted, change to upvote
-                    castUpVoteReply(for: reply)
-                    castUpVoteReply(for: reply)
-                    reply.UserDownVotes.remove(email)
-                    reply.UsersLiked.insert(email)
-                    ref.updateData([
-                        "votes": FieldValue.increment(Int64(2)),
-                        "UsersLiked": FieldValue.arrayUnion([email]),
-                        "UsersDisliked": FieldValue.arrayRemove([email])
-                    ])
-                } else { // If not voted, add upvote
-                    reply.UsersLiked.insert(email)
-                    castUpVoteReply(for: reply)
-                    ref.updateData([
-                        "votes": FieldValue.increment(Int64(1)),
-                        "UsersLiked": FieldValue.arrayUnion([email])
-                    ])
+
+            firebaseManager.performActionOnReply(vote: vote, post: post, reply: reply, user: user) { success, error in
+                if success {
+                    switch vote {
+                    case .up:
+                        reply.UserDownVotes.remove(user.email!)
+                        if reply.UsersLiked.contains(user.email!) {
+                            reply.UsersLiked.remove(user.email!)
+                            reply.votes -= 1
+                        } else {
+                            if reply.UserDownVotes.contains(user.email!) {
+                                reply.votes += 2
+                            } else {
+                                reply.votes += 1
+                            }
+                            reply.UsersLiked.insert(user.email!)
+                        }
+
+                    case .down:
+                        reply.UsersLiked.remove(user.email!)
+                        if reply.UserDownVotes.contains(user.email!) {
+                            reply.UserDownVotes.remove(user.email!)
+                            reply.votes += 1
+                        } else {
+                            if reply.UsersLiked.contains(user.email!) {
+                                reply.votes -= 2
+                            } else {
+                                reply.votes -= 1
+                            }
+                            reply.UserDownVotes.insert(user.email!)
+                        }
+                    }
+                    // Call the UI update method here
+                } else if let error = error {
+                    // Handle the error here
+                    print("Error updating vote: \(error)")
                 }
-                // Remove from downvote list
-                ref.updateData([
-                    "UsersDisliked": FieldValue.arrayRemove([email])
-                ])
-                reply.UserDownVotes.remove(email)
-            case "down":
-                if reply.UserDownVotes.contains(email) { // If already downvoted, remove downvote
-                    castUpVoteReply(for: reply)
-                    reply.UserDownVotes.remove(email)
-                    ref.updateData([
-                        "votes": FieldValue.increment(Int64(1)),
-                        "UsersDisliked": FieldValue.arrayRemove([email])
-                    ])
-                } else if reply.UsersLiked.contains(email) { // If already upvoted, change to downvote
-                    castDownVoteReply(for: reply)
-                    castDownVoteReply(for: reply)
-                    reply.UsersLiked.remove(email)
-                    reply.UserDownVotes.insert(email)
-                    ref.updateData([
-                        "votes": FieldValue.increment(Int64(-2)),
-                        "UsersLiked": FieldValue.arrayRemove([email]),
-                        "UsersDisliked": FieldValue.arrayUnion([email])
-                    ])
-                } else { // If not voted, add downvote
-                    castDownVoteReply(for: reply)
-                    reply.UserDownVotes.insert(email)
-                    ref.updateData([
-                        "votes": FieldValue.increment(Int64(-1)),
-                        "UsersDisliked": FieldValue.arrayUnion([email])
-                    ])
-                }
-                // Remove from upvote list
-                ref.updateData([
-                    "UsersLiked": FieldValue.arrayRemove([email])
-                ])
-                reply.UsersLiked.remove(email)
-            default:
-                break
             }
         }
-    /// will increase vote count by 1 for a specific post
-        /// - Parameter post: the post we are adding 1 to vote property
-        func castUpVote(for post:ClassPost){
-            objectWillChange.send()
-            post.votes += 1
-        }
-        /// will decrease vote count by 1 for a specific post
-        /// - Parameter post: the post we are subtracting 1 from the  vote property
-        func castDownVote(for post:ClassPost){
-            objectWillChange.send()
-            post.votes -= 1
-        }
-        // same methods as above, for replies
-        /// will increase vote count by 1 for a specific post
-        /// - Parameter post: the post we are adding 1 to vote property
-        func castUpVoteReply(for reply:Replies){
-            objectWillChange.send()
-            reply.votes += 1
-            
+    
+    func deleteReply(_ reply: Replies, fromPost post: ClassPost) {
+        firebaseManager.deleteReply(reply, fromPost: post) { [weak self] result in
+                switch result {
+                case .success:
+                    // Update the local data after successful deletion
+                    if let index = post.replies.firstIndex(where: { $0.id == reply.id }) {
+                        post.replies.remove(at: index)
+                    }
+                    // Update any other necessary data
+                    self?.objectWillChange.send()
+                case .failure(let error):
+                    print("Error deleting reply: \(error)")
+                }
+            }
         }
         
-        /// will decrease vote count by 1 for a specific post
-        /// - Parameter post: the post we are subtracting 1 from the  vote property
-        func castDownVoteReply(for reply:Replies){
-            objectWillChange.send()
-            reply.votes -= 1
-        }
-
 }

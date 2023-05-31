@@ -1,265 +1,111 @@
-//
-//  UserProfileViewMode.swift
-//  NightOut
-//
-//  Created by Kyle Zeller on 1/10/23.
-//
-
 import SwiftUI
 import Firebase
 
-class UserProfileViewModel: ObservableObject{
-    
-    @Published var userDocument: UserDocument = UserDocument(FirstName: "Default", LastName: "", College: "", Birthday: "", Major: "", Classes: [], Email: "")
-    
+class UserProfileViewModel: ObservableObject {
     @Published var usersPosts: [ClassPost] = []
-    
-    
     let db = Firestore.firestore()
-    private var listener: ListenerRegistration?
     
+    private var userManager: UserManager
     
-    func getPostsForUser(for user: String, completion: @escaping ([ClassPost]) -> ()) {
-        self.usersPosts.removeAll()
-        var posts: [ClassPost] = []
-        let college = userDocument.College
-        let path = db.collection("Colleges").document(college)
-        let classes: [String] = userDocument.Classes ?? []
+    func getPostsForUser(for user: String) {
+        guard let college = UserManager.shared.currentUser?.College else { return }
+        let path = db.collection("posts")
         
-        for c in classes {
-            let fullPath = path.collection(c)
-            let query = fullPath.whereField("email", isEqualTo: user)
+        let query = path
+            .whereField("college", isEqualTo: college)
+            .whereField("email", isEqualTo: user)
+            .order(by: "votes")
+        
+        query.getDocuments { querySnapshot, error in
+            guard let documents = querySnapshot?.documents else {
+                print("Error fetching documents in getPostsForUser(): \(error?.localizedDescription ?? "")")
+                return
+            }
             
-            query.getDocuments { querySnapshot, error in
-                guard let documents = querySnapshot?.documents else {
-                    print("Error getting documents in getPostsForUser(): \(error?.localizedDescription ?? "")")
-                    return
-                }
-                
-                documents.forEach { document in
-                    
-                    let data = document.data()
-                    let author = data["author"] as? String ?? ""
-                    let postBody = data["postBody"] as? String ?? ""
-                    let forClass = data["forClass"] as? String ?? ""
-                    let date = data["datePosted"] as? Double ?? 0.0
-                    let votes = data["votes"] as? Int64 ?? 0
-                    let id = data["id"] as? String ?? ""
-                    let usersLiked = data["UsersLiked"] as? [String] ?? []
-                    let usersDisliked = data["UsersDisliked"] as? [String] ?? []
-                    let email = data["email"] as? String ?? ""
-                    let college = data["college"] as? String ?? ""
-                    
-                    let post = ClassPost(
-                        postBody: postBody,
-                        postAuthor: author,
-                        forClass: forClass,
-                        datePosted: date,
-                        votes: votes,
-                        id: id,
-                        usersLiked: Set(usersLiked),
-                        usersDisliked: Set(usersDisliked),
-                        email: email,
-                        college: college
-                    )
-                    posts.append(post)
-                }
-                //this needs to be fixed by creating an index in firebase. this is a lazy fix for now:
+            var posts: [ClassPost] = []
+            
+            for document in documents {
                
-                completion(posts)
+                let data = document.data()
+                let author = data["author"] as? String ?? ""
+                        let postBody = data["post_body"] as? String ?? ""
+                        let forClass = data["for_class"] as? String ?? ""
+                        let date = data["time_stamp"] as? Double ?? 0.0
+                        let votes = data["votes"] as? Int64 ?? 0
+                        let id = data["id"] as? String ?? ""
+                        let usersLiked = data["users_liked"] as? [String] ?? []
+                        let usersDisliked = data["users_disliked"] as? [String] ?? []
+                        let email = data["email"] as? String ?? ""
+                        let college = data["college"] as? String ?? ""
+                let post = ClassPost(postBody: postBody, postAuthor: author, forClass: forClass, datePosted: date, votes: votes, id: id, usersLiked: Set(usersLiked), usersDisliked: Set(usersDisliked), email: email, college: college)
+                posts.append(post)
+            }
+            
+            DispatchQueue.main.async {
+                
+                
+                self.usersPosts = posts
                 self.objectWillChange.send()
             }
         }
-        self.sortUsersPost()
-    }
-
-   
-    
-    func getReplies(forPost post: ClassPost, inClass c:String, completion: @escaping ([Replies]) -> ()) {
-        post.replies.removeAll()
-
-        let college: String = self.userDocument.College
-        let postLocation = db.collection("Colleges").document(college).collection(c).document(post.id).collection("Replies")
-
-        postLocation.order(by: "date", descending: false).addSnapshotListener { (querySnapshot, err) in
-            if let err = err {
-                print("Something went wrong getting replies on post from Firebase: \(err.localizedDescription)")
-                completion([])
-            } else {
-                var tempReplies: [Replies] = []
-
-                for document in querySnapshot!.documents {
-                    let data = document.data()
-                    let author = data["author"] as? String ?? ""
-                   
-                    let id = data["id"] as? String ?? ""
-                    let postBody = data["postBody"] as? String ?? ""
-                    let votes = data["votes"] as? Int64 ?? 0
-                    let usersLiked = data["UsersLiked"] as? [String] ?? []
-                    let usersDisliked = data["UsersDisliked"] as? [String] ?? []
-                    let date = data["datePosted"] as? Double ?? 0.0
-                    let email = data["email"] as? String ?? ""
-                    let reply = Replies(replyBody: postBody, replyAuthor: author,  DatePosted: date, votes: votes, id: id, usersLiked: Set(usersLiked), usersDisliked: Set(usersDisliked),email: email)
-                    tempReplies.append(reply)
-                }
-
-                completion(tempReplies)
-            }
-        }
     }
 
 
+    func deletePostAndReplies(_ post: ClassPost) {
+        guard let college = UserManager.shared.currentUser?.College else { return }
+        let selectedClass = post.forClass
 
-    
-    func getDocument(user: String, completion: @escaping ((UserDocument) -> ())) {
-        let doc = db.collection("Users").document(user)
-        
-        doc.getDocument { documentSnapshot, error in
+        // Get the references to the post and its replies
+        let postRef = db.collection("Colleges").document(college).collection(selectedClass).document(post.id)
+        let repliesRef = postRef.collection("Replies")
+
+        // Create a batch to delete the post and all of its replies
+        let batch = db.batch()
+
+        // Delete all replies of the post
+        repliesRef.getDocuments { (querySnapshot, error) in
             if let error = error {
-                print("Error fetching document: \(error)")
-                completion(UserDocument(FirstName: "", LastName: "", College: "", Birthday: "", Major: "", Classes: [], Email: ""))
-                return
-            }
-            
-            guard let data = documentSnapshot?.data(),
-                  let firstName = data["FirstName"] as? String,
-                  let lastName = data["LastName"] as? String,
-                  let college = data["College"] as? String,
-                  let birthday = data["Birthday"] as? String,
-                  let major = data["Major"] as? String,
-                  let classes = data["Classes"] as? [String],
-                  let email = data["Email"] as? String
-            else {
-                print("Invalid document data or missing fields")
-                completion(UserDocument(FirstName: "", LastName: "", College: "", Birthday: "", Major: "", Classes: [], Email: ""))
-                return
-            }
-            
-            let retrievedDoc = UserDocument(FirstName: firstName, LastName: lastName, College: college, Birthday: birthday, Major: major, Classes: classes, Email: email)
-            completion(retrievedDoc)
-        }
-    }
-
-
-
-    
-    func handleEdit(college: String, classes: [String]) {
-        // Get reference to location in Firebase
-        let userDocLocation = db.collection("Users").document(userDocument.Email)
-
-        // Create a dictionary to store updated field values
-        var updatedFields: [String: Any] = [:]
-
-        // Update field values if they are different from current values
-        if college != userDocument.College {
-            updatedFields["College"] = college
-        }
-        if !classes.elementsEqual(userDocument.Classes ?? []) {
-            updatedFields["Classes"] = classes
-        }
-
-        // Update values in Firebase if there are any changes
-        if !updatedFields.isEmpty {
-            userDocLocation.setData(updatedFields, merge: true)
-        }
-
-        // Update local user document
-        userDocument.College = college
-        userDocument.Classes = classes
-
-        // Send objectWillChange notification
-        objectWillChange.send()
-    }
- 
-    
-    
-    func getPostsForUser(for user: String, college: String, classes: [String], completion: @escaping ([ClassPost]) -> ()) {
-        self.usersPosts.removeAll()
-        
-        let path = db.collection("Colleges").document(college)
-        var posts: [ClassPost] = []
-
-        for c in classes {
-            let fullPath = path.collection(c)
-            let query = fullPath.whereField("email", isEqualTo: user)
-            
-            query.getDocuments { querySnapshot, error in
-                guard let documents = querySnapshot?.documents else {
-                    print("Error getting documents in getPostsForUser(): \(error?.localizedDescription ?? "")")
-                    return
+                print("Error getting replies: \(error)")
+            } else {
+                if !querySnapshot!.isEmpty {
+                    for document in querySnapshot!.documents {
+                        batch.deleteDocument(document.reference)
+                    }
                 }
-                
-               
-                documents.forEach { document in
-                    let data = document.data()
-                    let post = self.createPostFromData(data)
-                    posts.append(post)
+
+                // Delete the post itself
+                batch.deleteDocument(postRef)
+
+                // Commit the batch
+                batch.commit { (batchError) in
+                    if let batchError = batchError {
+                        print("Error executing batch: \(batchError)")
+                    } else {
+                        if let index = self.usersPosts.firstIndex(where: { $0.id == post.id }) {
+                            self.usersPosts.remove(at: index)
+                        }
+                        if let userPostIndex = self.usersPosts.firstIndex(where: { $0.id == post.id }) {
+                            self.usersPosts.remove(at: userPostIndex)
+                        }
+                       
+                    }
                 }
-                
-                self.usersPosts = posts
-                self.sortUsersPost()
             }
         }
     }
-    func createPostFromData(_ data: [String: Any]) -> ClassPost {
-        let author = data["author"] as? String ?? ""
-        let postBody = data["postBody"] as? String ?? ""
-        let forClass = data["forClass"] as? String ?? ""
-        let date = data["datePosted"] as? Double ?? 0.0
-        let votes = data["votes"] as? Int64 ?? 0
-        let id = data["id"] as? String ?? ""
-        let usersLiked = data["UsersLiked"] as? [String] ?? []
-        let usersDisliked = data["UsersDisliked"] as? [String] ?? []
-        let email = data["email"] as? String ?? ""
-        let college = data["college"] as? String ?? ""
-        
-        return ClassPost(
-            postBody: postBody,
-            postAuthor: author,
-            forClass: forClass,
-            datePosted: date,
-            votes: votes,
-            id: id,
-            usersLiked: Set(usersLiked),
-            usersDisliked: Set(usersDisliked),
-            email: email,
-            college: college
-        )
-    }
-
     
-    init() {
-        let curUser = self.CurUser()
+    
+    init(userManager: UserManager = UserManager.shared) {
+        self.userManager = userManager
 
-        self.getDocument(user: curUser) { [weak self] retrieved in
-            guard let self = self else { return } // Add weak self capture list to avoid retain cycle
-            self.userDocument = retrieved
-
-            if let classes = self.userDocument.Classes {
-                self.userDocument.Classes = classes.sorted() // Sort classes in place
-            }
-
-            self.getPostsForUser(for: curUser, college: self.userDocument.College, classes: self.userDocument.Classes ?? []) { posts in
-                self.usersPosts = posts
-                self.sortUsersPost()
-            }
+        userManager.initializeUser { [weak self] currentUser in
+            guard let curUser = currentUser?.Email else { return }
+            
+            self?.getPostsForUser(for: curUser)
         }
     }
-
     
-    private func parseMajor(major: String) -> [String]{
+    private func parseMajor(major: String) -> [String] {
         return major.components(separatedBy: ",")
-    }
-    
-     func CurUser() -> String{
-        let curUser =  Auth.auth().currentUser
-        if let curUser = curUser{
-            return curUser.email ?? ""
-        }
-        return ""
-    }
-    
-     func sortUsersPost(){
-        self.usersPosts.sort(by: {$0.votes > $1.votes})
     }
 }

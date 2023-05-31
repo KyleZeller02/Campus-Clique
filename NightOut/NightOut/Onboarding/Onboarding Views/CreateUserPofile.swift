@@ -11,77 +11,77 @@ import Firebase
 
 
 struct CreateUserProfile: View {
-    @State var FirstName: String = ""
-    @State var LastName: String = ""
-    @State var College: String = ""
-    @State private var isReadyForNextView: Bool = false
-    @State private var showingAlert: Bool = false
-    @StateObject var viewRouter: ViewRouter
+    @State private var firstName: String = ""
+    @State private var lastName: String = ""
+    @State private var college: String = ""
+    @State private var isReadyForNextView = false
+    @State private var showingAlert = false
+    @StateObject  var viewRouter: ViewRouter
     
-
     var body: some View {
         NavigationView {
-            ZStack{
-                Color.Gray
+            ZStack {
+                Color.gray
                     .ignoresSafeArea()
-                VStack(alignment: .leading){
+                
+                VStack(alignment: .leading, spacing: 20) {
                     Text("Create Your Profile")
                         .font(.system(size: 40))
                         .fontWeight(.semibold)
-                        .foregroundColor(Color.Purple)
-                        .multilineTextAlignment(.leading)
-                    TextField("First Name", text: $FirstName)
-                        .autocapitalization(UITextAutocapitalizationType.words)
-                        .padding()
-                        .background(Color.Gray)
-                        .cornerRadius(5.0)
-                        
-                    TextField("Last Name", text: $LastName)
-                        .autocapitalization(UITextAutocapitalizationType.words)
-                        .padding()
-                        .background(Color.Gray)
-                        .cornerRadius(5.0)
-                        
-                    TextField("Your College" , text: $College)
-                        .autocapitalization(UITextAutocapitalizationType.words)
-                        .padding()
-                        .background(Color.Gray)
-                        .cornerRadius(5.0)
-                        
-                        .padding(.bottom, 20)
-
+                        .foregroundColor(.Black)
                     
-                    Button(action: {
-                        if FirstName != "" && LastName != "" && College != ""{
-                           
-                            let user = Auth.auth().currentUser
-                            let email = user?.email
-                           FirstName = FirstName.trimmingCharacters(in: .whitespacesAndNewlines)
-                            LastName = LastName.trimmingCharacters(in: .whitespacesAndNewlines)
-                            College = College.trimmingCharacters(in: .whitespacesAndNewlines)
-                            OnboardingDatabaseManager.addFirstLastCollegeToDocument(firstName: FirstName, lastName: LastName, college: College, email: email ?? "")
+                    TextField("First Name", text: $firstName)
+                        .autocapitalization(.words)
+                        .padding()
+                        .background(Color.white)
+                        .cornerRadius(5.0)
+                    
+                    TextField("Last Name", text: $lastName)
+                        .autocapitalization(.words)
+                        .padding()
+                        .background(Color.white)
+                        .cornerRadius(5.0)
+                    
+                    TextField("Your College", text: $college)
+                        .autocapitalization(.words)
+                        .padding()
+                        .background(Color.white)
+                        .cornerRadius(5.0)
+                    HStack{
+                        Spacer()
+                        Button(action: {
+                            if !firstName.isEmpty && !lastName.isEmpty && !college.isEmpty {
+                                let user = Auth.auth().currentUser
+                                let email = user?.email
+                                let trimmedFirstName = firstName.trimmingCharacters(in: .whitespacesAndNewlines)
+                                let trimmedLastName = lastName.trimmingCharacters(in: .whitespacesAndNewlines)
+                                let trimmedCollege = college.trimmingCharacters(in: .whitespacesAndNewlines)
                                 
-                                //change view
-                            viewRouter.CurrentViewState = .UserDataAcquisition
-                            
-                        } else {
-                            self.showingAlert = true
+                                OnboardingDatabaseManager.addFirstLastCollegeToDocument(firstName: trimmedFirstName, lastName: trimmedLastName, college: trimmedCollege, email: email ?? "")
+                                
+                                viewRouter.CurrentViewState = .UserDataAcquisition
+                            } else {
+                                self.showingAlert = true
+                            }
+                        }) {
+                            NextButton()
                         }
-                    }) {
-                        NextButton()
-                    }.alert(isPresented: $showingAlert) {
+                    }
+                    
+                    .alert(isPresented: $showingAlert) {
                         Alert(title: Text("Please Answer Prompts"), dismissButton: .default(Text("Got it!")))
                     }
+                    
                     Spacer()
                 }
-                .padding(.leading,20)
-                .padding(.trailing,20)
-                
+                .padding(.horizontal, 20)
             }
+            .navigationBarHidden(true)
+            
         }
-        .accentColor(.Purple)
     }
 }
+
 
 
 struct ProfileSetUp_Previews: PreviewProvider {
@@ -97,7 +97,7 @@ struct NextButton: View {
             .foregroundColor(.white)
             .padding()
             .frame(width: 220, height: 60)
-            .background(Color.Purple)
+            .background(LinearGradient(gradient: Gradient(colors: [.Purple, .Black]), startPoint: .leading, endPoint: .trailing))
             .cornerRadius(15.0)
             
     }

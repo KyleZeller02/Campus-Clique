@@ -10,6 +10,7 @@ struct Settings: View {
     let backgroundColor = Color.black
     let primaryColor = Color.purple
     let textFieldColor = Color.white.opacity(0.1)
+    @StateObject var viewRouter: ViewRouter
 
     var body: some View {
         ZStack{
@@ -59,7 +60,7 @@ struct Settings: View {
                 //Logout and Delete account Buttons
                 HStack{
                     Button(action: {
-                        AccountActions.LogOut()
+                        
                     }) {
                         Text("Log Out")
                             .font(.headline)
@@ -95,6 +96,9 @@ struct AccountActions{
     static func LogOut(){
         do {
             try Auth.auth().signOut()
+            UserManager.shared.currentUser = nil
+            
+           
             // User has been successfully logged out
         } catch {
             print("Error signing out: \(error.localizedDescription)")

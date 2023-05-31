@@ -24,49 +24,64 @@ struct AlertState {
 }
 
 struct LoginView: View {
-    @State var email: String = ""
-        @State var password: String = ""
-        @StateObject var viewRouter: ViewRouter
-        @StateObject var onboardingVM: OnboardingViewModel = OnboardingViewModel()
-        @State var alertState = AlertState(showAlert: false, alertType: .invalidInput, message: "")
+    @State private var email: String = ""
+    @State private var password: String = ""
+    @StateObject  var viewRouter: ViewRouter
+    @StateObject private var onboardingVM: OnboardingViewModel = OnboardingViewModel()
+    @State private var alertState = AlertState(showAlert: false, alertType: .invalidInput, message: "")
     
     var body: some View {
-        NavigationView{
-            ZStack{
-                Color.Gray
+        NavigationView {
+            ZStack {
+                Color.gray
                     .ignoresSafeArea()
-                VStack {
-                    //app tital
-                    Title()
-                    // this image(Logo) is a place holder for the app logo
-                    Logo()
-                    MissionStatement()
-                    //username field
+                
+                VStack(spacing: 20) {
+                    Spacer().frame(height: 40)
+                    
+                    Text("\(ProgramConstants.AppName)")
+                        .font(.system(size: 40))
+                        .fontWeight(.semibold)
+                        .foregroundColor(.Black)
+                        .multilineTextAlignment(.center)
+                    
+                    Image("AppLogo")
+                        .resizable()
+                        .aspectRatio(contentMode: .fill)
+                        .frame(width: 150, height: 150)
+                        .clipped()
+                        .cornerRadius(150)
+                    
+                    Text("The College Experience Awaits")
+                        .font(.headline)
+                    
                     TextField("Email", text: $email)
                         .autocapitalization(.none)
                         .padding()
-                        .background(Color.Gray)
+                        .background(Color.white)
                         .cornerRadius(5.0)
                         .padding(.bottom, 20)
-                    //password field
+                    
                     SecureField("Password", text: $password)
                         .autocapitalization(.none)
                         .padding()
-                        .background(Color.Gray)
+                        .background(Color.white)
                         .cornerRadius(5.0)
                         .padding(.bottom, 10)
                     
-                    //Login Button
-                    HStack{
+                    HStack(spacing: 20) {
                         Button(action: {
-                            if email == "" || password == ""{
+                            if email.isEmpty || password.isEmpty {
                                 self.alertState = AlertState(showAlert: true, alertType: .invalidInput, message: "Enter Email and Password")
                                 return
                             }
-                            onboardingVM.logIn(withEmail: email, withPassword: password){result in
+                            
+                            onboardingVM.logIn(withEmail: email, withPassword: password) { result in
                                 DispatchQueue.main.async {
                                     switch result {
                                     case .success(_):
+                                       
+                                        UserManager.shared.getCurrentUserDocument()
                                         viewRouter.CurrentViewState = .InAppViews
                                     case .failure(let error):
                                         alertState = AlertState(showAlert: true, alertType: .badLogin, message: error.localizedDescription)
@@ -74,74 +89,88 @@ struct LoginView: View {
                                 }
                             }
                         }) {
-                            LoginButton()
+                            Text("Log in")
+                                    .font(.headline)
+                                    .foregroundColor(.white)
+                                    .padding()
+                                    .frame(maxWidth: .infinity)
+                                    .background(
+                                        Color.Gray
+                                    )
+                                    .cornerRadius(15.0)
                         }
                         .alert(isPresented: $alertState.showAlert) {
                             Alert(title: Text(alertTitle()), message: Text(alertState.message), dismissButton: .default(Text("Got it!")))
                         }
-
-                    
-                    
-                    //sign up button
+                        
                         Button(action: {
-                            if email == "" || password == ""{
+                            if email.isEmpty || password.isEmpty {
                                 self.alertState = AlertState(showAlert: true, alertType: .invalidInput, message: "Enter Email and Password")
                                 return
                             }
+                            
                             onboardingVM.signUp(withEmail: email, withPassword: password) { result in
-                            DispatchQueue.main.async {
-                                switch result {
-                                case .success(_):
-                                    viewRouter.CurrentViewState = .CreateUserProfile
-                                    OnboardingDatabaseManager.addDefaultData(email: email)
-                                case .failure(let error):
-                                    alertState = AlertState(showAlert: true, alertType: .badSignUp, message: error.localizedDescription)
+                                DispatchQueue.main.async {
+                                    switch result {
+                                    case .success(_):
+                                        viewRouter.CurrentViewState = .CreateUserProfile
+                                        
+                                    case .failure(let error):
+                                        alertState = AlertState(showAlert: true, alertType: .badSignUp, message: error.localizedDescription)
+                                    }
                                 }
                             }
-                        }
                         }) {
-                            SIGNUP()
+                            Text("Sign up")
+                                    .font(.headline)
+                                    .foregroundColor(.white)
+                                    .padding()
+                                    .frame(maxWidth: .infinity)
+                                    .background(
+                                        LinearGradient(
+                                            gradient: Gradient(colors: [.Purple, .Black]),
+                                            startPoint: .leading,
+                                            endPoint: .trailing
+                                        )
+                                    )
+                                    .cornerRadius(15.0)
                         }
-                    
                         .alert(isPresented: $alertState.showAlert) {
                             Alert(title: Text(alertTitle()), message: Text(alertState.message), dismissButton: .default(Text("Got it!")))
                         }
-                } .padding()
                     }
-                .padding(.horizontal)
+                    
+                    Spacer()
+                }
+                .padding()
                 .frame(minWidth: 0, maxWidth: .infinity)
-                     Spacer()
-                
             }
-            
-            .onAppear{
+            .navigationBarHidden(true)
+            .onAppear {
                 let user = Auth.auth().currentUser
-                if user != nil{
+                if user != nil {
                     viewRouter.CurrentViewState = .InAppViews
                 }
-    
             }
             .onTapGesture {
                 hideKeyboard()
-                
             }
         }
-        
     }
     
     private func alertTitle() -> String {
-            switch alertState.alertType {
-            case .invalidInput:
-                return "Invalid Input"
-            case .badLogin:
-                return "Login Failed"
-            case .badSignUp:
-                return "Sign Up Failed"
-            }
+        switch alertState.alertType {
+        case .invalidInput:
+            return "Invalid Input"
+        case .badLogin:
+            return "Login Failed"
+        case .badSignUp:
+            return "Sign Up Failed"
         }
-    
-    
+    }
 }
+
+
 
 
 struct ContentView_Previews: PreviewProvider{
@@ -184,7 +213,7 @@ struct LoginButton: View {
             .foregroundColor(.Purple)
             .padding()
             .frame(maxWidth: .infinity)
-            .background(Color.Gray)
+            .background(LinearGradient(gradient: Gradient(colors: [.Gray, .gray]), startPoint: .leading, endPoint: .trailing))
             .cornerRadius(15.0)
     }
 }
@@ -196,33 +225,13 @@ struct SIGNUP: View {
             .foregroundColor(.white)
             .padding()
             .frame(maxWidth: .infinity)
-            .background(Color.Purple)
-            .cornerRadius(15.0)
-    }
-}
-struct LoginWithAppleID: View {
-    var body: some View {
-        Text("Login With Apple ID")
-            .font(.system(size:12))
-            .foregroundColor(.white)
-            .padding()
-            
-            .background(Color.Purple)
+            .background(LinearGradient(gradient: Gradient(colors: [.Purple, .Black]), startPoint: .leading, endPoint: .trailing))
             .cornerRadius(15.0)
     }
 }
 
-struct LoginWithPhoneNumber: View {
-    var body: some View {
-        Text("Login With Phone Number")
-            .font(.system(size:12))
-            .foregroundColor(.white)
-            .padding()
-            .frame(width: 190, height: 60)
-            .background(Color.Purple)
-            .cornerRadius(15.0)
-    }
-}
+
+
 
 
 struct MissionStatement: View {

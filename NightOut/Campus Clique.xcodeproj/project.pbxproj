@@ -28,6 +28,8 @@
 		02618F7B2A1C511A00885900 /* FirebaseAuthCombine-Community in Frameworks */ = {isa = PBXBuildFile; productRef = 02618F7A2A1C511A00885900 /* FirebaseAuthCombine-Community */; };
 		027196852A0F06FE006FAD50 /* Edit Profile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 027196842A0F06FE006FAD50 /* Edit Profile.swift */; };
 		027196872A15AEF0006FAD50 /* AddPostView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 027196862A15AEF0006FAD50 /* AddPostView.swift */; };
+		028283A82A25225D0029DE7E /* UserManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 028283A72A25225D0029DE7E /* UserManager.swift */; };
+		028283AB2A26A66C0029DE7E /* FireStoreManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 028283AA2A26A66C0029DE7E /* FireStoreManager.swift */; };
 		02943B2229526CF000DB7DF6 /* UserProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02943B2129526CEF00DB7DF6 /* UserProfileView.swift */; };
 		02943BEE2952850300DB7DF6 /* ViewNavigator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02943BED2952850300DB7DF6 /* ViewNavigator.swift */; };
 		02943BF0295398FB00DB7DF6 /* ProfilePictureAcquisition.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02943BEF295398FB00DB7DF6 /* ProfilePictureAcquisition.swift */; };
@@ -81,6 +83,8 @@
 		023C2A0C28B28B820045904F /* UserBirthdayAcquisition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserBirthdayAcquisition.swift; sourceTree = "<group>"; };
 		027196842A0F06FE006FAD50 /* Edit Profile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Edit Profile.swift"; sourceTree = "<group>"; };
 		027196862A15AEF0006FAD50 /* AddPostView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddPostView.swift; sourceTree = "<group>"; };
+		028283A72A25225D0029DE7E /* UserManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserManager.swift; sourceTree = "<group>"; };
+		028283AA2A26A66C0029DE7E /* FireStoreManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FireStoreManager.swift; sourceTree = "<group>"; };
 		02943B2129526CEF00DB7DF6 /* UserProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileView.swift; sourceTree = "<group>"; };
 		02943BED2952850300DB7DF6 /* ViewNavigator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewNavigator.swift; sourceTree = "<group>"; };
 		02943BEF295398FB00DB7DF6 /* ProfilePictureAcquisition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfilePictureAcquisition.swift; sourceTree = "<group>"; };
@@ -163,6 +167,15 @@
 				02D7C15B29BBE1AA002F8223 /* InAppView.swift */,
 			);
 			path = Views;
+			sourceTree = "<group>";
+		};
+		028283A92A2522620029DE7E /* Manager */ = {
+			isa = PBXGroup;
+			children = (
+				028283A72A25225D0029DE7E /* UserManager.swift */,
+				028283AA2A26A66C0029DE7E /* FireStoreManager.swift */,
+			);
+			path = Manager;
 			sourceTree = "<group>";
 		};
 		02943B1B294E600F00DB7DF6 /* Onboarding Views */ = {
@@ -266,6 +279,7 @@
 				02943C33296E2B3D00DB7DF6 /* Constants.swift */,
 				02943C86297228A100DB7DF6 /* ClassPosts */,
 				02FDBF4E2A1C5F480020A6BD /* DatabaseActions.swift */,
+				028283A92A2522620029DE7E /* Manager */,
 			);
 			path = NightOut;
 			sourceTree = "<group>";
@@ -462,10 +476,12 @@
 				0205E4DD2A03745A00A9E98E /* DirectMessagesView.swift in Sources */,
 				02943C2D29664CED00DB7DF6 /* DatabaseFetcherSender.swift in Sources */,
 				02943BEE2952850300DB7DF6 /* ViewNavigator.swift in Sources */,
+				028283AB2A26A66C0029DE7E /* FireStoreManager.swift in Sources */,
 				023C29F92883A9210045904F /* UserDataAcquisition.swift in Sources */,
 				02FDBF4F2A1C5F480020A6BD /* DatabaseActions.swift in Sources */,
 				02943C8D2972320400DB7DF6 /* ClassPosts.swift in Sources */,
 				02943C37296E2FCA00DB7DF6 /* UserProfileViewModel.swift in Sources */,
+				028283A82A25225D0029DE7E /* UserManager.swift in Sources */,
 				02943B2229526CF000DB7DF6 /* UserProfileView.swift in Sources */,
 				02947E6A2879F727005133D5 /* LoginView.swift in Sources */,
 				0205E4DF2A03748B00A9E98E /* MessageModel.swift in Sources */,
