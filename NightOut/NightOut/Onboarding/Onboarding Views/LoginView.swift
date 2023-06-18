@@ -7,6 +7,8 @@
 
 import SwiftUI
 import Firebase
+import KeyboardObserving
+
 //this is the initial view the user sees, if there is no user storage showing they are already logged in
 enum AlertType {
     case invalidInput, badLogin, badSignUp
@@ -68,28 +70,29 @@ struct LoginView: View {
                         .background(Color.white)
                         .cornerRadius(5.0)
                         .padding(.bottom, 10)
-                    
-                    HStack(spacing: 20) {
-                        Button(action: {
-                            if email.isEmpty || password.isEmpty {
-                                self.alertState = AlertState(showAlert: true, alertType: .invalidInput, message: "Enter Email and Password")
-                                return
-                            }
-                            
-                            onboardingVM.logIn(withEmail: email, withPassword: password) { result in
-                                DispatchQueue.main.async {
-                                    switch result {
-                                    case .success(_):
-                                       
-                                        UserManager.shared.getCurrentUserDocument()
-                                        viewRouter.CurrentViewState = .InAppViews
-                                    case .failure(let error):
-                                        alertState = AlertState(showAlert: true, alertType: .badLogin, message: error.localizedDescription)
+                    VStack{
+                        Spacer()
+                        HStack(spacing: 20) {
+                            Button(action: {
+                                if email.isEmpty || password.isEmpty {
+                                    self.alertState = AlertState(showAlert: true, alertType: .invalidInput, message: "Enter Email and Password")
+                                    return
+                                }
+                                
+                                onboardingVM.logIn(withEmail: email, withPassword: password) { result in
+                                    DispatchQueue.main.async {
+                                        switch result {
+                                        case .success(_):
+                                            
+                                            
+                                            viewRouter.CurrentViewState = .InAppViews
+                                        case .failure(let error):
+                                            alertState = AlertState(showAlert: true, alertType: .badLogin, message: error.localizedDescription)
+                                        }
                                     }
                                 }
-                            }
-                        }) {
-                            Text("Log in")
+                            }) {
+                                Text("Log in")
                                     .font(.headline)
                                     .foregroundColor(.white)
                                     .padding()
@@ -98,30 +101,30 @@ struct LoginView: View {
                                         Color.Gray
                                     )
                                     .cornerRadius(15.0)
-                        }
-                        .alert(isPresented: $alertState.showAlert) {
-                            Alert(title: Text(alertTitle()), message: Text(alertState.message), dismissButton: .default(Text("Got it!")))
-                        }
-                        
-                        Button(action: {
-                            if email.isEmpty || password.isEmpty {
-                                self.alertState = AlertState(showAlert: true, alertType: .invalidInput, message: "Enter Email and Password")
-                                return
+                            }
+                            .alert(isPresented: $alertState.showAlert) {
+                                Alert(title: Text(alertTitle()), message: Text(alertState.message), dismissButton: .default(Text("Got it!")))
                             }
                             
-                            onboardingVM.signUp(withEmail: email, withPassword: password) { result in
-                                DispatchQueue.main.async {
-                                    switch result {
-                                    case .success(_):
-                                        viewRouter.CurrentViewState = .CreateUserProfile
-                                        
-                                    case .failure(let error):
-                                        alertState = AlertState(showAlert: true, alertType: .badSignUp, message: error.localizedDescription)
+                            Button(action: {
+                                if email.isEmpty || password.isEmpty {
+                                    self.alertState = AlertState(showAlert: true, alertType: .invalidInput, message: "Enter Email and Password")
+                                    return
+                                }
+                                
+                                onboardingVM.signUp(withEmail: email, withPassword: password) { result in
+                                    DispatchQueue.main.async {
+                                        switch result {
+                                        case .success(_):
+                                            viewRouter.CurrentViewState = .CreateUserProfile
+                                            
+                                        case .failure(let error):
+                                            alertState = AlertState(showAlert: true, alertType: .badSignUp, message: error.localizedDescription)
+                                        }
                                     }
                                 }
-                            }
-                        }) {
-                            Text("Sign up")
+                            }) {
+                                Text("Sign up")
                                     .font(.headline)
                                     .foregroundColor(.white)
                                     .padding()
@@ -134,13 +137,15 @@ struct LoginView: View {
                                         )
                                     )
                                     .cornerRadius(15.0)
-                        }
-                        .alert(isPresented: $alertState.showAlert) {
-                            Alert(title: Text(alertTitle()), message: Text(alertState.message), dismissButton: .default(Text("Got it!")))
+                            }
+                            .alert(isPresented: $alertState.showAlert) {
+                                Alert(title: Text(alertTitle()), message: Text(alertState.message), dismissButton: .default(Text("Got it!")))
+                            }
                         }
                     }
                     
-                    Spacer()
+                    
+                   
                 }
                 .padding()
                 .frame(minWidth: 0, maxWidth: .infinity)
@@ -157,8 +162,7 @@ struct LoginView: View {
             }
         }
     }
-    
-    private func alertTitle() -> String {
+     func alertTitle() -> String {
         switch alertState.alertType {
         case .invalidInput:
             return "Invalid Input"

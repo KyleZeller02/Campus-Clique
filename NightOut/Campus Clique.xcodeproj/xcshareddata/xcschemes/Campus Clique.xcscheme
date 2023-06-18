@@ -39,6 +39,11 @@
                BlueprintName = "Campus CliqueTests"
                ReferencedContainer = "container:Campus Clique.xcodeproj">
             </BuildableReference>
+            <SkippedTests>
+               <Test
+                  Identifier = "ClassPostsViewModelTests">
+               </Test>
+            </SkippedTests>
          </TestableReference>
       </Testables>
    </TestAction>

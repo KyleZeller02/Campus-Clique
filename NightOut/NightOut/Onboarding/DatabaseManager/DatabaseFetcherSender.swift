@@ -121,7 +121,7 @@ struct OnboardingDatabaseManager {
                 // Updating user document with the profile picture URL
                 let db = Firestore.firestore()
                 db.collection("Users").document(email).updateData([
-                    "profile_picture": url.absoluteString
+                    "profile_picture_url": url.absoluteString
                 ]) { error in
                     if let error = error {
                         print("Error updating document: \(error)")

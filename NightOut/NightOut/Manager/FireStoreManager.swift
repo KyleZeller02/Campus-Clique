@@ -8,14 +8,16 @@
 import Foundation
 import FirebaseFirestore
 import FirebaseAuth
+import UIKit
 
-enum VoteType {
+ enum VoteType {
     case up
     case down
 }
 
 class FirestoreService {
     let db = Firestore.firestore()
+
     
     func fetchPosts(fromClass selectedClass: String, fromCollege college: String, completion: @escaping ([ClassPost]?, Error?) -> Void) {
             
@@ -86,14 +88,20 @@ class FirestoreService {
 
         let usersLiked = Set<String>(usersLikedData)
         let usersDisliked = Set<String>(usersDislikedData)
+        
+        let profilePictureURL = data["profile_picture_url"] as? String
 
-        return ClassPost(postBody: postBody, postAuthor: author, forClass: forClass, datePosted: date, votes: votes, id: id, usersLiked: usersLiked, usersDisliked: usersDisliked, email: email, college: college)
+        return ClassPost(postBody: postBody, postAuthor: author, forClass: forClass, datePosted: date, votes: votes, id: id, usersLiked: usersLiked, usersDisliked: usersDisliked, email: email, college: college, picURL: profilePictureURL)
     }
+
     
-    func addNewPost(author: String, postBody: String, forClass: String, college: String, email: String, completion: @escaping ((String, Bool)?) -> Void) {
+    func addNewPost(author: String, postBody: String, forClass: String, college: String, email: String, profilePictureURL:String, completion: @escaping ((String, Bool)?) -> Void) {
         let postPath = db.collection("posts").document()
         let postId = postPath.documentID
         let datePosted = Date().timeIntervalSince1970
+
+        // Get profile picture URL from the UserManager
+       
 
         let postData: [String: Any] = [
             "author": author,
@@ -105,7 +113,8 @@ class FirestoreService {
             "email": email,
             "college": college,
             "users_liked": [String](),
-            "users_disliked" : [String]()
+            "users_disliked" : [String](),
+            "profile_picture_url": profilePictureURL
         ]
 
         postPath.setData(postData) { error in
@@ -118,9 +127,10 @@ class FirestoreService {
         }
     }
 
-    func addReply(_ replyBody: String, to post: ClassPost, author: String, email: String, completion: @escaping (Result<Replies, Error>) -> Void) {
-        let postPath = db.collection("posts").document(post.id)
-        let replyPath = postPath.collection("replies").document()
+
+    func addReply(_ replyBody: String, to post: ClassPost, author: String, email: String, profilePictureURL:String, completion: @escaping (Result<Reply, Error>) -> Void) {
+        // Use the top-level replies collection instead of a subcollection
+        let replyPath = db.collection("replies").document()
         let replyId = replyPath.documentID
         let datePosted = Date().timeIntervalSince1970
 
@@ -132,38 +142,65 @@ class FirestoreService {
             "email": email,
             "votes": 0,
             "users_liked": [String](),
-            "users_disliked": [String]()
+            "users_disliked": [String](),
+            "for_post_id": post.id, // Add the ID of the post this reply is for
+            "profile_picture_url" : profilePictureURL,
+            "for_class": post.forClass,
+            "for_college": post.forCollege,
         ]
 
         replyPath.setData(replyData) { error in
             if let error = error {
                 completion(.failure(error))
             } else {
-                let reply = Replies(replyBody: replyBody, replyAuthor: author, DatePosted: datePosted, votes: 0, id: replyId, usersLiked: Set([String]()), usersDisliked: Set([String]()), email: email)
+                let reply = Reply(replyBody: replyBody, replyAuthor: author, DatePosted: datePosted, votes: 0, id: replyId, usersLiked: Set([String]()), usersDisliked: Set([String]()), email: email, picURL: profilePictureURL, postID: post.id,inClass: post.forClass, inCollege: post.forCollege)
                 completion(.success(reply))
             }
         }
     }
 
+
     func deletePostAndReplies(_ post: ClassPost, completion: @escaping (Bool) -> Void) {
         let postRef = db.collection("posts").document(post.id)
-        let repliesRef = postRef.collection("replies")
-        
-        let batch = db.batch()
-        
+        let repliesRef = db.collection("replies")
+            .whereField("for_post_id", isEqualTo: post.id)
+            .whereField("for_class", isEqualTo: post.forClass)
+            .whereField("for_college", isEqualTo: post.forCollege)
+
         repliesRef.getDocuments { (querySnapshot, error) in
-            guard let documents = querySnapshot?.documents, error == nil else {
-                print("Error getting replies: \(error!)")
+            if let error = error {
+                print("Error getting replies: \(error.localizedDescription)")
                 completion(false)
                 return
             }
-            
-            documents.forEach { batch.deleteDocument($0.reference) }
+
+            guard let documents = querySnapshot?.documents else {
+                completion(false)
+                return
+            }
+
+            let batch = self.db.batch()
+
+            // Delete all replies
+            for document in documents {
+                batch.deleteDocument(document.reference)
+            }
+
+            // Delete the post
             batch.deleteDocument(postRef)
-            
-            self.commitBatch(batch, completion: completion)
+
+            // Commit the batch
+            batch.commit { (error) in
+                if let error = error {
+                    print("Error removing documents: \(error)")
+                    completion(false)
+                } else {
+                    completion(true)
+                }
+            }
         }
     }
+
 
     private func commitBatch(_ batch: WriteBatch, completion: @escaping (Bool) -> Void) {
         batch.commit { (error) in
@@ -176,15 +213,8 @@ class FirestoreService {
         }
     }
 
-    func deleteReply(_ reply: Replies, fromPost post: ClassPost, completion: @escaping (Result<Void, Error>) -> Void) {
-        guard let college = UserManager.shared.currentUser?.College else {
-                let error = NSError(domain: "YourDomain", code: 0, userInfo: [NSLocalizedDescriptionKey: "Missing college information"])
-                completion(.failure(error))
-                return
-            }
-        
-
-        let replyPath = db.collection("posts").document(post.id).collection("replies").document(reply.id)
+    func deleteReply(_ reply: Reply, fromPost post: ClassPost, completion: @escaping (Result<Void, Error>) -> Void) {
+        let replyPath = db.collection("replies").document(reply.id)
 
         replyPath.delete { error in
             if let error = error {
@@ -194,6 +224,7 @@ class FirestoreService {
             }
         }
     }
+
     
     // In your FireStoreManager
 
@@ -242,70 +273,331 @@ class FirestoreService {
             return (-1, FieldValue.arrayRemove([email]), FieldValue.arrayUnion([email]))
         }
     }
-    func performActionOnReply(vote: VoteType, post: ClassPost, reply: Replies, user: User, completion: @escaping (Bool, Error?) -> Void) {
-            guard let email = user.email else {
-                completion(false, NSError(domain: "No authenticated user", code: 401))
+    
+    func handleVoteOnReplyFirestore(UpOrDown vote: VoteType, post: ClassPost, reply: Reply, completion: @escaping (Error?) -> Void) {
+            guard let user = Auth.auth().currentUser, let email = user.email else {
+                completion(NSError(domain: "User authentication error", code: 401, userInfo: nil))
                 return
             }
 
-            let ref = db.collection("posts").document(post.id).collection("replies").document(reply.id)
+        let ref = db.collection("replies").document(reply.id)
 
-            var updateData: [String: Any] = [:]
+            // Variables for changing vote and like/dislike status
+            let incrementByOne = FieldValue.increment(Int64(1))
+            let decrementByOne = FieldValue.increment(Int64(-1))
+            let incrementByTwo = FieldValue.increment(Int64(2))
+            let decrementByTwo = FieldValue.increment(Int64(-2))
 
+            let emailUnion = FieldValue.arrayUnion([email])
+            let emailRemove = FieldValue.arrayRemove([email])
+
+            // Perform the Firestore update operation based on the vote type
             switch vote {
-            case .up:
+            case VoteType.up:
                 if reply.UsersLiked.contains(email) {
-                    updateData = [
-                        "votes": FieldValue.increment(Int64(-1)),
-                        "users_liked": FieldValue.arrayRemove([email])
-                    ]
+                    ref.updateData(["votes": decrementByOne, "users_liked": emailRemove], completion: completion)
                 } else if reply.UserDownVotes.contains(email) {
-                    updateData = [
-                        "votes": FieldValue.increment(Int64(2)),
-                        "users_liked": FieldValue.arrayUnion([email]),
-                        "users_disliked": FieldValue.arrayRemove([email])
-                    ]
+                    ref.updateData(["votes": incrementByTwo, "users_liked": emailUnion, "users_disliked": emailRemove], completion: completion)
                 } else {
-                    updateData = [
-                        "votes": FieldValue.increment(Int64(1)),
-                        "users_liked": FieldValue.arrayUnion([email])
-                    ]
+                    ref.updateData(["votes": incrementByOne, "users_liked": emailUnion], completion: completion)
                 }
-                updateData["users_disliked"] = FieldValue.arrayRemove([email])
+                ref.updateData(["users_disliked": emailRemove], completion: completion)
 
-            case .down:
+            case VoteType.down:
                 if reply.UserDownVotes.contains(email) {
-                    updateData = [
-                        "votes": FieldValue.increment(Int64(1)),
-                        "users_disliked": FieldValue.arrayRemove([email])
-                    ]
+                    ref.updateData(["votes": incrementByOne, "users_disliked": emailRemove], completion: completion)
                 } else if reply.UsersLiked.contains(email) {
-                    updateData = [
-                        "votes": FieldValue.increment(Int64(-2)),
-                        "users_liked": FieldValue.arrayRemove([email]),
-                        "users_disliked": FieldValue.arrayUnion([email])
-                    ]
+                    ref.updateData(["votes": decrementByTwo, "users_liked": emailRemove, "users_disliked": emailUnion], completion: completion)
                 } else {
-                    updateData = [
-                        "votes": FieldValue.increment(Int64(-1)),
-                        "users_disliked": FieldValue.arrayUnion([email])
-                    ]
+                    ref.updateData(["votes": decrementByOne, "users_disliked": emailUnion], completion: completion)
                 }
-                updateData["users_liked"] = FieldValue.arrayRemove([email])
+                ref.updateData(["users_liked": emailRemove], completion: completion)
+
+            default:
+                break
+            }
+            
+        }
+    func fetchReply(forPost post: ClassPost, replyId: String, completion: @escaping (Reply?, Error?) -> Void) {
+        db.collection("replies").document(replyId).getDocument { (document, error) in
+            if let error = error {
+                completion(nil, error)
+            } else if let document = document, document.exists, let data = document.data() {
+                let reply = self.createReplyFromData(data)
+                completion(reply, nil)
+            } else {
+                completion(nil, NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "No document found"]))
+            }
+        }
+    }
+
+    func deleteUsersPostAndRepliesFromClass(fromClasses c: [String], email:String, college:String, completion: @escaping (Bool, Error?) -> Void) {
+        guard !email.isEmpty, !college.isEmpty
+              else {
+            completion(false, nil)
+            return
+        }
+
+        let queryPosts = db.collection("posts")
+            .whereField("college", isEqualTo: college)
+            .whereField("email", isEqualTo: email)
+            .whereField("for_class", in: c)
+        
+        let queryReplies = db.collection("replies")
+            .whereField("college", isEqualTo: college)
+            .whereField("email", isEqualTo: email)
+            .whereField("for_class", in: c)
+
+        let postBatch = db.batch()
+        let replyBatch = db.batch()
+        
+        // Deleting the posts
+        queryPosts.getDocuments { [weak self] querySnapshot, error in
+            guard let self = self else {
+                completion(false, nil)
+                return
             }
 
-            ref.updateData(updateData) { error in
-                if let error = error {
-                    completion(false, error)
+            if let error = error {
+                // Handle the error
+                print("Error retrieving documents: \(error)")
+                completion(false, error)
+                return
+            }
+
+            let documents = querySnapshot?.documents ?? []
+            
+            for document in documents {
+                postBatch.deleteDocument(document.reference)
+            }
+            
+            // Commit the post batch
+            postBatch.commit { commitError in
+                if let commitError = commitError {
+                    // Handle the commit error
+                    print("Error deleting posts: \(commitError)")
+                    completion(false, commitError)
                 } else {
+                    // Deletion of posts successful
+                    print("Posts deleted successfully.")
+                }
+            }
+        }
+
+        // Deleting the replies
+        queryReplies.getDocuments { [weak self] querySnapshot, error in
+            guard let self = self else {
+                completion(false, nil)
+                return
+            }
+
+            if let error = error {
+                // Handle the error
+                print("Error retrieving replies: \(error)")
+                completion(false, error)
+                return
+            }
+
+            let replyDocuments = querySnapshot?.documents ?? []
+
+            for replyDocument in replyDocuments {
+                replyBatch.deleteDocument(replyDocument.reference)
+            }
+            
+            // Commit the reply batch
+            replyBatch.commit { commitError in
+                if let commitError = commitError {
+                    // Handle the commit error
+                    print("Error deleting replies: \(commitError)")
+                    completion(false, commitError)
+                } else {
+                    // Deletion of replies successful
+                    print("Replies deleted successfully.")
+                    
+                    // Completion handler should be invoked after both posts and replies are deleted
                     completion(true, nil)
                 }
             }
         }
+    }
+
+
+
+
+
     
-    
+     
+    func getReplies(forPost post: ClassPost, completion: @escaping ([Reply]) -> Void) {
+        // guard let college = UserManager.shared.currentUser?.College else { return }
+        let repliesRef = db.collection("replies")
+            .whereField("for_post_id", isEqualTo: post.id)
+            
+        
+        repliesRef.order(by: "time_stamp", descending: false).getDocuments() { [weak self] querySnapshot, error in
+            guard let self = self, let documents = querySnapshot?.documents else {
+                print("Error getting documents: \(error?.localizedDescription ?? "")")
+                completion([])
+                return
+            }
+
+            var replies: [Reply] = []
+
+            documents.forEach { document in
+                let data = document.data()
+                if let reply = self.createReplyFromData(data){
+                    replies.append(reply)
+                }
+            }
+
+            completion(replies)
+        }
+    }
+
+
+        func createReplyFromData(_ data: [String: Any]) -> Reply? {
+            guard let email = data["email"] as? String ,
+            let author = data["author"] as? String,
+            let id = data["id"] as? String ,
+            let replyBody = data["reply_body"] as? String,
+            let votes = data["votes"] as? Int64,
+            let usersLiked = data["users_liked"] as? [String],
+            let usersDisliked = data["users_disliked"] as? [String],
+            let date = data["time_stamp"] as? Double,
+            let postID = data["for_post_id"] as? String,
+            let forClass = data["for_class"] as? String,
+            let forCollege = data["for_college"] as? String
+            
+            else {
+                return nil
+            }
+            
+            let profilePicURL = data["profile_picture_url"] as? String
+
+            return Reply(replyBody: replyBody, replyAuthor: author, DatePosted: date, votes: votes, id: id, usersLiked: Set(usersLiked), usersDisliked: Set(usersDisliked), email: email, picURL: profilePicURL, postID: postID, inClass: forClass, inCollege: forCollege)
+        }
+
+    func getPostsForUser( college: String, user:String, completion: @escaping ([ClassPost]?, Error?) -> Void) {
+        guard  !user.isEmpty, !college.isEmpty else {return}
+        let path = db.collection("posts")
+        let query = path
+            .whereField("email", isEqualTo: user)
+            .order(by: "votes",descending: true)
+            
+        
+        query.getDocuments { querySnapshot, error in
+            guard let documents = querySnapshot?.documents else {
+                completion(nil, error)
+                return
+            }
+            
+            var posts: [ClassPost] = []
+            
+            for document in documents {
+                let data = document.data()
+                if let post = self.createClassPost(from: data){
+                    posts.append(post)
+                }
+            }
+            completion(posts, nil)
+        }
+    }
+    // this will aslo delete replies
+    func deletePostsAndRepliesOfUserFromCollege(fromCollege: String, userEmail: String, completion: @escaping (Bool, Error?) -> Void) {
+        // Get a reference to the Firestore database
+        let db = Firestore.firestore()
+
+        // Query for all posts from the specified college and by the specified user
+        db.collection("posts")
+            .whereField("college", isEqualTo: fromCollege)
+            .whereField("email", isEqualTo: userEmail)
+            .getDocuments { (querySnapshot, err) in
+                if let err = err {
+                    print("Error getting documents: \(err)")
+                    completion(false, err)
+                } else {
+                    // Delete all the posts
+                    for document in querySnapshot!.documents {
+                        document.reference.delete { err in
+                            if let err = err {
+                                print("Error deleting document: \(err)")
+                                completion(false, err)
+                            } else {
+                                print("Document successfully deleted")
+                            }
+                        }
+                    }
+                }
+            }
+
+        // Query for all replies from the specified college and by the specified user
+        db.collection("replies")
+            .whereField("for_college", isEqualTo: fromCollege)
+            .whereField("email", isEqualTo: userEmail)
+            .getDocuments { (querySnapshot, err) in
+                if let err = err {
+                    print("Error getting replies: \(err)")
+                    completion(false, err)
+                } else {
+                    // Delete all the replies
+                    for document in querySnapshot!.documents {
+                        document.reference.delete { err in
+                            if let err = err {
+                                print("Error deleting reply: \(err)")
+                                completion(false, err)
+                            } else {
+                                print("Reply successfully deleted")
+                            }
+                        }
+                    }
+                }
+            }
+
+        completion(true, nil)
+    }
+
+
+    func getDocument(completion: @escaping (UserDocument?, Error?) -> Void) {
+            guard let email = Auth.auth().currentUser?.email else {
+                completion(nil, FirebaseManagerError.currentUserEmailNotFound)
+                return
+            }
+            
+            let doc = db.collection("Users").document(email)
+            
+            doc.getDocument { documentSnapshot, error in
+                if let error = error {
+                    print("Error fetching document in getDocument: \(error)")
+                    completion(nil, error)
+                    return
+                }
+                
+                guard let data = documentSnapshot?.data(),
+                      let firstName = data["FirstName"] as? String,
+                      let lastName = data["LastName"] as? String,
+                      let college = data["College"] as? String,
+                      let birthday = data["Birthday"] as? String,
+                      let major = data["Major"] as? String,
+                      let classes = data["Classes"] as? [String],
+                      let email = data["Email"] as? String,
+                      let profilePictureURL = data["profile_picture"] as? String else {
+                    print("Invalid document data or missing fields")
+                    completion(nil, FirebaseManagerError.invalidDataOrMissingFields)
+                    return
+                }
+                
+                let retrievedDoc = UserDocument(FirstName: firstName, LastName: lastName, College: college, Birthday: birthday, Major: major, Classes: classes, Email: email, profilePictureURL: profilePictureURL)
+                completion(retrievedDoc, nil)
+            }
+        }
 
 
 
 
+}
+
+
+
+enum FirebaseManagerError: Error {
+    case currentUserEmailNotFound
+    case invalidDataOrMissingFields
 }

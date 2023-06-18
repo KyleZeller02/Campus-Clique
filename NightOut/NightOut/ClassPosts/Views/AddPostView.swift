@@ -4,12 +4,12 @@ struct AddPostView: View {
     @State private var postBody:String = ""
     @FocusState private var focused:Bool
     @Environment(\.presentationMode) var presentationMode
-    @ObservedObject var viewModel: ClassPostsViewModel
+    @EnvironmentObject var viewModel: inAppViewVM
     
     
-    init(viewModel: ClassPostsViewModel) {
+    init() {
         UITextView.appearance().backgroundColor = .clear
-        self.viewModel = viewModel
+        setFocus()
     }
     func setFocus() {
         focused = true
@@ -84,7 +84,7 @@ struct AddPostView: View {
             }
             
         }
-        .onAppear(perform: setFocus)
+//        .onAppear(perform: setFocus)
         
         
         

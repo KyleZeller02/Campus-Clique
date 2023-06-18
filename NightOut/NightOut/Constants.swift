@@ -10,6 +10,8 @@ import SwiftUI
 
 struct ProgramConstants{
      static let AppName = "Campus Clique"
+   
+    
 }
 
 extension Color {
@@ -21,5 +23,6 @@ extension Color {
     
     
 }
+
 
 

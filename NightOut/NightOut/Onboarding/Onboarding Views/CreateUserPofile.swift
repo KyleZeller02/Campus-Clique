@@ -77,7 +77,9 @@ struct CreateUserProfile: View {
                 .padding(.horizontal, 20)
             }
             .navigationBarHidden(true)
-            
+            .onTapGesture {
+                hideKeyboard()
+            }
         }
     }
 }

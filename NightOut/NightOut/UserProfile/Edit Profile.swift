@@ -11,6 +11,7 @@ struct Settings: View {
     let primaryColor = Color.purple
     let textFieldColor = Color.white.opacity(0.1)
     @StateObject var viewRouter: ViewRouter
+    @EnvironmentObject var userDoc:UserDocument
 
     var body: some View {
         ZStack{
@@ -96,7 +97,7 @@ struct AccountActions{
     static func LogOut(){
         do {
             try Auth.auth().signOut()
-            UserManager.shared.currentUser = nil
+            
             
            
             // User has been successfully logged out
