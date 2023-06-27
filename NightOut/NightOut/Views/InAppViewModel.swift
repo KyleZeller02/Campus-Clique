@@ -16,9 +16,7 @@ class inAppViewVM: ObservableObject{
     @Published var postsforUser: [ClassPost] = []
     @Published var userDoc: UserDocument = UserDocument(FirstName: "", LastName: "", College: "", Birthday: "", Major: "", Classes: [], Email: "", profilePictureURL: nil)
     @Published var curError: String = ""
-   
-@Published var isLoadingPosts: Bool = false
-
+    @Published var isVotingInProgress = false
     @Published var selectedClass: String = ""
     @Published var curReplies: [Reply] = []
     let firebaseManager = FirestoreService()
@@ -66,12 +64,12 @@ class inAppViewVM: ObservableObject{
             }
             return
         }
-        self.isLoadingPosts = true
+        
         
         firebaseManager.fetchPosts(fromClass: self.selectedClass, fromCollege: self.userDoc.College) { [weak self] (posts, error) in
             
             DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                self?.isLoadingPosts = false
+               
                 
                 if let error = error {
                     self?.curError = "Something went wrong getting the posts for \(self?.selectedClass ?? "this class") : \(error)"
@@ -184,14 +182,16 @@ class inAppViewVM: ObservableObject{
         guard let user = Auth.auth().currentUser else {
             return // Return if user is not logged in
         }
-        
+        isVotingInProgress = true
         firebaseManager.performAction(vote: voteType, post: post, user: user) { success, error in
             if success {
                 // Fetch the updated post from Firestore
                 self.firebaseManager.fetchPost(byId: post.id) { updatedPost, error in
+                   
                     if let updatedPost = updatedPost {
                         DispatchQueue.main.async {
                             self.updatePostArrays(with: updatedPost)
+                            self.isVotingInProgress = false
                             self.objectWillChange.send()
                         }
                     } else {
@@ -222,20 +222,22 @@ class inAppViewVM: ObservableObject{
             print("User is not authenticated.")
             return
         }
-        
+        self.isVotingInProgress = true
         firebaseManager.handleVoteOnReplyFirestore(UpOrDown: vote, post: post, reply: reply) { error in
             if let error = error {
                 print("Error updating vote: \(error)")
                 return
             }
-            
+          
             // Fetch the updated reply from Firestore
             self.firebaseManager.fetchReply(forPost: post, replyId: reply.id) { updatedReply, error in
                 if let updatedReply = updatedReply {
                     DispatchQueue.main.async {
                         // Make sure to replace the `updateReplyArray(with:)` function with your own implementation
                         self.updateReplyArray(with: updatedReply)
+                        self.isVotingInProgress = false
                         self.objectWillChange.send()
+                       
                     }
                 } else {
                     print(error?.localizedDescription ?? "Error fetching updated reply.")

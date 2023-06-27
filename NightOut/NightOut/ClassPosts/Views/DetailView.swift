@@ -54,157 +54,169 @@ struct DetailView: View{
                     }
                 }
                 
-                ZStack {
-                            VStack(alignment: .leading) {
-                                // post author
-                                HStack {
-                                    if let urlString = selectedPost.profilePicURL, let url = URL(string: urlString) {
-                                        KFImage(url)
-                                            .resizable()
-                                            .aspectRatio(contentMode: .fill)
-                                            .frame(width: 50, height: 50)
-                                            .clipShape(Circle())
-                                    } else {
-                                        Image(systemName: "person.fill")
-                                            .resizable()
-                                            .aspectRatio(contentMode: .fill)
-                                            .frame(width: 50, height: 50)
-                                            .clipShape(Circle())
-                                    }
-                                    Text("\(selectedPost.postAuthor)")
-                                        .padding(10)
-                                        .foregroundColor(.cyan)
-                                        .cornerRadius(10.0)
-                                    Spacer()
-                                    Text("\(convertEpochTimeToDate(epochTime: selectedPost.datePosted))")
-                                        .foregroundColor(Color.white)
-                                        .padding(10)
+                ScrollView(showsIndicators: false) {
+                    ZStack {
+                        VStack(alignment: .leading) {
+                            // post author
+                            HStack {
+                                if let urlString = selectedPost.profilePicURL, let url = URL(string: urlString) {
+                                    KFImage(url)
+                                        .resizable()
+                                        .aspectRatio(contentMode: .fill)
+                                        .frame(width: 50, height: 50)
+                                        .clipShape(Circle())
+                                } else {
+                                    Image(systemName: "person.fill")
+                                        .resizable()
+                                        .aspectRatio(contentMode: .fill)
+                                        .frame(width: 50, height: 50)
+                                        .clipShape(Circle())
                                 }
-                                .padding(.top, 10)
-                                .padding(.leading, 5)
-                                
-                                // post body with rounded background color
-                                Text("\(selectedPost.postBody)")
+                                Text("\(selectedPost.postAuthor)")
                                     .padding(10)
+                                    .foregroundColor(.cyan)
+                                    .cornerRadius(10.0)
+                                Spacer()
+                                Text("\(convertEpochTimeToDate(epochTime: selectedPost.datePosted))")
                                     .foregroundColor(Color.white)
-                                    .cornerRadius(5.0)
-                                    .frame(minWidth: 0, maxWidth: .infinity, alignment: .leading)
-                                    .multilineTextAlignment(.leading) // Push text all the way to the left
-                                
-                                // vote buttons
-                                HStack {
-                                    // votes on the post
-                                    Text("\(selectedPost.votes)")
-                                        .foregroundColor(.cyan)
-                                    
-                                   
-                                        // upvote button
-                                        Button(action: {
-                                            DispatchQueue.main.async {
-                                                viewModel.handleVoteOnPost(UpOrDown: VoteType.up, onPost: selectedPost)
-                                                firebaseManager.fetchPost(byId: selectedPost.id){p,error  in
-                                                    if let p = p{
-                                                        selectedPost.usersLiked = p.usersLiked
-                                                        selectedPost.usersDisliked = p.usersDisliked
-                                                        selectedPost.votes = p.votes
-                                                    }
-                                                    
-                                                }
-                                            }
-                                        }) {
-                                            Image(systemName: "chevron.up")
-                                        }
-                                        .padding(10)
-                                        .buttonStyle(BorderlessButtonStyle())
-                                        .foregroundColor(selectedPost.usersLiked.contains(viewModel.userDoc.Email ) ? Color.green : Color.gray)
-                                        .opacity(selectedPost.usersLiked.contains(viewModel.userDoc.Email) ? 1 : 0.5)
-                                        .cornerRadius(10)
-                                        
-                                        // downvote button
-                                        Button(action: {
-                                            DispatchQueue.main.async {
-                                                viewModel.handleVoteOnPost(UpOrDown: VoteType.down, onPost: selectedPost)
-                                                // Custom code to execute when the downvote button is pressed
-                                                // You can add your own logic here
-                                                
-                                                firebaseManager.fetchPost(byId: selectedPost.id){p,error  in
-                                                    if let p = p{
-                                                        selectedPost.usersLiked = p.usersLiked
-                                                        selectedPost.usersDisliked = p.usersDisliked
-                                                        selectedPost.votes = p.votes
-                                                    }
-                                                    
-                                                }
-                                            }
-                                        }) {
-                                            Image(systemName: "chevron.down")
-                                        }
-                                        .padding(10)
-                                        .buttonStyle(BorderlessButtonStyle())
-                                        .foregroundColor(selectedPost.usersDisliked.contains(viewModel.userDoc.Email) ? Color.red : Color.gray)
-                                        .opacity(selectedPost.usersDisliked.contains(viewModel.userDoc.Email) ? 1 : 0.5)
-                                        .cornerRadius(10)
-                                    
-                                    
-                                    Spacer()
-                                    
-                                    Button(action: {
-                                        showingDeleteAlert = true
-                                    }) {
-                                        Image(systemName: "trash")
-                                            .resizable()
-                                            .frame(width: 20, height: 20)
-                                            .padding()
-                                            .foregroundColor(.red)
-                                            .cornerRadius(10)
-                                    }
-                                    .alert(isPresented: $showingDeleteAlert) {
-                                        Alert(
-                                            title: Text("Delete Post"),
-                                            message: Text("Are you sure you want to delete this post?"),
-                                            primaryButton: .destructive(Text("Delete")) {
-                                                viewModel.deletePostAndReplies(selectedPost)
-                                                presentationMode.wrappedValue.dismiss()
-                                            },
-                                            secondaryButton: .cancel()
-                                        )
-                                    }
-                                    .opacity(isAuthorPost(ofPost: selectedPost) ? 1.0 : 0.0) // Adjusts the opacity based on whether the post is authored by the current user
-                                    .disabled(!isAuthorPost(ofPost: selectedPost)) // Disables the button for posts not authored by the current user
-                                }
-                                .padding(.leading, 10)
-                                .padding(.trailing, 10)
-                                .cornerRadius(15)
+                                    .padding(10)
                             }
-                            .background(Color.Gray)
+                            .padding(.top, 10)
+                            .padding(.leading, 5)
                             
-                            .padding(.top, 1)
+                            // post body with rounded background color
+                            Text("\(selectedPost.postBody)")
+                                .padding(10)
+                                .foregroundColor(Color.white)
+                                .cornerRadius(5.0)
+                                .frame(minWidth: 0, maxWidth: .infinity, alignment: .leading)
+                                .multilineTextAlignment(.leading) // Push text all the way to the left
+                            
+                            // vote buttons
+                            HStack {
+                                // votes on the post
+                                Text("\(selectedPost.votes)")
+                                    .foregroundColor(.cyan)
+                                
+                                
+                                // upvote button
+                                Button(action: {
+                                    DispatchQueue.main.async {
+                                        viewModel.handleVoteOnPost(UpOrDown: VoteType.up, onPost: selectedPost)
+                                        firebaseManager.fetchPost(byId: selectedPost.id){p,error  in
+                                            if let p = p{
+                                                selectedPost.usersLiked = p.usersLiked
+                                                selectedPost.usersDisliked = p.usersDisliked
+                                                selectedPost.votes = p.votes
+                                            }
+                                            
+                                        }
+                                    }
+                                }) {
+                                    Image(systemName: "chevron.up")
+                                }
+                                .disabled(viewModel.isVotingInProgress)
+                                .padding(10)
+                                .buttonStyle(BorderlessButtonStyle())
+                                .foregroundColor(selectedPost.usersLiked.contains(viewModel.userDoc.Email ) ? Color.green : Color.gray)
+                                .opacity(selectedPost.usersLiked.contains(viewModel.userDoc.Email) ? 1 : 0.5)
+                                .cornerRadius(10)
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 10)
+                                        .stroke(Color.cyan, lineWidth: 1)
+                                    
+                                )
+                                
+                                // downvote button
+                                Button(action: {
+                                    DispatchQueue.main.async {
+                                        viewModel.handleVoteOnPost(UpOrDown: VoteType.down, onPost: selectedPost)
+                                        // Custom code to execute when the downvote button is pressed
+                                        // You can add your own logic here
+                                        
+                                        firebaseManager.fetchPost(byId: selectedPost.id){p,error  in
+                                            if let p = p{
+                                                selectedPost.usersLiked = p.usersLiked
+                                                selectedPost.usersDisliked = p.usersDisliked
+                                                selectedPost.votes = p.votes
+                                            }
+                                            
+                                        }
+                                    }
+                                }) {
+                                    Image(systemName: "chevron.down")
+                                }
+                                .padding(10)
+                                .buttonStyle(BorderlessButtonStyle())
+                                .foregroundColor(selectedPost.usersDisliked.contains(viewModel.userDoc.Email) ? Color.red : Color.gray)
+                                .disabled(viewModel.isVotingInProgress)
+                                .cornerRadius(10)
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 10)
+                                        .stroke(Color.cyan, lineWidth: 1)
+                                    
+                                )
+                                
+                                
+                                Spacer()
+                                
+                                Button(action: {
+                                    showingDeleteAlert = true
+                                }) {
+                                    Image(systemName: "trash")
+                                        .resizable()
+                                        .frame(width: 20, height: 20)
+                                        .padding()
+                                        .foregroundColor(.red)
+                                        .cornerRadius(10)
+                                }
+                                .alert(isPresented: $showingDeleteAlert) {
+                                    Alert(
+                                        title: Text("Delete Post"),
+                                        message: Text("Are you sure you want to delete this post?"),
+                                        primaryButton: .destructive(Text("Delete")) {
+                                            viewModel.deletePostAndReplies(selectedPost)
+                                            presentationMode.wrappedValue.dismiss()
+                                        },
+                                        secondaryButton: .cancel()
+                                    )
+                                }
+                                .opacity(isAuthorPost(ofPost: selectedPost) ? 1.0 : 0.0) // Adjusts the opacity based on whether the post is authored by the current user
+                                .disabled(!isAuthorPost(ofPost: selectedPost)) // Disables the button for posts not authored by the current user
+                            }
+                            .padding(.leading, 10)
+                            .padding(.trailing, 10)
+                            .cornerRadius(15)
                         }
-                        .frame(minWidth: 0, maxWidth: .infinity, alignment: .center)
-                        .cornerRadius(10)
-                
-                if viewModel.curReplies.isEmpty {
-                    Text("Replies will show up here")
-                        .foregroundColor(.cyan)
-                } else {
-                    VStack(spacing: 5) {
-                        Divider()
-                            .background(Color.gray)
-                            .padding(.vertical, 5)
-                        HStack {
-                            Text("Replies")
-                                .foregroundColor(.cyan)
-                                .multilineTextAlignment(.leading)
-                                .font(.title2)
-                            Spacer()
-                        }
+                        .background(Color.Gray)
                         
+                        .padding(.top, 1)
                     }
-                    .padding(.leading, 10)
-                }
-                
-                VStack {
-                    ScrollView(showsIndicators: false) {
+                    .frame(minWidth: 0, maxWidth: .infinity, alignment: .center)
+                    .cornerRadius(10)
+                    
+                    if viewModel.curReplies.isEmpty {
+                        Text("Replies will show up here")
+                            .foregroundColor(.cyan)
+                    } else {
+                        VStack(spacing: 5) {
+                            Divider()
+                                .background(Color.gray)
+                                .padding(.vertical, 5)
+                            HStack {
+                                Text("Replies")
+                                    .foregroundColor(.cyan)
+                                    .multilineTextAlignment(.leading)
+                                    .font(.title2)
+                                Spacer()
+                            }
+                            
+                        }
+                        .padding(.leading, 10)
+                    }
+                    
+                    VStack {
+                        
                         LazyVStack(spacing: 8) {
                             ForEach(viewModel.curReplies, id: \.id) { reply in
                                 ReplyView(reply: .constant(reply), selectedPost: .constant(selectedPost), isAuthorReply: isAuthorReply(ofReply:))
@@ -217,11 +229,18 @@ struct DetailView: View{
                     }
                     
                     
+                    
+                    
+                    
+                }
+                .padding(.bottom,20)
+                ZStack{
                     if #available(iOS 16.0, *) {
                         if addingReply {
                             Group {
                                 TextField("reply to \(selectedPost.postAuthor)", text: $addedReply,axis:.vertical)
                                     .padding()
+                                    .padding(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 20))
                                     .ignoresSafeArea(.keyboard, edges: .bottom)
                                     .background(Color.gray)
                                     .cornerRadius(5.0)
@@ -229,6 +248,7 @@ struct DetailView: View{
                                     .focused($focused, equals: true)
                                 
                             }
+                           
                             .onAppear {
                                 
                                 setFocus()
@@ -266,7 +286,10 @@ struct DetailView: View{
                                     }
                                 }
                             )
+                            .padding(.leading,5)
+                            .padding(.top,0)
                         }
+                        
                     } else {
                         // Fallback on earlier versions
                         Group {
@@ -279,6 +302,7 @@ struct DetailView: View{
                                 .focused($focused, equals: true)
                             
                         }
+                        .padding(0)
                         .onAppear {
                             DispatchQueue.main.async {
                                 focused = true
@@ -317,9 +341,8 @@ struct DetailView: View{
                             }
                         )
                     }
-                
-                
                 }
+                
                 
             }
             .onTapGesture {
@@ -331,13 +354,13 @@ struct DetailView: View{
                     hideKeyboard()
                 }
             }
-//            .onAppear {
-//                viewModel.fetchReplies(forPost: selectedPost)
-//            }
+            //            .onAppear {
+            //                viewModel.fetchReplies(forPost: selectedPost)
+            //            }
         }
     }
-
-
+    
+    
 }
 
 //struct DetailView_Previews: PreviewProvider {
@@ -425,34 +448,47 @@ struct ReplyView: View {
                     Text("\(reply.votes)")
                         .foregroundColor(.cyan)
                     
-                   
-                        // upvote button
-                        Button(action: {
-                            DispatchQueue.main.async {
-                                viewModel.handleVoteOnReply(.up, onPost: selectedPost, onReply: reply)
-                            }
-                        }) {
-                            Image(systemName: "chevron.up")
+                    
+                    // upvote button
+                    Button(action: {
+                        DispatchQueue.main.async {
+                            viewModel.handleVoteOnReply(.up, onPost: selectedPost, onReply: reply)
                         }
-                        .padding(10)
-                        .buttonStyle(BorderlessButtonStyle())
-                        .foregroundColor(reply.UsersLiked.contains(viewModel.userDoc.Email ) ? Color.green : Color.gray)
-                        .opacity(reply.UsersLiked.contains(viewModel.userDoc.Email) ? 1 : 0.5)
-                        .cornerRadius(10)
+                    }) {
+                        Image(systemName: "chevron.up")
+                    }
+                    .padding(10)
+                    .buttonStyle(BorderlessButtonStyle())
+                    .foregroundColor(reply.UsersLiked.contains(viewModel.userDoc.Email ) ? Color.green : Color.gray)
+                    .opacity(reply.UsersLiked.contains(viewModel.userDoc.Email) ? 1 : 0.5)
+                    .cornerRadius(10)
+                    .disabled(viewModel.isVotingInProgress)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 10)
+                            .stroke(Color.cyan, lineWidth: 1)
                         
-                        // downvote button
-                        Button(action: {
-                            DispatchQueue.main.async {
-                                viewModel.handleVoteOnReply(.down, onPost: selectedPost, onReply: reply)
-                            }
-                        }) {
-                            Image(systemName: "chevron.down")
+                    )
+                    
+                    // downvote button
+                    Button(action: {
+                        
+                        DispatchQueue.main.async {
+                            viewModel.handleVoteOnReply(.down, onPost: selectedPost, onReply: reply)
                         }
-                        .padding(10)
-                        .buttonStyle(BorderlessButtonStyle())
-                        .foregroundColor(reply.UserDownVotes.contains(viewModel.userDoc.Email ) ? Color.red : Color.gray)
-                        .opacity(reply.UserDownVotes.contains(viewModel.userDoc.Email ) ? 1 : 0.5)
-                        .cornerRadius(10)
+                    }) {
+                        Image(systemName: "chevron.down")
+                    }
+                    .padding(10)
+                    .buttonStyle(BorderlessButtonStyle())
+                    .foregroundColor(reply.UserDownVotes.contains(viewModel.userDoc.Email ) ? Color.red : Color.gray)
+                    .opacity(reply.UserDownVotes.contains(viewModel.userDoc.Email ) ? 1 : 0.5)
+                    .cornerRadius(10)
+                    .disabled(viewModel.isVotingInProgress)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 10)
+                            .stroke(Color.cyan, lineWidth: 1)
+                        
+                    )
                     
                     
                     Spacer()

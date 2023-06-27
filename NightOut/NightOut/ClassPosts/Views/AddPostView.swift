@@ -21,7 +21,7 @@ struct AddPostView: View {
                 .ignoresSafeArea()
             
             VStack(spacing: 0) {
-                Text("Add A Post to \(viewModel.selectedClass)")
+                Text("Add A Post to your class")
                     .foregroundColor(.cyan)
                     .font(.largeTitle)
                     .multilineTextAlignment(.leading)
@@ -31,15 +31,24 @@ struct AddPostView: View {
                 VStack {
                    
                     TextEditor(text: $postBody)
-                                            .frame(height: 300)
-                                            .colorMultiply(.gray)
-                                            .cornerRadius(10)
-                                            .font(.headline)
-                                            .onChange(of: postBody) { newValue in
-                                                if newValue.count > 400 {
-                                                    postBody = String(newValue.prefix(400))
-                                                }
-                                            }
+                        .frame(height: 300)
+                        .background(Color.cyan)
+                        .cornerRadius(10)
+                        .padding(.leading,10)
+                        .padding(.trailing,10)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 10)
+                                .stroke(Color.cyan, lineWidth: 2)
+                                .padding(.leading,10)
+                                .padding(.trailing,10)
+                        )
+                        .font(.headline)
+                        .onChange(of: postBody) { newValue in
+                            if newValue.count > 400 {
+                                postBody = String(newValue.prefix(400))
+                            }
+                        }
+
                                             
                     
                     HStack {
@@ -84,7 +93,7 @@ struct AddPostView: View {
             }
             
         }
-//        .onAppear(perform: setFocus)
+
         
         
         
@@ -92,8 +101,8 @@ struct AddPostView: View {
     
 }
 
-//struct AddPostView_Previews: PreviewProvider {
-//    static var previews: some View {
-//        AddPostView()
-//    }
-//}
+struct AddPostView_Previews: PreviewProvider {
+    static var previews: some View {
+        AddPostView()
+    }
+}

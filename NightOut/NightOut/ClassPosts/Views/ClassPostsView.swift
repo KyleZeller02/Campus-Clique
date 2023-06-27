@@ -25,11 +25,14 @@ struct ClassPosts: View {
                             } else {
                                 ForEach(inAppVM.postsForClass) { post in
                                     Button(action: {
-                                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5){
-                                            self.selectedPost = post
-                                            self.isShowingDetail = true
-                                            inAppVM.fetchReplies(forPost: post)
+                                        withAnimation(.easeIn){
+                                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5){
+                                                self.selectedPost = post
+                                                self.isShowingDetail = true
+                                                inAppVM.fetchReplies(forPost: post)
+                                            }
                                         }
+                                        
                                         
                                     }) {
                                         PostCellView(selectedPost: post).environmentObject(inAppVM)
@@ -46,20 +49,17 @@ struct ClassPosts: View {
                         inAppVM.getPosts(){ _ in}
                     }
                 }
-                .overlay(
-                    Group {
-                        if inAppVM.isLoadingPosts {
-                            ProgressView()
-                                .progressViewStyle(CircularProgressViewStyle(tint: .blue))
-                        }
-                    }
-                )
+                
                 .fullScreenCover(isPresented: $isShowingDetail) {
-                    if let post = selectedPost {
-                        DetailView(selectedPost: post, isShowingDetail: $isShowingDetail)
-                            .environmentObject(inAppVM)
-                    }
+                    
+                        if let post = selectedPost {
+                            DetailView(selectedPost: post, isShowingDetail: $isShowingDetail)
+                                .environmentObject(inAppVM)
+                        }
+                    
+                    
                 }
+                
                 
                 .navigationBarTitleDisplayMode(.inline)
                 .navigationBarItems(leading: Text("\(inAppVM.selectedClass)").foregroundColor(.white).font(.largeTitle))
@@ -140,14 +140,7 @@ struct ProfileImageView: View {
 }
 
 
-//func convertEpochTimeToDate(epochTime: Double) -> String {
-//    let date = Date(timeIntervalSince1970: epochTime)
-//
-//    let dateFormatter = DateFormatter()
-//    dateFormatter.dateFormat = "MM/dd h:mm a"
-//
-//    return dateFormatter.string(from: date)
-//}
+
 
 func convertEpochTimeToDate(epochTime: Double) -> String {
     let timeInterval = Date().timeIntervalSince1970 -  epochTime
@@ -237,18 +230,24 @@ struct PostCellView: View {
                     
                    
                         // upvote button
-                        Button(action: {
-                            DispatchQueue.main.async {
-                                viewModel.handleVoteOnPost(UpOrDown: VoteType.up, onPost: selectedPost)
-                            }
-                        }) {
-                            Image(systemName: "chevron.up")
+                    Button(action: {
+                        DispatchQueue.main.async {
+                            viewModel.handleVoteOnPost(UpOrDown: VoteType.up, onPost: selectedPost)
                         }
-                        .padding(10)
-                        .buttonStyle(BorderlessButtonStyle())
-                        .foregroundColor(selectedPost.usersLiked.contains(viewModel.userDoc.Email ) ? Color.green : Color.gray)
-                        .opacity(selectedPost.usersLiked.contains(viewModel.userDoc.Email) ? 1 : 0.5)
-                        .cornerRadius(10)
+                    }) {
+                        Image(systemName: "chevron.up")
+                    }
+                    .buttonStyle(BorderlessButtonStyle())
+                    .padding(10) // This line moved down
+                    .foregroundColor(selectedPost.usersLiked.contains(viewModel.userDoc.Email ) ? Color.green : Color.gray)
+                    .opacity(selectedPost.usersDisliked.contains(viewModel.userDoc.Email) ? 0.5 : 1)
+                    .cornerRadius(10)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 10)
+                            .stroke(Color.cyan, lineWidth: 1)
+                    )
+                    .disabled(viewModel.isVotingInProgress)
+
                         
                         // downvote button
                         Button(action: {
@@ -258,12 +257,20 @@ struct PostCellView: View {
                             }
                         }) {
                             Image(systemName: "chevron.down")
+                               
                         }
-                        .padding(10)
                         .buttonStyle(BorderlessButtonStyle())
+                        .padding(10)
                         .foregroundColor(selectedPost.usersDisliked.contains(viewModel.userDoc.Email ) ? Color.red : Color.gray)
-                        .opacity(selectedPost.usersDisliked.contains(viewModel.userDoc.Email) ? 1 : 0.5)
+                        .opacity(viewModel.isVotingInProgress ? 0 : selectedPost.usersDisliked.contains(viewModel.userDoc.Email) ? 1 : 0.5)
                         .cornerRadius(10)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 10)
+                                .stroke(Color.cyan, lineWidth: 1)
+                                
+                        )
+                        
+                        .disabled(viewModel.isVotingInProgress)
                    
                     
                     Spacer()
@@ -317,3 +324,16 @@ func isAuthorReply(ofReply reply:Reply) ->Bool{
     return email == reply.email
 }
 
+struct SlideOverTransition: ViewModifier {
+    var show: Bool
+
+    func body(content: Content) -> some View {
+        Group {
+            if show {
+                content
+                    .transition(.move(edge: .trailing))
+                    .animation(.default)
+            }
+        }
+    }
+}

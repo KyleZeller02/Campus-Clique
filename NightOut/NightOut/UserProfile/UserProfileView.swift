@@ -140,14 +140,7 @@ struct UserProfileView: View {
                                         .environmentObject(inAppVM)
                                 }
                             }
-                            .overlay(
-                                Group {
-                                    if inAppVM.isLoadingPosts {
-                                        ProgressView()
-                                            .progressViewStyle(CircularProgressViewStyle(tint: .cyan))
-                                    }
-                                }
-                            )
+                            
         
         
                         }
