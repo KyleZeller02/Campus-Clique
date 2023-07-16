@@ -21,7 +21,7 @@ struct AddPostView: View {
                 .ignoresSafeArea()
             
             VStack(spacing: 0) {
-                Text("Add A Post to your class")
+                Text("Add a Post to \(viewModel.selectedClass)")
                     .foregroundColor(.cyan)
                     .font(.largeTitle)
                     .multilineTextAlignment(.leading)

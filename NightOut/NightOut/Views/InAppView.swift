@@ -12,27 +12,35 @@ import SwiftUI
 import UIKit
 
 struct InAppView: View {
-    @StateObject var viewRouter: ViewRouter
+   
     @StateObject var inAppVM: inAppViewVM = inAppViewVM()
-    @State private var tabSelection: TabBarItem = .posts
-    
   
+    var body: some View {
+        TabView {
+            ClassPosts()
+                .environmentObject(inAppVM)
+                .tabItem {
+                    Label("Posts", systemImage: "list.bullet")
+                }
+            
+            UserProfileView()
+                .environmentObject(inAppVM)
+                .tabItem {
+                    Label("Profile", systemImage: "person")
+                }
+        }
+        .onAppear {
+            let appearance = UITabBarAppearance()
+            appearance.configureWithOpaqueBackground()
+            appearance.backgroundColor = UIColor(Color.Black)
+            
+            UITabBar.appearance().standardAppearance = appearance
+        }
+        .accentColor(.cyan)
+    }
 
 
     
-
-    var body: some View {
-        CustomTabBarContainerView(selection: $tabSelection) {
-            ClassPosts(viewRouter: viewRouter)
-                .environmentObject(inAppVM)
-                .tabBarItem(tab: .posts, selection: $tabSelection)
-                .tag(1)
-            UserProfileView(viewRouter: viewRouter)
-                .environmentObject(inAppVM)
-                .tabBarItem(tab: .profile, selection: $tabSelection)
-                .tag(0)
-        }
-    }
 }
 
 

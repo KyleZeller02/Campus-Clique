@@ -9,18 +9,21 @@ import Foundation
 import FirebaseFirestore
 import FirebaseAuth
 import Firebase
-
+import Kingfisher
 
 class inAppViewVM: ObservableObject{
     @Published var postsForClass: [ClassPost] = []
     @Published var postsforUser: [ClassPost] = []
-    @Published var userDoc: UserDocument = UserDocument(FirstName: "", LastName: "", College: "", Birthday: "", Major: "", Classes: [], Email: "", profilePictureURL: nil)
+    @Published var userDoc: UserDocument = UserDocument(FirstName: "", LastName: "", College: "",  Major: "", Classes: [], Email: "", profilePictureURL: nil)
     @Published var curError: String = ""
     @Published var isVotingInProgress = false
     @Published var selectedClass: String = ""
     @Published var curReplies: [Reply] = []
     let firebaseManager = FirestoreService()
     let db = Firestore.firestore()
+    var lastDocumentSnapshot: DocumentSnapshot?
+        var isLastPage: Bool = false
+    @Published var canRefresh: Bool = true
     
     
     
@@ -33,7 +36,8 @@ class inAppViewVM: ObservableObject{
             if let doc = doc {
                 self?.userDoc = doc
                 self?.selectedClass = self?.userDoc.Classes.first ?? ""
-                self?.getPosts { completed in
+                self?.fetchFirst30PostsForClass() { completed in
+                    print("There are \(self?.postsForClass.count) posts")
                     if completed {
                         self?.getPostsForUser { completed in
                             if completed {
@@ -54,23 +58,71 @@ class inAppViewVM: ObservableObject{
         }
     }
     
-    func getPosts(completion: @escaping (Bool) -> Void) {
-        guard !self.selectedClass.isEmpty, !self.userDoc.College.isEmpty, Auth.auth().currentUser != nil else {
-            if Auth.auth().currentUser == nil{
-                self.curError = "You are not currently Authenticated. Log out and log back in."
+    
+    
+    func fetchNext30PostsForClass(completion: @escaping (Bool) -> Void) {
+            guard !self.selectedClass.isEmpty, !self.userDoc.College.isEmpty, Auth.auth().currentUser != nil else {
+                if Auth.auth().currentUser == nil{
+                    self.curError = "You are not currently Authenticated. Log out and log back in."
+                }
+                else{
+                    self.curError = "Something went wrong getting your credentials. Log out and log back in."
+                }
+                return
             }
-            else{
+            
+            if isLastPage { return }  // Return if there is no more data to fetch
+            
+            firebaseManager.fetchNext30PostsForClass(fromClass: self.selectedClass, fromCollege: self.userDoc.College, after: lastDocumentSnapshot) { [weak self] (posts, lastSnapshot, error) in
+                DispatchQueue.main.async {
+                    if let error = error {
+                        self?.curError = "Something went wrong getting the posts for \(self?.selectedClass ?? "this class") : \(error)"
+                        completion(false)
+                        return
+                    }
+                    if self?.lastDocumentSnapshot == nil{
+                        self?.postsForClass = posts ?? []
+                    }
+                    else{
+                        self?.postsForClass += posts ?? []
+                    }
+                   
+                    self?.lastDocumentSnapshot = lastSnapshot
+                    
+                    if posts?.count ?? 0 < 30 {
+                        self?.isLastPage = true
+                    }
+                    
+                    completion(true)
+                }
+            }
+        }
+    func refreshPosts(completion: @escaping (Bool) -> Void) {
+        if canRefresh{
+            canRefresh = false
+            self.lastDocumentSnapshot = nil
+            self.isLastPage = false
+            
+            
+            fetchFirst30PostsForClass(completion: completion)
+            canRefresh = true
+        }
+        
+        self.getPostsForUser(){_ in}
+       
+    }
+    func fetchFirst30PostsForClass(completion: @escaping (Bool) -> Void) {
+        guard !self.selectedClass.isEmpty, !self.userDoc.College.isEmpty, Auth.auth().currentUser != nil else {
+            if Auth.auth().currentUser == nil {
+                self.curError = "You are not currently Authenticated. Log out and log back in."
+            } else {
                 self.curError = "Something went wrong getting your credentials. Log out and log back in."
             }
             return
         }
         
-        
-        firebaseManager.fetchPosts(fromClass: self.selectedClass, fromCollege: self.userDoc.College) { [weak self] (posts, error) in
-            
-            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-               
-                
+        firebaseManager.fetchFirst30PostsForClass(fromClass: self.selectedClass, fromCollege: self.userDoc.College) { [weak self] (posts, lastSnapshot, error) in
+            DispatchQueue.main.async {
                 if let error = error {
                     self?.curError = "Something went wrong getting the posts for \(self?.selectedClass ?? "this class") : \(error)"
                     completion(false)
@@ -78,14 +130,32 @@ class inAppViewVM: ObservableObject{
                 }
                 
                 self?.postsForClass = posts ?? []
+                self?.lastDocumentSnapshot = lastSnapshot
+                
+                if posts?.count ?? 0 < 30 {
+                    self?.isLastPage = true
+                }
+                
                 completion(true)
             }
         }
     }
 
+
     
     
-   
+    func removeAllPostsFromUser(){
+        firebaseManager.deletePostsAndRepliesOfUser(userEmail: self.userDoc.Email) { (success, error) in
+            if success {
+                print("Successfully deleted all posts and replies for the user.")
+                // Update your UI or take further actions here.
+            } else if let error = error {
+                print("An error occurred while deleting posts and replies: \(error.localizedDescription)")
+                // Handle the error here, perhaps by notifying the user of the problem.
+            }
+        }
+    }
+
     
     
     
@@ -147,34 +217,30 @@ class inAppViewVM: ObservableObject{
     
     
     func addNewPost(_ postBody: String) {
-       
         guard !self.userDoc.College.isEmpty,
               !self.userDoc.Email.isEmpty,
               !self.userDoc.FullName.isEmpty else {
             print("Error: Missing User Info")
-            
             return
         }
         
         let selectedClass = self.selectedClass
         
-        firebaseManager.addNewPost(author: self.userDoc.FullName, postBody: postBody, forClass: selectedClass, college: self.userDoc.College, email: self.userDoc.Email, profilePictureURL: self.userDoc.profilePictureURL ?? "") { result in
-            if let result = result {
-                let (postId, success) = result
-                if success {
-                    print("Post \(postId) added successfully.")
-                    self.getPosts {_ in}
-                    self.getPostsForUser(){_ in}
-                } else {
-                    self.curError = "Something went wrong publishing your post. Try Again"
-                   
-                }
-            } else {
+        firebaseManager.addNewPost(author: self.userDoc.FullName, postBody: postBody, forClass: selectedClass, college: self.userDoc.College, email: self.userDoc.Email, profilePictureURL: self.userDoc.profilePictureURL ?? "") { post, error in
+            if let error = error {
+                print("Error adding new post: \(error)")
                 self.curError = "Something went wrong publishing your post. Try Again"
-
+            } else if let post = post {
+                DispatchQueue.main.async{
+                    self.postsForClass.insert(post, at: 0)
+                }
+               
+                
+                self.getPostsForUser(){_ in}
             }
         }
     }
+
 
     
     
@@ -327,89 +393,139 @@ class inAppViewVM: ObservableObject{
     }
 
     
-    func handleEdit(newCollege: String, newClasses: [String], newMajor:String) -> String? {
-        guard !newCollege.isEmpty,
-              !self.userDoc.Email.isEmpty else {
-            return "Edit could not be done. Log out and log back in."
-        }
+    func handleEdit(newCollege: String, newClasses: [String], newMajor: String, newFirstName: String, newLastName: String, newProfilePicture: UIImage?, didEditPhoto:Bool) -> String? {
+            guard !newCollege.isEmpty, !self.userDoc.Email.isEmpty else {
+                return "Edit could not be done. Log out and log back in."
+            }
 
             var returnedError: String? = nil
-            // Get reference to location in Firebase
             let userDocLocation = db.collection("Users").document(self.userDoc.Email)
-    
-            // Create a dictionary to store updated field values
             var updatedFields: [String: Any] = [:]
-    
-            // Update field values if they are different from current values
-        if newCollege != self.userDoc.College {
+
+            if newCollege != self.userDoc.College {
                 updatedFields["College"] = newCollege
-    
-                // Delete user's posts from the old college
-            let oldCollege = self.userDoc.College
-            let email = self.userDoc.Email
-    
+                let oldCollege = self.userDoc.College
+                let email = self.userDoc.Email
+
                 firebaseManager.deletePostsAndRepliesOfUserFromCollege(fromCollege: oldCollege, userEmail: email) { success, error in
                     if error != nil {
-                        // Handle the error
                         returnedError = "Posts could not be deleted from old college."
                     } else {
                         if !success {
-                            // Deletion unsuccessful
                             returnedError = "Posts could not be deleted from old college."
                         }
                     }
                 }
             }
-        if newMajor != self.userDoc.Major{
+
+            if newMajor != self.userDoc.Major {
                 updatedFields["Major"] = newMajor
             }
+
+            if newFirstName != self.userDoc.FirstName {
+                updatedFields["FirstName"] = newFirstName
+            }
+
+            if newLastName != self.userDoc.LastName {
+                updatedFields["LastName"] = newLastName
+            }
+
             var deletedClasses: [String] = []
-        let curUserClasses = self.userDoc.Classes
-    
-                for c in curUserClasses {
-                    if !newClasses.contains(c) {
-                        deletedClasses.append(c)
-                    }
+            let curUserClasses = self.userDoc.Classes
+
+            for c in curUserClasses {
+                if !newClasses.contains(c) {
+                    deletedClasses.append(c)
                 }
-                // Use the deletedClasses array as needed
-            
-    
-            if deletedClasses.count > 0{
-                firebaseManager.deleteUsersPostAndRepliesFromClass(fromClasses: deletedClasses,email: self.userDoc.Email, college: self.userDoc.College) { success, error in
+            }
+
+            if deletedClasses.count > 0 {
+                firebaseManager.deleteUsersPostAndRepliesFromClass(fromClasses: deletedClasses, email: self.userDoc.Email, college: self.userDoc.College) { success, error in
                     if error != nil {
-                        // Handle the error
                         returnedError = "Posts could not be deleted."
-    
                     } else {
                         if !success {
-                            // Deletion unsuccessful
                             returnedError = "Posts could not be deleted."
                         }
                     }
                 }
             }
-    
-    
-            if let returnedError = returnedError{
+
+            if let returnedError = returnedError {
                 return returnedError
             }
-            updatedFields["Classes"] = newClasses
-    
-    
-            // Update values in Firebase if there are any changes
-            if !updatedFields.isEmpty {
-                userDocLocation.setData(updatedFields, merge: true)
+
+            updatedFields["classes"] = newClasses
+
+            // Handle the newProfilePicture
+            if didEditPhoto{
+                if let newImage = newProfilePicture {
+                    // Delete the old picture from Firestore.
+                    firebaseManager.deleteProfilePicture(forEmail: self.userDoc.Email) { success, error in
+                        if error != nil {
+                            returnedError = "Old profile picture could not be deleted."
+                        } else {
+                            if success {
+                                // Upload the new picture to Firestore.
+                                self.firebaseManager.uploadProfileImage(newImage) { result in
+                                    switch result {
+                                    case .success(let urlString):
+                                        print("url is \(urlString)")
+                                        updatedFields["profile_picture_url"] = urlString
+                                       
+                                        if !updatedFields.isEmpty {
+                                            userDocLocation.setData(updatedFields, merge: true)
+                                        }
+
+                                        self.getDocument(){[weak self] doc, error  in
+                                            if let doc = doc {
+                                                self?.userDoc = doc
+                                            }
+                                        }
+                                        // Update 'profile_pic_url' in any posts and replies made by the user
+                                        
+
+                                        self.firebaseManager.updateProfilePicUrl(forEmail: self.userDoc.Email, withUrl: urlString) { (success, error) in
+                                            if let error = error {
+                                                print("Error occurred: \(error)")
+                                            } else if success {
+                                                KingfisherManager.shared.cache.clearMemoryCache()
+                                                   KingfisherManager.shared.cache.clearDiskCache()
+                                                self.refreshPosts() { success in
+                                                        
+                                                    }
+                                                print("Profile picture URLs updated successfully!")
+                                            } else {
+                                                print("Operation did not complete successfully.")
+                                            }
+                                        }
+
+                                    case .failure(let error):
+                                        
+                                        returnedError = "New profile picture could not be uploaded: \(error.localizedDescription)"
+                                        print("New profile picture could not be uploaded: \(error.localizedDescription)")
+                                    }
+                                }
+
+
+                            } else {
+                                returnedError = "Old profile picture could not be deleted."
+                            }
+                        }
+                    }
+                }
             }
-    
-            // Update local user document
-        self.userDoc.College = newCollege
-        self.userDoc.Classes = newClasses
-        self.userDoc.Major = newMajor
-    
-            // Send objectWillChange notification
+            
+
+            
+
             objectWillChange.send()
-            return nil
+
+            return returnedError
         }
+    
+
+
     
     
 }

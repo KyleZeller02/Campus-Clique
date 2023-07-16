@@ -14,7 +14,7 @@ import Kingfisher
 
 struct UserProfileView: View {
     
-    @StateObject var viewRouter: ViewRouter
+    
     @EnvironmentObject var inAppVM: inAppViewVM
     
     
@@ -22,6 +22,7 @@ struct UserProfileView: View {
     @State private var showingEditProfile: Bool = false
     @State private var showingCover:Bool = false
     @State private var isShowingDetail = false
+    @State private var isShowingDetailPost = false
     @State private var isShowingReply = false
     @State private var selectedPost: ClassPost?
     
@@ -96,50 +97,35 @@ struct UserProfileView: View {
                             }
                             .padding(.horizontal, 20)
         
-                            ScrollView(showsIndicators: false) {
-                                VStack(spacing: 8) {
-        //                            if inAppVM.isLoadingPosts {
-        //                                ProgressView()
-        //                                    .scaleEffect(1.5)
-        //                            }
-        
-                                    LazyVStack(spacing: 8) {
-                                        if inAppVM.postsforUser.isEmpty {
-                                            Text("There might have been a problem fetching the posts, try reloading the app. Or, you're the first to the party. You can get the party started!")
-                                                .font(.headline)
-                                                .foregroundColor(.white)
-                                        } else {
-                                            ForEach(inAppVM.postsforUser) { post in
-                                                Button(action: {
-                                                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5){
-                                                        self.selectedPost = post
-                                                        self.isShowingReply = true
-                                                        inAppVM.fetchReplies(forPost: post)
+                            
+                                ScrollView(showsIndicators: false) {
+                                    VStack(spacing: 8) {
+                                        // If inAppVM.isLoadingPosts, show a ProgressView
+                                        // ProgressView().scaleEffect(1.5)
+                                    
+                                        LazyVStack(spacing: 8) {
+                                            if inAppVM.postsforUser.isEmpty {
+                                                Text("There might have been a problem fetching the posts, try reloading the app. Or, you're the first to the party. You can get the party started!")
+                                                    .font(.headline)
+                                                    .foregroundColor(.white)
+                                            } else {
+                                                ForEach(inAppVM.postsforUser) { post in
+                                                    NavigationLink(destination: DetailView(selectedPost: post, isShowingDetail: $isShowingDetailPost)
+                                                                    .environmentObject(inAppVM)) {
+                                                        PostCellView(selectedPost: post).environmentObject(inAppVM)
                                                     }
-                                                    
-                                                }) {
-                                                    PostCellView(selectedPost: post).environmentObject(inAppVM)
                                                 }
                                             }
                                         }
                                     }
                                 }
-                            }
-                            .padding(.bottom,50)
-                            .refreshable {
-                                withAnimation {
-        
-        
-                                    inAppVM.getPostsForUser(){_ in}
-        
+                                .refreshable {
+                                    withAnimation {
+                                        inAppVM.getPostsForUser(){_ in}
+                                    }
                                 }
-                            }
-                            .fullScreenCover(isPresented: $isShowingReply) {
-                                if let post = selectedPost {
-                                    DetailView(selectedPost: post, isShowingDetail: $isShowingReply)
-                                        .environmentObject(inAppVM)
-                                }
-                            }
+                            
+
                             
         
         
@@ -150,11 +136,13 @@ struct UserProfileView: View {
                     }
         
                 }
+                .accentColor(.cyan)
                 .fullScreenCover(isPresented: $showingCover) {
-                    SettingsView(viewRouter: viewRouter)
+                    SettingsView()
                         .environmentObject(inAppVM)
                 }
             }
+    
         
     }
     

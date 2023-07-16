@@ -10,7 +10,8 @@ struct Settings: View {
     let backgroundColor = Color.black
     let primaryColor = Color.purple
     let textFieldColor = Color.white.opacity(0.1)
-    @StateObject var viewRouter: ViewRouter
+    @AppStorage("showOnboarding") var showOnboarding: Bool = false
+    
     @EnvironmentObject var userDoc:UserDocument
 
     var body: some View {
@@ -61,7 +62,7 @@ struct Settings: View {
                 //Logout and Delete account Buttons
                 HStack{
                     Button(action: {
-                        
+                        showOnboarding = true
                     }) {
                         Text("Log Out")
                             .font(.headline)
@@ -97,7 +98,7 @@ struct AccountActions{
     static func LogOut(){
         do {
             try Auth.auth().signOut()
-            
+           
             
            
             // User has been successfully logged out

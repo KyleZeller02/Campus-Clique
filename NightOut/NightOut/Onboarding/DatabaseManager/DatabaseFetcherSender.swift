@@ -91,8 +91,12 @@ struct OnboardingDatabaseManager {
     
    
     
-    static func uploadProfileImage(_ image: UIImage, forUserEmail email: String, completion: @escaping (_ url: URL?) -> ()) {
-        guard let imageData = image.pngData() else {
+    static func uploadProfileImage(_ image: UIImage, completion: @escaping (Result<String, Error>) -> ()) {
+
+        let fixedImage = image.fixedOrientation()
+
+        guard let imageData = fixedImage.jpegData(compressionQuality: 0.8) else {
+            completion(.failure(NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "Couldn't convert image to data"])))
             return
         }
 
@@ -100,50 +104,74 @@ struct OnboardingDatabaseManager {
         let imageReference = Storage.storage().reference().child("profileImages/\(imageName)")
 
         let metadata = StorageMetadata()
-        metadata.contentType = "image/png"
+        metadata.contentType = "image/jpeg"
 
         imageReference.putData(imageData, metadata: metadata) { _, error in
             if let error = error {
-                assertionFailure(error.localizedDescription)
-                return completion(nil)
+                return completion(.failure(error))
             }
 
             imageReference.downloadURL { url, error in
                 if let error = error {
-                    assertionFailure(error.localizedDescription)
-                    return completion(nil)
+                    return completion(.failure(error))
                 }
-                
+
                 guard let url = url else {
-                    return completion(nil)
+                    return completion(.failure(NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "Couldn't retrieve URL"])))
                 }
 
-                // Updating user document with the profile picture URL
-                let db = Firestore.firestore()
-                db.collection("Users").document(email).updateData([
-                    "profile_picture_url": url.absoluteString
-                ]) { error in
-                    if let error = error {
-                        print("Error updating document: \(error)")
-                    } else {
-                        print("Document successfully updated")
-                    }
-                }
-
-                completion(url)
+                // Return the URL as a string without updating the Firestore
+                completion(.success(url.absoluteString))
             }
         }
     }
 
-    
 
-    
-
-    
-    
-    
     
 }
+
+extension UIImage {
+    func fixedOrientation() -> UIImage {
+        
+        if imageOrientation == .up {
+            return self
+        }
+        
+        var transform: CGAffineTransform = CGAffineTransform.identity
+        
+        switch imageOrientation {
+        case .down, .downMirrored:
+            transform = transform.translatedBy(x: size.width, y: size.height)
+            transform = transform.rotated(by: CGFloat.pi)
+        case .left, .leftMirrored:
+            transform = transform.translatedBy(x: size.width, y: 0)
+            transform = transform.rotated(by: CGFloat.pi / 2)
+        case .right, .rightMirrored:
+            transform = transform.translatedBy(x: 0, y: size.height)
+            transform = transform.rotated(by: -(CGFloat.pi / 2))
+        case .up, .upMirrored:
+            break
+        @unknown default:
+            fatalError("Unknown image orientation")
+        }
+        
+        let ctx: CGContext = CGContext(data: nil, width: Int(size.width), height: Int(size.height), bitsPerComponent: cgImage!.bitsPerComponent, bytesPerRow: 0, space: cgImage!.colorSpace!, bitmapInfo: cgImage!.bitmapInfo.rawValue)!
+        
+        ctx.concatenate(transform)
+        
+        switch imageOrientation {
+        case .left, .leftMirrored, .right, .rightMirrored:
+            ctx.draw(cgImage!, in: CGRect(x: 0, y: 0, width: size.height, height: size.width))
+        default:
+            ctx.draw(cgImage!, in: CGRect(x: 0, y: 0, width: size.width, height: size.height))
+        }
+        
+        let cgImage: CGImage = ctx.makeImage()!
+        
+        return UIImage(cgImage: cgImage)
+    }
+}
+
 
 
 

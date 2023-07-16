@@ -10,16 +10,18 @@ import Firebase
 import FirebaseFirestore
 
 struct ProfilePictureAcquisition: View {
+    @AppStorage("showOnboarding") var showOnboarding: Bool = true
     @State private var isPickerShowing = false
     @State private var selectedImage: UIImage?
-    @StateObject var viewRouter: ViewRouter
+    @Binding var selection: Int
     @State private var showingAlert = false
-    @State private var isAlertShownOnce = false
+    @Binding var showingSheetTab: Bool
+    @EnvironmentObject var onboardingVM: OnboardingViewModel
+    
     
     var body: some View {
         ZStack {
-            Color.gray
-                .ignoresSafeArea()
+            
             
             VStack(alignment: .center, spacing: 40) {
                 Text("ADD PROFILE PICTURE")
@@ -50,40 +52,50 @@ struct ProfilePictureAcquisition: View {
                         .foregroundColor(.white)
                         .padding()
                         .frame(maxWidth: .infinity)
-                        .background(LinearGradient(gradient: Gradient(colors: [.purple, .black]), startPoint: .leading, endPoint: .trailing))
+                        .background(LinearGradient(gradient: Gradient(colors: [.Purple, .Black]), startPoint: .leading, endPoint: .trailing))
                         .cornerRadius(15)
                         .shadow(radius: 5)
                 })
                 
                 Button(action: {
-                    if selectedImage == nil && !isAlertShownOnce {
+                    if selectedImage == nil  {
                         showingAlert = true
-                        isAlertShownOnce = true
+                       
                         return
                     }
                     
-                    if let email = Auth.auth().currentUser?.email {
-                        OnboardingDatabaseManager.uploadProfileImage(selectedImage!, forUserEmail: email) { url in
-                            if let url = url {
-                                print("Image uploaded successfully. Url: \(url)")
-                                viewRouter.CurrentViewState = .ClassPosts
-                            } else {
-                                print("Failed to upload image.")
-                            }
+                   //handle information in view model
+                    //send all information
+                    onboardingVM.updatePicture(image: selectedImage ?? UIImage(imageLiteralResourceName: "person.fill")) { result in
+                        switch result {
+                        case .success(let urlString):
+                            print("Picture updated successfully: \(urlString)")
+                            showingSheetTab = false
+                            showOnboarding = false
+                            // Use urlString to do something if needed
+                        case .failure(let error):
+                            print("Error updating picture: \(error)")
+                            // Handle the error if needed
                         }
                     }
+                   
+                    
+                    
+                    // tab view not showing
+                    
+                    
                 }, label: {
                     Text("Make Profile")
                         .font(.headline)
                         .foregroundColor(.white)
                         .padding()
                         .frame(maxWidth: .infinity)
-                        .background(LinearGradient(gradient: Gradient(colors: [.purple, .black]), startPoint: .leading, endPoint: .trailing))
+                        .background(LinearGradient(gradient: Gradient(colors:[.Purple, .Black]), startPoint: .leading, endPoint: .trailing))
                         .cornerRadius(15)
                         .shadow(radius: 5)
                 })
                 .alert(isPresented: $showingAlert) {
-                    Alert(title: Text("Missing Profile Picture"), message: Text("Adding a profile picture is encouraged, but not required. A default image will be shown as your profile picture if you do not chose one."), dismissButton: .default(Text("Got it!")))
+                    Alert(title: Text("Missing Profile Picture"), message: Text("Select A Profile Picture"), dismissButton: .default(Text("Got it!")))
                 }
                 
                 Spacer()
@@ -99,6 +111,7 @@ struct ProfilePictureAcquisition: View {
 
 struct ProfilePictureAcquisition_Previews: PreviewProvider {
     static var previews: some View {
-        ProfilePictureAcquisition(viewRouter: ViewRouter())
+        ProfilePictureAcquisition(selection: .constant(1), showingSheetTab: .constant(true))
     }
 }
+    

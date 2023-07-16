@@ -16,13 +16,14 @@ struct CreateUserProfile: View {
     @State private var college: String = ""
     @State private var isReadyForNextView = false
     @State private var showingAlert = false
-    @StateObject  var viewRouter: ViewRouter
+    @Binding var selection: Int
+    @EnvironmentObject var onboardingVM: OnboardingViewModel
+    
     
     var body: some View {
-        NavigationView {
+       
             ZStack {
-                Color.gray
-                    .ignoresSafeArea()
+               
                 
                 VStack(alignment: .leading, spacing: 20) {
                     Text("Create Your Profile")
@@ -30,23 +31,28 @@ struct CreateUserProfile: View {
                         .fontWeight(.semibold)
                         .foregroundColor(.Black)
                     
+                    
                     TextField("First Name", text: $firstName)
                         .autocapitalization(.words)
                         .padding()
-                        .background(Color.white)
+                        
                         .cornerRadius(5.0)
+                        .foregroundColor(.Black)
+                        .background(Color.Gray)
                     
                     TextField("Last Name", text: $lastName)
                         .autocapitalization(.words)
                         .padding()
-                        .background(Color.white)
+                        .background(Color.Gray)
                         .cornerRadius(5.0)
+                        .foregroundColor(.Black)
                     
                     TextField("Your College", text: $college)
                         .autocapitalization(.words)
                         .padding()
-                        .background(Color.white)
+                        .background(Color.Gray)
                         .cornerRadius(5.0)
+                        .foregroundColor(.Black)
                     HStack{
                         Spacer()
                         Button(action: {
@@ -57,9 +63,15 @@ struct CreateUserProfile: View {
                                 let trimmedLastName = lastName.trimmingCharacters(in: .whitespacesAndNewlines)
                                 let trimmedCollege = college.trimmingCharacters(in: .whitespacesAndNewlines)
                                 
-                                OnboardingDatabaseManager.addFirstLastCollegeToDocument(firstName: trimmedFirstName, lastName: trimmedLastName, college: trimmedCollege, email: email ?? "")
+                                //add information to view model
+                                onboardingVM.updateFirstLastCollege(first: trimmedFirstName, last: trimmedLastName, College: trimmedCollege)
+                                //
                                 
-                                viewRouter.CurrentViewState = .UserDataAcquisition
+                                withAnimation{
+                                    selection += 1
+                                }
+                                
+                                
                             } else {
                                 self.showingAlert = true
                             }
@@ -80,7 +92,7 @@ struct CreateUserProfile: View {
             .onTapGesture {
                 hideKeyboard()
             }
-        }
+        
     }
 }
 
@@ -88,7 +100,7 @@ struct CreateUserProfile: View {
 
 struct ProfileSetUp_Previews: PreviewProvider {
     static var previews: some View {
-        CreateUserProfile(viewRouter: ViewRouter())
+        CreateUserProfile(selection: .constant(1))
     }
 }
 

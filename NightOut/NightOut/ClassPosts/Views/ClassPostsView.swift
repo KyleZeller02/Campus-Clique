@@ -2,19 +2,29 @@
 import SwiftUI
 import Firebase
 import Kingfisher
+import UIKit
 
 struct ClassPosts: View {
-    @StateObject var viewRouter: ViewRouter
+
     @EnvironmentObject var inAppVM: inAppViewVM
     @Environment(\.colorScheme) var colorScheme
     @State private var isShowingDetail = false
     @State private var isShowingSheet = false
     @State private var selectedPost: ClassPost?
     @State var addedPost: String = ""
+
+    init() {
+            let appearance = UINavigationBarAppearance()
+            appearance.configureWithOpaqueBackground()
+        appearance.backgroundColor = UIColor(Color.Black)
+
+            UINavigationBar.appearance().standardAppearance = appearance
+            UINavigationBar.appearance().scrollEdgeAppearance = appearance
+            UINavigationBar.appearance().compactAppearance = appearance
+        }
     var body: some View {
-        
-        ZStack{
-            NavigationView{
+        NavigationView{
+            ZStack{
                 ScrollView(showsIndicators: false) {
                     VStack(spacing: 8) {
                         LazyVStack(spacing: 8) {
@@ -23,46 +33,40 @@ struct ClassPosts: View {
                                     .font(.headline)
                                     .foregroundColor(.white)
                             } else {
-                                ForEach(inAppVM.postsForClass) { post in
-                                    Button(action: {
-                                        withAnimation(.easeIn){
-                                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5){
-                                                self.selectedPost = post
-                                                self.isShowingDetail = true
-                                                inAppVM.fetchReplies(forPost: post)
+                                ForEach(inAppVM.postsForClass.indices, id: \.self) { index in
+                                    NavigationLink(destination: DetailView(selectedPost: inAppVM.postsForClass[index], isShowingDetail: $isShowingDetail)
+                                                    .environmentObject(inAppVM)) {
+                                        PostCellView(selectedPost: inAppVM.postsForClass[index])
+                                            .environmentObject(inAppVM)
+                                            .onAppear {
+                                                if index == inAppVM.postsForClass.count - 3 && !inAppVM.isLastPage {
+                                                    inAppVM.fetchNext30PostsForClass() { success in
+                                                        print("There are now \(inAppVM.postsForClass.count) posts")
+                                                    }
+                                                }
                                             }
-                                        }
-                                        
-                                        
-                                    }) {
-                                        PostCellView(selectedPost: post).environmentObject(inAppVM)
                                     }
                                 }
+
                             }
                         }
                     }
                 }
-                .padding(.bottom,50)
+                
+           
                 .background(Color.Black)
                 .refreshable {
                     withAnimation {
-                        inAppVM.getPosts(){ _ in}
+                        inAppVM.refreshPosts() { success in
+                                
+                            }
                     }
+                   
                 }
-                
-                .fullScreenCover(isPresented: $isShowingDetail) {
-                    
-                        if let post = selectedPost {
-                            DetailView(selectedPost: post, isShowingDetail: $isShowingDetail)
-                                .environmentObject(inAppVM)
-                        }
-                    
-                    
-                }
-                
                 
                 .navigationBarTitleDisplayMode(.inline)
                 .navigationBarItems(leading: Text("\(inAppVM.selectedClass)").foregroundColor(.white).font(.largeTitle))
+                
                 .toolbar{
                     Button {
                         self.isShowingSheet = true
@@ -82,7 +86,7 @@ struct ClassPosts: View {
                                 
                                 inAppVM.selectedClass = curClass
                                 DispatchQueue.main.async {
-                                    inAppVM.getPosts(){ _ in}
+                                    inAppVM.refreshPosts(){ _ in}
                                 }
                                 
                             } label: {
@@ -99,23 +103,14 @@ struct ClassPosts: View {
                 }
                 
             }
-            .onAppear {
-                let appearance = UINavigationBarAppearance()
-                appearance.configureWithOpaqueBackground()
-                
-                let black = Color(red: 5/255, green: 5/255, blue: 5/255, opacity: 1.0)
-                
-                appearance.backgroundColor = UIColor(black)
-                
-                UINavigationBar.appearance().standardAppearance = appearance
-                UINavigationBar.appearance().scrollEdgeAppearance = appearance
-            }
+            
+
+
         }
-        
-        
-        
+        .accentColor(.cyan)
     }
 }
+
 
 
 
@@ -240,7 +235,7 @@ struct PostCellView: View {
                     .buttonStyle(BorderlessButtonStyle())
                     .padding(10) // This line moved down
                     .foregroundColor(selectedPost.usersLiked.contains(viewModel.userDoc.Email ) ? Color.green : Color.gray)
-                    .opacity(selectedPost.usersDisliked.contains(viewModel.userDoc.Email) ? 0.5 : 1)
+                    
                     .cornerRadius(10)
                     .overlay(
                         RoundedRectangle(cornerRadius: 10)
@@ -262,7 +257,7 @@ struct PostCellView: View {
                         .buttonStyle(BorderlessButtonStyle())
                         .padding(10)
                         .foregroundColor(selectedPost.usersDisliked.contains(viewModel.userDoc.Email ) ? Color.red : Color.gray)
-                        .opacity(viewModel.isVotingInProgress ? 0 : selectedPost.usersDisliked.contains(viewModel.userDoc.Email) ? 1 : 0.5)
+                        
                         .cornerRadius(10)
                         .overlay(
                             RoundedRectangle(cornerRadius: 10)
@@ -324,16 +319,4 @@ func isAuthorReply(ofReply reply:Reply) ->Bool{
     return email == reply.email
 }
 
-struct SlideOverTransition: ViewModifier {
-    var show: Bool
 
-    func body(content: Content) -> some View {
-        Group {
-            if show {
-                content
-                    .transition(.move(edge: .trailing))
-                    .animation(.default)
-            }
-        }
-    }
-}

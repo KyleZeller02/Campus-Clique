@@ -11,7 +11,7 @@ import Firebase
 struct UserBirthdayAcquisition: View {
     @State private var birthday: String = ""
     @State private var profileViewIsActive = false
-    @StateObject  var viewRouter: ViewRouter
+   
     @State private var showingAlert = false
     
     var body: some View {
@@ -42,7 +42,7 @@ struct UserBirthdayAcquisition: View {
                             let trimmedBirthday = birthday.trimmingCharacters(in: .whitespacesAndNewlines)
                             
                             OnboardingDatabaseManager.addBirthdayToDocument(birthday: trimmedBirthday, email: email ?? "")
-                            viewRouter.CurrentViewState = .ProfilePictureAcquisition
+                           
                         }
                     } else {
                         self.showingAlert = true
@@ -71,7 +71,7 @@ struct UserBirthdayAcquisition: View {
 
 struct UserBirthdayAcquisition_Previews: PreviewProvider {
     static var previews: some View {
-        UserBirthdayAcquisition(viewRouter: ViewRouter())
+        UserBirthdayAcquisition()
     }
 }
 struct MakeProfile: View {

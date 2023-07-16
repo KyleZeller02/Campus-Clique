@@ -27,6 +27,7 @@ struct DetailView: View{
         UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
 #endif
     }
+    @State private var textFieldHeight: CGFloat = 0
     
     
     
@@ -37,22 +38,7 @@ struct DetailView: View{
                 .ignoresSafeArea(.all)
             
             VStack(spacing: 0) {
-                HStack {
-                    Button(action: {
-                        isShowingDetail = false
-                    }) {
-                        Image(systemName: "chevron.backward")
-                            .foregroundColor(.white)
-                            .padding()
-                    }
-                    Spacer()
-                    Button(action: {
-                        self.addingReply = true
-                    }) {
-                        Text("Add Reply")
-                            .foregroundColor(.cyan)
-                    }
-                }
+                
                 
                 ScrollView(showsIndicators: false) {
                     ZStack {
@@ -119,7 +105,7 @@ struct DetailView: View{
                                 .padding(10)
                                 .buttonStyle(BorderlessButtonStyle())
                                 .foregroundColor(selectedPost.usersLiked.contains(viewModel.userDoc.Email ) ? Color.green : Color.gray)
-                                .opacity(selectedPost.usersLiked.contains(viewModel.userDoc.Email) ? 1 : 0.5)
+                               
                                 .cornerRadius(10)
                                 .overlay(
                                     RoundedRectangle(cornerRadius: 10)
@@ -130,6 +116,7 @@ struct DetailView: View{
                                 // downvote button
                                 Button(action: {
                                     DispatchQueue.main.async {
+                                        viewModel.isVotingInProgress = true
                                         viewModel.handleVoteOnPost(UpOrDown: VoteType.down, onPost: selectedPost)
                                         // Custom code to execute when the downvote button is pressed
                                         // You can add your own logic here
@@ -139,6 +126,7 @@ struct DetailView: View{
                                                 selectedPost.usersLiked = p.usersLiked
                                                 selectedPost.usersDisliked = p.usersDisliked
                                                 selectedPost.votes = p.votes
+                                                viewModel.isVotingInProgress = false
                                             }
                                             
                                         }
@@ -150,6 +138,7 @@ struct DetailView: View{
                                 .buttonStyle(BorderlessButtonStyle())
                                 .foregroundColor(selectedPost.usersDisliked.contains(viewModel.userDoc.Email) ? Color.red : Color.gray)
                                 .disabled(viewModel.isVotingInProgress)
+                               
                                 .cornerRadius(10)
                                 .overlay(
                                     RoundedRectangle(cornerRadius: 10)
@@ -233,130 +222,148 @@ struct DetailView: View{
                     
                     
                 }
-                .padding(.bottom,20)
-                ZStack{
-                    if #available(iOS 16.0, *) {
-                        if addingReply {
-                            Group {
-                                TextField("reply to \(selectedPost.postAuthor)", text: $addedReply,axis:.vertical)
-                                    .padding()
-                                    .padding(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 20))
-                                    .ignoresSafeArea(.keyboard, edges: .bottom)
-                                    .background(Color.gray)
-                                    .cornerRadius(5.0)
-                                    .multilineTextAlignment(.leading) // or .center
-                                    .focused($focused, equals: true)
-                                
-                            }
-                           
-                            .onAppear {
-                                
-                                setFocus()
-                                
-                            }
-                            .onChange(of: addedReply) { newValue in
-                                if newValue.count > 300 {
-                                    addedReply = String(newValue.prefix(300))
-                                }
-                            }
-                            .overlay(
-                                HStack {
-                                    Spacer()
-                                    Button(action: {
-                                        let reply = addedReply.trimmingCharacters(in: .whitespacesAndNewlines)
-                                        if !reply.isEmpty{
-                                            
-                                            viewModel.addReply(reply, to: selectedPost) { result in
-                                                switch result {
-                                                case .success(let reply):
-                                                    viewModel.curReplies.append(reply)
-                                                case .failure(let error):
-                                                    // handle error
-                                                    break
-                                                }
-                                            }
-                                        }
-                                        self.addedReply = ""
-                                        self.addingReply = false
-                                    }) {
-                                        Image(systemName: "paperplane.fill")
-                                            .foregroundColor(.white)
-                                            .font(.system(size: 20))
-                                            .padding(.horizontal, 10)
-                                    }
-                                }
-                            )
-                            .padding(.leading,5)
-                            .padding(.top,0)
-                        }
-                        
-                    } else {
-                        // Fallback on earlier versions
-                        Group {
-                            TextField("reply to \(selectedPost.postAuthor)", text: $addedReply)
-                                .padding()
-                                .ignoresSafeArea(.keyboard, edges: .bottom)
-                                .background(Color.gray)
-                                .cornerRadius(5.0)
-                                .multilineTextAlignment(.leading) // or .center
-                                .focused($focused, equals: true)
-                            
-                        }
-                        .padding(0)
-                        .onAppear {
-                            DispatchQueue.main.async {
-                                focused = true
-                            }
-                        }
-                        .onChange(of: addedReply) { newValue in
-                            if newValue.count > 300 {
-                                addedReply = String(newValue.prefix(300))
-                            }
-                        }
-                        .overlay(
-                            HStack {
-                                Spacer()
-                                Button(action: {
-                                    let reply = addedReply.trimmingCharacters(in: .whitespacesAndNewlines)
-                                    if !reply.isEmpty{
-                                        
-                                        viewModel.addReply(reply, to: selectedPost) { result in
-                                            switch result {
-                                            case .success(let reply):
-                                                viewModel.curReplies.append(reply)
-                                            case .failure(let error):
-                                                // handle error
-                                                break
-                                            }
-                                        }
-                                    }
-                                    self.addedReply = ""
-                                    self.addingReply = false
-                                }) {
-                                    Image(systemName: "paperplane.fill")
-                                        .foregroundColor(.white)
-                                        .font(.system(size: 20))
-                                        .padding(.horizontal, 10)
-                                }
-                            }
-                        )
-                    }
+                .onTapGesture {
+                    hideKeyboard()
+                    self.addingReply = false
                 }
                 
+                .navigationBarItems(trailing: Button(action: {
+                    self.addingReply = true
+                }) {
+                    Text("Add Reply")
+                        .foregroundColor(.cyan)
+                })
+                
+                
+                if addingReply {
+                    
+                        ZStack{
+                            
+                                VStack {
+                                    if #available(iOS 16.0, *) {
+                                        TextField("reply to \(selectedPost.postAuthor)", text: $addedReply,axis:.vertical)
+                                            .padding([.top, .bottom, .leading])
+                                            .padding(.trailing, 35)  // Increase this number if needed
+                                            .background(Color.gray.opacity(0.2))
+                                            .cornerRadius(8)
+                                            .foregroundColor(.white)
+                                            .accentColor(.cyan)
+                                            .autocapitalization(.sentences)
+                                            .disableAutocorrection(false)
+                                            .focused($focused, equals: true)
+                                            .onAppear {
+                                                setFocus()
+                                            }
+                                            .onChange(of: addedReply) { newValue in
+                                                if newValue.count > 300 {
+                                                    addedReply = String(newValue.prefix(300))
+                                                }
+                                            }
+                                            .overlay(
+                                                HStack {
+                                                    Spacer()
+                                                    Button(action: {
+                                                        let reply = addedReply.trimmingCharacters(in: .whitespacesAndNewlines)
+                                                        if !reply.isEmpty{
+                                                            viewModel.addReply(reply, to: selectedPost) { result in
+                                                                switch result {
+                                                                case .success(let reply):
+                                                                    viewModel.curReplies.append(reply)
+                                                                case .failure(let error):
+                                                                    // handle error
+                                                                    break
+                                                                }
+                                                            }
+                                                        }
+                                                        self.addedReply = ""
+                                                        self.addingReply = false
+                                                    }) {
+                                                        Image(systemName: "arrow.up.circle")
+                                                            .foregroundColor(.white)
+                                                            .font(.system(size: 30))
+                                                            .padding(.horizontal, 10)
+                                                    }
+                                                }
+                                            )
+                                            
+                                            .padding(.top,0)
+
+
+                                    } else {
+                                        // Fallback on earlier versions
+                                        TextField("reply to \(selectedPost.postAuthor)", text: $addedReply)
+                                            .padding([.top, .bottom, .leading])
+                                            .padding(.trailing, 70)  // Increase this number if needed
+                                            .background(Color.gray.opacity(0.2))
+                                            .cornerRadius(8)
+                                            .foregroundColor(.white)
+                                            .accentColor(.cyan)
+                                            .autocapitalization(.sentences)
+                                            .disableAutocorrection(false)
+                                            .focused($focused, equals: true)
+                                            .onAppear {
+                                                setFocus()
+                                            }
+                                            .onChange(of: addedReply) { newValue in
+                                                if newValue.count > 300 {
+                                                    addedReply = String(newValue.prefix(300))
+                                                }
+                                            }
+                                            .overlay(
+                                                HStack {
+                                                    Spacer()
+                                                    Button(action: {
+                                                        let reply = addedReply.trimmingCharacters(in: .whitespacesAndNewlines)
+                                                        if !reply.isEmpty{
+                                                            viewModel.addReply(reply, to: selectedPost) { result in
+                                                                switch result {
+                                                                case .success(let reply):
+                                                                    viewModel.curReplies.append(reply)
+                                                                case .failure(let error):
+                                                                    // handle error
+                                                                    break
+                                                                }
+                                                            }
+                                                        }
+                                                        self.addedReply = ""
+                                                        self.addingReply = false
+                                                    }) {
+                                                        Image(systemName: "arrow.up.circle")
+                                                            .foregroundColor(.white)
+                                                            .font(.system(size: 30))
+                                                            .padding(.horizontal, 20)
+                                                    }
+                                                }
+                                            )
+                                            
+                                            .padding(.top,0)
+                                    }
+                                }
+                                .padding(.bottom,10)
+                                .padding(.top,10)
+                            
+                        }
+                        
+                       
+                }
+                
+
+                
                 
             }
-            .onTapGesture {
-                hideKeyboard()
-                self.addingReply = false
-            }
+            .padding(.top,0)
+            
             .onChange(of: focused) { newValue in
                 if !newValue {
                     hideKeyboard()
                 }
             }
-            //            .onAppear {
-            //                viewModel.fetchReplies(forPost: selectedPost)
-            //            }
+            .onAppear {
+                viewModel.fetchReplies(forPost: selectedPost)
+            }
+            .onDisappear(){
+                viewModel.curReplies.removeAll()
+            }
         }
     }
     
@@ -378,7 +385,6 @@ struct ReplyView: View {
     
     func convertEpochTimeToDate(epochTime: Double) -> String {
         let timeInterval = Date().timeIntervalSince1970 -  epochTime
-        
         
         let secondsInYear: TimeInterval = 31536000
         let secondsInDay: TimeInterval = 86400
@@ -460,7 +466,7 @@ struct ReplyView: View {
                     .padding(10)
                     .buttonStyle(BorderlessButtonStyle())
                     .foregroundColor(reply.UsersLiked.contains(viewModel.userDoc.Email ) ? Color.green : Color.gray)
-                    .opacity(reply.UsersLiked.contains(viewModel.userDoc.Email) ? 1 : 0.5)
+                    
                     .cornerRadius(10)
                     .disabled(viewModel.isVotingInProgress)
                     .overlay(
@@ -481,7 +487,7 @@ struct ReplyView: View {
                     .padding(10)
                     .buttonStyle(BorderlessButtonStyle())
                     .foregroundColor(reply.UserDownVotes.contains(viewModel.userDoc.Email ) ? Color.red : Color.gray)
-                    .opacity(reply.UserDownVotes.contains(viewModel.userDoc.Email ) ? 1 : 0.5)
+                    
                     .cornerRadius(10)
                     .disabled(viewModel.isVotingInProgress)
                     .overlay(

@@ -17,7 +17,7 @@ class ClassPost: Identifiable, ObservableObject, Equatable{
     var postAuthor: String
     var forClass: String
     var forCollege: String
-    @Published var replies: [Reply] = []
+    
     var votes: Int64
     var datePosted: Double = 0.0
     var usersLiked: Set<String> = []
@@ -49,7 +49,7 @@ class ClassPost: Identifiable, ObservableObject, Equatable{
                 && lhs.postAuthor == rhs.postAuthor
                 && lhs.forClass == rhs.forClass
                 && lhs.forCollege == rhs.forCollege
-                && lhs.replies == rhs.replies
+               
                 && lhs.votes == rhs.votes
                 && lhs.datePosted == rhs.datePosted
                 && lhs.usersLiked == rhs.usersLiked

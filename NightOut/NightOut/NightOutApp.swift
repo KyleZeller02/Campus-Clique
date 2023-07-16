@@ -15,6 +15,7 @@ class AppDelegate: NSObject, UIApplicationDelegate {
   func application(_ application: UIApplication,
                    didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
     FirebaseApp.configure()
+      
      
       
     return true
@@ -25,10 +26,20 @@ class AppDelegate: NSObject, UIApplicationDelegate {
 struct NightOutApp: App {
     //line below was also copied as instructed
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
-    @StateObject var viewRouter = ViewRouter()
+    
+    @AppStorage("showOnboarding") var showOnboarding: Bool = true
+    
         var body: some Scene {
         WindowGroup {
-            ViewNavigator(viewRouter: viewRouter)
+            ZStack{
+                if showOnboarding{
+                    LoginView()
+                }
+                else{
+                    InAppView()
+                }
+            }
+            
             
         }
     }

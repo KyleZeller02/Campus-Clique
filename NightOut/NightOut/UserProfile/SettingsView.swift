@@ -10,7 +10,7 @@ import SwiftUI
 struct SettingsView: View {
     @State private var isShowingEditProfileView = false
     @Environment(\.presentationMode) var presentationMode
-    @StateObject var viewRouter: ViewRouter
+    @AppStorage("showOnboarding") var showOnboarding: Bool = false
     @EnvironmentObject var inAppVM: inAppViewVM
     
     var body: some View {
@@ -51,7 +51,7 @@ struct SettingsView: View {
                     .frame(maxWidth: .infinity)
                     .overlay(
                         RoundedRectangle(cornerRadius: 10)
-                            .stroke(Color.Purple, lineWidth: 4)
+                            .stroke(.cyan, lineWidth: 4)
                     )
                     .cornerRadius(10)
                 }
@@ -64,7 +64,8 @@ struct SettingsView: View {
                 Button(action: {
                     
                     AccountActions.LogOut()
-                    viewRouter.CurrentViewState = .LoginView
+                    showOnboarding = true
+                    
                 }) {
                     HStack {
                         Image(systemName: "power")
@@ -77,7 +78,7 @@ struct SettingsView: View {
                     .frame(maxWidth: .infinity)
                     .overlay(
                         RoundedRectangle(cornerRadius: 10)
-                            .stroke(Color.Purple, lineWidth: 4)
+                            .stroke(.cyan, lineWidth: 4)
                     )
                     .cornerRadius(10)
                 }
@@ -85,7 +86,8 @@ struct SettingsView: View {
                 
                 Button(action: {
                     AccountActions.deleteAccount()
-                    viewRouter.CurrentViewState = .LoginView
+                    inAppVM.removeAllPostsFromUser()
+                    showOnboarding = true
                 }) {
                     HStack {
                         Image(systemName: "trash.fill")
@@ -109,6 +111,6 @@ struct SettingsView: View {
 
 struct SettingsView_Previews: PreviewProvider {
     static var previews: some View {
-        SettingsView(viewRouter:ViewRouter())
+        SettingsView()
     }
 }

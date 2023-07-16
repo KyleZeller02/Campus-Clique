@@ -9,7 +9,7 @@ import SwiftUI
 import Firebase
 import KeyboardObserving
 
-//this is the initial view the user sees, if there is no user storage showing they are already logged in
+
 enum AlertType {
     case invalidInput, badLogin, badSignUp
 }
@@ -28,15 +28,19 @@ struct AlertState {
 struct LoginView: View {
     @State private var email: String = ""
     @State private var password: String = ""
-    @StateObject  var viewRouter: ViewRouter
-    @StateObject private var onboardingVM: OnboardingViewModel = OnboardingViewModel()
+    @AppStorage("showOnboarding") var showOnboarding: Bool = true
+
     @State private var alertState = AlertState(showAlert: false, alertType: .invalidInput, message: "")
     
+  
+    @State private var selection: Int = 0
+    @StateObject var onboardingViewModel: OnboardingViewModel = OnboardingViewModel()
+    @State var showingSheetTab: Bool = false
+    
     var body: some View {
-        NavigationView {
+        
             ZStack {
-                Color.gray
-                    .ignoresSafeArea()
+                Color.gray.ignoresSafeArea(.all)
                 
                 VStack(spacing: 20) {
                     Spacer().frame(height: 40)
@@ -60,16 +64,19 @@ struct LoginView: View {
                     TextField("Email", text: $email)
                         .autocapitalization(.none)
                         .padding()
-                        .background(Color.white)
+                        .background(Color.Gray)
                         .cornerRadius(5.0)
                         .padding(.bottom, 20)
+                        .foregroundColor(.black)
+                        
                     
                     SecureField("Password", text: $password)
                         .autocapitalization(.none)
                         .padding()
-                        .background(Color.white)
+                        .background(Color.Gray)
                         .cornerRadius(5.0)
                         .padding(.bottom, 10)
+                        .foregroundColor(.black)
                     VStack{
                         Spacer()
                         HStack(spacing: 20) {
@@ -79,13 +86,14 @@ struct LoginView: View {
                                     return
                                 }
                                 
-                                onboardingVM.logIn(withEmail: email, withPassword: password) { result in
+                                onboardingViewModel.logIn(withEmail: email, withPassword: password) { result in
                                     DispatchQueue.main.async {
                                         switch result {
                                         case .success(_):
+                                            //show inapp views
+                                            showOnboarding = false
                                             
-                                            
-                                            viewRouter.CurrentViewState = .InAppViews
+                                           
                                         case .failure(let error):
                                             alertState = AlertState(showAlert: true, alertType: .badLogin, message: error.localizedDescription)
                                         }
@@ -112,11 +120,11 @@ struct LoginView: View {
                                     return
                                 }
                                 
-                                onboardingVM.signUp(withEmail: email, withPassword: password) { result in
+                                onboardingViewModel.signUp(withEmail: email, withPassword: password) { result in
                                     DispatchQueue.main.async {
                                         switch result {
                                         case .success(_):
-                                            viewRouter.CurrentViewState = .CreateUserProfile
+                                            showingSheetTab = true
                                             
                                         case .failure(let error):
                                             alertState = AlertState(showAlert: true, alertType: .badSignUp, message: error.localizedDescription)
@@ -147,6 +155,7 @@ struct LoginView: View {
                     
                    
                 }
+                
                 .padding()
                 .frame(minWidth: 0, maxWidth: .infinity)
             }
@@ -154,13 +163,36 @@ struct LoginView: View {
             .onAppear {
                 let user = Auth.auth().currentUser
                 if user != nil {
-                    viewRouter.CurrentViewState = .InAppViews
+                  
                 }
             }
             .onTapGesture {
                 hideKeyboard()
             }
-        }
+            .fullScreenCover(isPresented: $showingSheetTab){
+                TabView(selection: $selection){
+                    CreateUserProfile(selection: $selection)
+                        .tag(0)
+                        .environmentObject(onboardingViewModel)
+                        .edgesIgnoringSafeArea(.all)
+                    UserDataAcquisition(selection: $selection)
+                        
+                        .tag(1)
+                        .environmentObject(onboardingViewModel)
+                        .edgesIgnoringSafeArea(.all)
+                    ProfilePictureAcquisition(selection: $selection, showingSheetTab: $showingSheetTab)
+                        .tag(2)
+                        .environmentObject(onboardingViewModel)
+                        .edgesIgnoringSafeArea(.all)
+                }
+#if os(iOS)
+        .tabViewStyle(.page(indexDisplayMode: .always))
+        .indexViewStyle(.page(backgroundDisplayMode: .always))
+#endif
+                
+                .background(Color.gray.edgesIgnoringSafeArea(.all))
+            }
+        
     }
      func alertTitle() -> String {
         switch alertState.alertType {
@@ -179,7 +211,7 @@ struct LoginView: View {
 
 struct ContentView_Previews: PreviewProvider{
     static var previews: some View{
-        LoginView(viewRouter: ViewRouter())
+        LoginView()
     }
 }
 

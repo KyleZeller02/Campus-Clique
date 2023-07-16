@@ -7,7 +7,9 @@
 
 import Foundation
 import FirebaseFirestore
+import Firebase
 import FirebaseAuth
+import FirebaseStorage
 import UIKit
 
  enum VoteType {
@@ -15,8 +17,153 @@ import UIKit
     case down
 }
 
-class FirestoreService {
+class FirestoreService:FirebaseManagerProtocol {
     let db = Firestore.firestore()
+
+    func uploadProfileImage(_ image: UIImage, completion: @escaping (Result<String, Error>) -> ()) {
+
+        let fixedImage = image.fixedOrientation()
+
+        guard let imageData = fixedImage.jpegData(compressionQuality: 0.8) else {
+            completion(.failure(NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "Couldn't convert image to data"])))
+            return
+        }
+
+        let imageName = UUID().uuidString
+        let imageReference = Storage.storage().reference().child("profileImages/\(imageName)")
+
+        let metadata = StorageMetadata()
+        metadata.contentType = "image/jpeg"
+
+        imageReference.putData(imageData, metadata: metadata) { _, error in
+            if let error = error {
+                return completion(.failure(error))
+            }
+
+            imageReference.downloadURL { url, error in
+                if let error = error {
+                    return completion(.failure(error))
+                }
+
+                guard let url = url else {
+                    return completion(.failure(NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "Couldn't retrieve URL"])))
+                }
+
+                // Return the URL as a string without updating the Firestore
+                completion(.success(url.absoluteString))
+            }
+        }
+    }
+    
+    
+
+    
+    func deleteProfilePicture(forEmail email: String, completion: @escaping (Bool, Error?) -> Void) {
+        // Get reference to user's document in Firestore
+        let userDocRef = db.collection("Users").document(email)
+
+        // Get the current user's document
+        userDocRef.getDocument { (document, error) in
+            if let error = error {
+                // Handle error
+                completion(false, error)
+            } else {
+                // Get the URL for the profile picture
+                if let document = document, let profilePictureURLString = document.data()?["profile_picture_url"] as? String, let profilePictureURL = URL(string: profilePictureURLString) {
+
+                    // Create a reference to the file in Cloud Storage
+                    let storageRef = Storage.storage().reference(forURL: profilePictureURL.absoluteString)
+
+                    // Delete the file
+                    storageRef.delete { error in
+                        if let error = error {
+                            // Handle error
+                            completion(false, error)
+                        } else {
+                            // File deleted successfully
+
+                            // Now, remove 'profile_pic_url' property from the user document
+                            userDocRef.updateData([
+                                "profile_picture_url": FieldValue.delete(),
+                            ]) { err in
+                                if let err = err {
+                                    completion(false, err)
+                                } else {
+                                    // Define function to delete 'profile_pic_url' from documents in a given collection where the 'email' field matches the given email
+                                    func deleteProfilePicUrl(fromCollection collection: String) {
+                                        // Start a new batch
+                                        let batch = self.db.batch()
+                                        
+                                        let userDocsRef = self.db.collection(collection).whereField("email", isEqualTo: email)
+
+                                        userDocsRef.getDocuments { (querySnapshot, err) in
+                                            if let err = err {
+                                                completion(false, err)
+                                            } else if let querySnapshot = querySnapshot {
+                                                querySnapshot.documents.forEach { document in
+                                                    let docRef = self.db.collection(collection).document(document.documentID)
+                                                    batch.updateData([
+                                                        "profile_picture_url": FieldValue.delete()
+                                                    ], forDocument: docRef)
+                                                }
+                                                
+                                                // Commit the batch
+                                                batch.commit { (batchError) in
+                                                    if let batchError = batchError {
+                                                        completion(false, batchError)
+                                                    } else {
+                                                        completion(true, nil)
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+
+                                    // Remove 'profile_pic_url' from any posts and replies made by the user
+                                    deleteProfilePicUrl(fromCollection: "posts")
+                                    deleteProfilePicUrl(fromCollection: "replies")
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    func updateProfilePicUrl(forEmail email: String, withUrl urlString: String, completion: @escaping (Bool, Error?) -> Void) {
+        // Define function to update 'profile_pic_url' in documents in a given collection where the 'email' field matches the given email
+        func updateProfilePicUrlInCollection(_ collection: String) {
+            let userDocsRef = db.collection(collection).whereField("email", isEqualTo: email)
+            
+            userDocsRef.getDocuments { (querySnapshot, err) in
+                if let err = err {
+                    completion(false, err)
+                } else if let querySnapshot = querySnapshot {
+                    let batch = self.db.batch()
+                    
+                    querySnapshot.documents.forEach { document in
+                        let docRef = self.db.collection(collection).document(document.documentID)
+                        batch.updateData(["profile_picture_url": urlString], forDocument: docRef)
+                    }
+                    
+                    batch.commit { (batchError) in
+                        if let batchError = batchError {
+                            completion(false, batchError)
+                        } else {
+                            completion(true, nil)
+                        }
+                    }
+                }
+            }
+        }
+        updateProfilePicUrlInCollection("posts")
+        updateProfilePicUrlInCollection("replies")
+        
+    }
+
+
+
 
     
     func fetchPosts(fromClass selectedClass: String, fromCollege college: String, completion: @escaping ([ClassPost]?, Error?) -> Void) {
@@ -68,10 +215,44 @@ class FirestoreService {
             }
         }
     }
+    
+    func fetchNext30PostsForClass(fromClass selectedClass: String, fromCollege college: String, after lastSnapshot: DocumentSnapshot?, completion: @escaping ([ClassPost]?, DocumentSnapshot?, Error?) -> Void) {
+            var query = db.collection("posts")
+                .whereField("college", isEqualTo: college)
+                .whereField("for_class", isEqualTo: selectedClass)
+                .order(by: "time_stamp", descending: true)
+                .limit(to: 30)
+            
+            if let lastSnapshot = lastSnapshot {
+                query = query.start(afterDocument: lastSnapshot)
+            }
+            
+            query.getDocuments { querySnapshot, error in
+                if let error = error {
+                    completion(nil, nil, error)
+                    return
+                }
+                
+                guard let documents = querySnapshot?.documents else {
+                    completion(nil, nil, nil)
+                    return
+                }
+                
+                var posts: [ClassPost] = []
+                for document in documents {
+                    let data = document.data()
+                    if let post = self.createClassPost(from: data) {
+                        posts.append(post)
+                    }
+                }
+                let lastDocument = documents.last
+                completion(posts, lastDocument, nil)
+            }
+        }
 
     
 
-    private func createClassPost(from data: [String: Any]) -> ClassPost? {
+     func createClassPost(from data: [String: Any]) -> ClassPost? {
         guard let author = data["author"] as? String,
               let postBody = data["post_body"] as? String,
               let forClass = data["for_class"] as? String,
@@ -95,20 +276,17 @@ class FirestoreService {
     }
 
     
-    func addNewPost(author: String, postBody: String, forClass: String, college: String, email: String, profilePictureURL:String, completion: @escaping ((String, Bool)?) -> Void) {
+    func addNewPost(author: String, postBody: String, forClass: String, college: String, email: String, profilePictureURL:String, completion: @escaping (ClassPost?, Error?) -> Void) {
         let postPath = db.collection("posts").document()
         let postId = postPath.documentID
         let datePosted = Date().timeIntervalSince1970
-
-        // Get profile picture URL from the UserManager
-       
-
+        
         let postData: [String: Any] = [
             "author": author,
             "post_body": postBody,
             "for_class": forClass,
             "time_stamp": datePosted,
-            "votes": 0,
+            "votes": Int64(0),
             "id": postId,
             "email": email,
             "college": college,
@@ -117,15 +295,41 @@ class FirestoreService {
             "profile_picture_url": profilePictureURL
         ]
 
-        postPath.setData(postData) { error in
+
+        postPath.setData(postData) { [weak self] error in
             if let error = error {
                 print("Error adding new post: \(error)")
-                completion(nil)
+                completion(nil, error)
             } else {
-                completion((postId, true))
+                let post = self?.createClassPost(from: postData)
+                completion(post, nil)
             }
         }
     }
+    func fetchFirst30PostsForClass(fromClass className: String, fromCollege college: String, completion: @escaping ([ClassPost]?, DocumentSnapshot?, Error?) -> Void) {
+        db.collection("posts")
+            .whereField("for_class", isEqualTo: className)
+            .whereField("college", isEqualTo: college)
+            .order(by: "time_stamp", descending: true)
+            .limit(to: 30)
+            .getDocuments() { (querySnapshot, error) in
+                if let error = error {
+                    print("Error getting posts: \(error)")
+                    completion(nil, nil, error)
+                } else {
+                    var posts = [ClassPost]()
+                    for document in querySnapshot!.documents {
+                        if let post = self.createClassPost(from: document.data()) {
+                            posts.append(post)
+                        }
+                    }
+                    let lastSnapshot = querySnapshot?.documents.last
+                    completion(posts, lastSnapshot, nil)
+                }
+            }
+    }
+
+
 
 
     func addReply(_ replyBody: String, to post: ClassPost, author: String, email: String, profilePictureURL:String, completion: @escaping (Result<Reply, Error>) -> Void) {
@@ -202,7 +406,7 @@ class FirestoreService {
     }
 
 
-    private func commitBatch(_ batch: WriteBatch, completion: @escaping (Bool) -> Void) {
+    internal func commitBatch(_ batch: WriteBatch, completion: @escaping (Bool) -> Void) {
         batch.commit { (error) in
             if let error = error {
                 print("Error executing batch: \(error)")
@@ -554,6 +758,57 @@ class FirestoreService {
 
         completion(true, nil)
     }
+    
+    func deletePostsAndRepliesOfUser( userEmail: String, completion: @escaping (Bool, Error?) -> Void) {
+        // Get a reference to the Firestore database
+        let db = Firestore.firestore()
+
+        // Query for all posts from the specified college and by the specified user
+        db.collection("posts")
+            .whereField("email", isEqualTo: userEmail)
+            .getDocuments { (querySnapshot, err) in
+                if let err = err {
+                    print("Error getting documents: \(err)")
+                    completion(false, err)
+                } else {
+                    // Delete all the posts
+                    for document in querySnapshot!.documents {
+                        document.reference.delete { err in
+                            if let err = err {
+                                print("Error deleting document: \(err)")
+                                completion(false, err)
+                            } else {
+                                print("Document successfully deleted")
+                            }
+                        }
+                    }
+                }
+            }
+
+        // Query for all replies from the specified college and by the specified user
+        db.collection("replies")
+            .whereField("email", isEqualTo: userEmail)
+            .getDocuments { (querySnapshot, err) in
+                if let err = err {
+                    print("Error getting replies: \(err)")
+                    completion(false, err)
+                } else {
+                    // Delete all the replies
+                    for document in querySnapshot!.documents {
+                        document.reference.delete { err in
+                            if let err = err {
+                                print("Error deleting reply: \(err)")
+                                completion(false, err)
+                            } else {
+                                print("Reply successfully deleted")
+                            }
+                        }
+                    }
+                }
+            }
+
+        completion(true, nil)
+    }
 
 
     func getDocument(completion: @escaping (UserDocument?, Error?) -> Void) {
@@ -572,20 +827,20 @@ class FirestoreService {
                 }
                 
                 guard let data = documentSnapshot?.data(),
-                      let firstName = data["FirstName"] as? String,
-                      let lastName = data["LastName"] as? String,
-                      let college = data["College"] as? String,
-                      let birthday = data["Birthday"] as? String,
-                      let major = data["Major"] as? String,
-                      let classes = data["Classes"] as? [String],
-                      let email = data["Email"] as? String,
-                      let profilePictureURL = data["profile_picture"] as? String else {
+                      let firstName = data["first_name"] as? String,
+                      let lastName = data["last_name"] as? String,
+                      let college = data["college"] as? String,
+                     
+                      let major = data["major"] as? String,
+                      let classes = data["classes"] as? [String],
+                      let email = data["email"] as? String,
+                      let profilePictureURL = data["profile_picture_url"] as? String else {
                     print("Invalid document data or missing fields")
                     completion(nil, FirebaseManagerError.invalidDataOrMissingFields)
                     return
                 }
                 
-                let retrievedDoc = UserDocument(FirstName: firstName, LastName: lastName, College: college, Birthday: birthday, Major: major, Classes: classes, Email: email, profilePictureURL: profilePictureURL)
+                let retrievedDoc = UserDocument(FirstName: firstName, LastName: lastName, College: college,  Major: major, Classes: classes, Email: email, profilePictureURL: profilePictureURL)
                 completion(retrievedDoc, nil)
             }
         }
