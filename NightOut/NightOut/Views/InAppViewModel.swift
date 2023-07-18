@@ -35,6 +35,7 @@ class inAppViewVM: ObservableObject{
             }
             if let doc = doc {
                 self?.userDoc = doc
+                self?.userDoc.Classes.sort()
                 self?.selectedClass = self?.userDoc.Classes.first ?? ""
                 self?.fetchFirst30PostsForClass() { completed in
                     print("There are \(self?.postsForClass.count) posts")
@@ -161,7 +162,7 @@ class inAppViewVM: ObservableObject{
     
     
     func deletePostAndReplies(_ post: ClassPost) {
-        firebaseManager.deletePostAndReplies(post) { success in
+        firebaseManager.deletePostAndItsReplies(post) { success in
             if success {
                 DispatchQueue.main.async {
                     if let index = self.postsForClass.firstIndex(where: { $0.id == post.id }) {
@@ -392,137 +393,135 @@ class inAppViewVM: ObservableObject{
         }
     }
 
-    
+    //this method needs to be abstracted and modulated more
     func handleEdit(newCollege: String, newClasses: [String], newMajor: String, newFirstName: String, newLastName: String, newProfilePicture: UIImage?, didEditPhoto:Bool) -> String? {
-            guard !newCollege.isEmpty, !self.userDoc.Email.isEmpty else {
-                return "Edit could not be done. Log out and log back in."
-            }
+        guard !newCollege.isEmpty, !self.userDoc.Email.isEmpty else {
+            return "Edit could not be done. Log out and log back in."
+        }
 
-            var returnedError: String? = nil
-            let userDocLocation = db.collection("Users").document(self.userDoc.Email)
-            var updatedFields: [String: Any] = [:]
+        var returnedError: String? = nil
+        let userDocLocation = db.collection("Users").document(self.userDoc.Email)
+        var updatedFields: [String: Any] = [:]
 
-            if newCollege != self.userDoc.College {
-                updatedFields["College"] = newCollege
-                let oldCollege = self.userDoc.College
-                let email = self.userDoc.Email
-
-                firebaseManager.deletePostsAndRepliesOfUserFromCollege(fromCollege: oldCollege, userEmail: email) { success, error in
-                    if error != nil {
+        if newCollege != self.userDoc.College {
+            updatedFields["college"] = newCollege
+            let oldCollege = self.userDoc.College
+            let email = self.userDoc.Email
+            // if college has changed: delete all posts made by that user in that college, as well as its replies. delete all replies made from that user
+            firebaseManager.deletePostsAndRepliesOfUserFromCollege(fromCollege: oldCollege, userEmail: email) { success, error in
+                if error != nil {
+                    returnedError = "Posts could not be deleted from old college."
+                } else {
+                    if !success {
                         returnedError = "Posts could not be deleted from old college."
-                    } else {
-                        if !success {
-                            returnedError = "Posts could not be deleted from old college."
-                        }
                     }
                 }
             }
+        }
 
-            if newMajor != self.userDoc.Major {
-                updatedFields["Major"] = newMajor
+        if newMajor != self.userDoc.Major {
+            updatedFields["major"] = newMajor
+        }
+
+        if newFirstName != self.userDoc.FirstName {
+            updatedFields["first_name"] = newFirstName
+        }
+
+        if newLastName != self.userDoc.LastName {
+            updatedFields["last_name"] = newLastName
+        }
+
+        var deletedClasses: [String] = []
+        let curUserClasses = self.userDoc.Classes
+
+        for c in curUserClasses {
+            if !newClasses.contains(c) {
+                deletedClasses.append(c)
             }
+        }
 
-            if newFirstName != self.userDoc.FirstName {
-                updatedFields["FirstName"] = newFirstName
-            }
-
-            if newLastName != self.userDoc.LastName {
-                updatedFields["LastName"] = newLastName
-            }
-
-            var deletedClasses: [String] = []
-            let curUserClasses = self.userDoc.Classes
-
-            for c in curUserClasses {
-                if !newClasses.contains(c) {
-                    deletedClasses.append(c)
-                }
-            }
-
-            if deletedClasses.count > 0 {
-                firebaseManager.deleteUsersPostAndRepliesFromClass(fromClasses: deletedClasses, email: self.userDoc.Email, college: self.userDoc.College) { success, error in
-                    if error != nil {
+        if deletedClasses.count > 0 {
+            firebaseManager.deleteUsersPostAndRepliesFromClass(fromClasses: deletedClasses, email: self.userDoc.Email, college: self.userDoc.College) { success, error in
+                if error != nil {
+                    returnedError = "Posts could not be deleted."
+                } else {
+                    if !success {
                         returnedError = "Posts could not be deleted."
-                    } else {
-                        if !success {
-                            returnedError = "Posts could not be deleted."
-                        }
                     }
                 }
             }
+        }
 
-            if let returnedError = returnedError {
-                return returnedError
-            }
-
-            updatedFields["classes"] = newClasses
-
-            // Handle the newProfilePicture
-            if didEditPhoto{
-                if let newImage = newProfilePicture {
-                    // Delete the old picture from Firestore.
-                    firebaseManager.deleteProfilePicture(forEmail: self.userDoc.Email) { success, error in
-                        if error != nil {
-                            returnedError = "Old profile picture could not be deleted."
-                        } else {
-                            if success {
-                                // Upload the new picture to Firestore.
-                                self.firebaseManager.uploadProfileImage(newImage) { result in
-                                    switch result {
-                                    case .success(let urlString):
-                                        print("url is \(urlString)")
-                                        updatedFields["profile_picture_url"] = urlString
-                                       
-                                        if !updatedFields.isEmpty {
-                                            userDocLocation.setData(updatedFields, merge: true)
-                                        }
-
-                                        self.getDocument(){[weak self] doc, error  in
-                                            if let doc = doc {
-                                                self?.userDoc = doc
-                                            }
-                                        }
-                                        // Update 'profile_pic_url' in any posts and replies made by the user
-                                        
-
-                                        self.firebaseManager.updateProfilePicUrl(forEmail: self.userDoc.Email, withUrl: urlString) { (success, error) in
-                                            if let error = error {
-                                                print("Error occurred: \(error)")
-                                            } else if success {
-                                                KingfisherManager.shared.cache.clearMemoryCache()
-                                                   KingfisherManager.shared.cache.clearDiskCache()
-                                                self.refreshPosts() { success in
-                                                        
-                                                    }
-                                                print("Profile picture URLs updated successfully!")
-                                            } else {
-                                                print("Operation did not complete successfully.")
-                                            }
-                                        }
-
-                                    case .failure(let error):
-                                        
-                                        returnedError = "New profile picture could not be uploaded: \(error.localizedDescription)"
-                                        print("New profile picture could not be uploaded: \(error.localizedDescription)")
-                                    }
-                                }
-
-
-                            } else {
-                                returnedError = "Old profile picture could not be deleted."
-                            }
-                        }
-                    }
-                }
-            }
-            
-
-            
-
-            objectWillChange.send()
-
+        if let returnedError = returnedError {
             return returnedError
         }
+
+        updatedFields["classes"] = newClasses
+
+        // Update the Firestore document with the new values
+        userDocLocation.updateData(updatedFields) { error in
+            if let error = error {
+                print("Error updating document: \(error)")
+                returnedError = "Error updating profile."
+            } else {
+                print("Document successfully updated")
+            }
+        }
+
+        // Handle the newProfilePicture
+        if didEditPhoto {
+            if let newImage = newProfilePicture {
+                // Delete the old picture from Firestore.
+                firebaseManager.deleteProfilePictureFromFirestore(forEmail: self.userDoc.Email) { success, error in
+                    
+                    if error != nil {
+                        returnedError = "Old profile picture could not be deleted."
+                        print("Old profile picture could not be deleted")
+                    } else {
+                        print("success: \(success)")
+                        if success {
+                            // Upload the new picture to Firestore.
+                            self.firebaseManager.uploadProfileImage(newImage) { result in
+                                switch result {
+                                case .success(let urlString):
+                                    print("url is \(urlString)")
+                                    updatedFields["profile_picture_url"] = urlString
+                                    userDocLocation.updateData(updatedFields)
+                                    
+                                    // Update 'profile_pic_url' in any posts and replies made by the user
+                                    self.firebaseManager.updateProfilePicUrlForPostAndReplies(forEmail: self.userDoc.Email, withUrl: urlString) { (success, error) in
+                                        if let error = error {
+                                            print("Error occurred: \(error)")
+                                        } else if success {
+                                            KingfisherManager.shared.cache.clearMemoryCache()
+                                            KingfisherManager.shared.cache.clearDiskCache()
+                                            self.refreshPosts() { success in }
+                                            print("Profile picture URLs updated successfully!")
+                                        } else {
+                                            print("Operation did not complete successfully.")
+                                        }
+                                    }
+
+                                case .failure(let error):
+                                    returnedError = "New profile picture could not be uploaded: \(error.localizedDescription)"
+                                    print("New profile picture could not be uploaded: \(error.localizedDescription)")
+                                }
+                            }
+                        } else {
+                            returnedError = "Old profile picture could not be deleted."
+                        }
+                    }
+                }
+            }
+        }
+        
+      
+
+        objectWillChange.send()
+
+        return returnedError
+    }
+
     
 
 

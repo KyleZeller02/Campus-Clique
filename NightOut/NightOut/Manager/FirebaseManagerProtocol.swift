@@ -23,7 +23,7 @@ protocol FirebaseManagerProtocol {
     
     func addReply(_ replyBody: String, to post: ClassPost, author: String, email: String, profilePictureURL:String, completion: @escaping (Result<Reply, Error>) -> Void)
     
-    func deletePostAndReplies(_ post: ClassPost, completion: @escaping (Bool) -> Void)
+    func deletePostAndItsReplies(_ post: ClassPost, completion: @escaping (Bool) -> Void)
     
     func commitBatch(_ batch: WriteBatch, completion: @escaping (Bool) -> Void)
     

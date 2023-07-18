@@ -12,6 +12,7 @@ struct ClassPosts: View {
     @State private var isShowingSheet = false
     @State private var selectedPost: ClassPost?
     @State var addedPost: String = ""
+    @State private var isShowingClassSelector = false
 
     init() {
             let appearance = UINavigationBarAppearance()
@@ -22,6 +23,18 @@ struct ClassPosts: View {
             UINavigationBar.appearance().scrollEdgeAppearance = appearance
             UINavigationBar.appearance().compactAppearance = appearance
         }
+    func classButtons() -> [ActionSheet.Button] {
+        var buttons = inAppVM.userDoc.Classes.map { curClass in
+            ActionSheet.Button.default(Text(curClass)) {
+                inAppVM.selectedClass = curClass
+                DispatchQueue.main.async {
+                    inAppVM.refreshPosts(){ _ in}
+                }
+            }
+        }
+        buttons.append(.cancel())
+        return buttons
+    }
     var body: some View {
         NavigationView{
             ZStack{
@@ -64,46 +77,41 @@ struct ClassPosts: View {
                    
                 }
                 
-                .navigationBarTitleDisplayMode(.inline)
-                .navigationBarItems(leading: Text("\(inAppVM.selectedClass)").foregroundColor(.white).font(.largeTitle))
                 
+                .navigationBarTitleDisplayMode(.inline)
+                .navigationBarItems(leading:
+                                        Button(action: {
+                                            self.isShowingClassSelector = true
+                                        }) {
+                                            
+                                                Text("\(inAppVM.selectedClass)")
+                                                    .foregroundColor(.white)
+                                                    .font(.largeTitle)
+                                        }
+                    .actionSheet(isPresented: $isShowingClassSelector) {
+                        ActionSheet(title: Text("Change Class"), buttons: classButtons())
+                    }
+
+
                 .toolbar{
                     Button {
                         self.isShowingSheet = true
                     } label: {
-                        Text("Add Post")
-                            .foregroundColor(.cyan)
+                            Text("Add Post")
+                            .foregroundColor(.white)
+                            .font(.title2)
                     }
-                    
+                    .cornerRadius(10)
+
                     .fullScreenCover(isPresented: $isShowingSheet)
                     {
                         AddPostView()
                             .environmentObject(inAppVM)
                     }
-                    Menu {
-                        ForEach(inAppVM.userDoc.Classes, id: \.self){ curClass in
-                            Button {
-                                
-                                inAppVM.selectedClass = curClass
-                                DispatchQueue.main.async {
-                                    inAppVM.refreshPosts(){ _ in}
-                                }
-                                
-                            } label: {
-                                Text("\(curClass)")
-                                
-                            }
-                        }
-                        
-                    } label: {
-                        Text("Classes")
-                            .foregroundColor(.cyan)
-                    }
-                    
                 }
-                
+                )
             }
-            
+               
 
 
         }
@@ -111,7 +119,7 @@ struct ClassPosts: View {
     }
 }
 
-
+                                    
 
 
 struct ProfileImageView: View {

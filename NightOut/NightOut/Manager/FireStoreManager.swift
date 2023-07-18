@@ -58,7 +58,7 @@ class FirestoreService:FirebaseManagerProtocol {
     
 
     
-    func deleteProfilePicture(forEmail email: String, completion: @escaping (Bool, Error?) -> Void) {
+    func deleteProfilePictureFromFirestore(forEmail email: String, completion: @escaping (Bool, Error?) -> Void) {
         // Get reference to user's document in Firestore
         let userDocRef = db.collection("Users").document(email)
 
@@ -89,49 +89,22 @@ class FirestoreService:FirebaseManagerProtocol {
                                 if let err = err {
                                     completion(false, err)
                                 } else {
-                                    // Define function to delete 'profile_pic_url' from documents in a given collection where the 'email' field matches the given email
-                                    func deleteProfilePicUrl(fromCollection collection: String) {
-                                        // Start a new batch
-                                        let batch = self.db.batch()
-                                        
-                                        let userDocsRef = self.db.collection(collection).whereField("email", isEqualTo: email)
-
-                                        userDocsRef.getDocuments { (querySnapshot, err) in
-                                            if let err = err {
-                                                completion(false, err)
-                                            } else if let querySnapshot = querySnapshot {
-                                                querySnapshot.documents.forEach { document in
-                                                    let docRef = self.db.collection(collection).document(document.documentID)
-                                                    batch.updateData([
-                                                        "profile_picture_url": FieldValue.delete()
-                                                    ], forDocument: docRef)
-                                                }
-                                                
-                                                // Commit the batch
-                                                batch.commit { (batchError) in
-                                                    if let batchError = batchError {
-                                                        completion(false, batchError)
-                                                    } else {
-                                                        completion(true, nil)
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-
-                                    // Remove 'profile_pic_url' from any posts and replies made by the user
-                                    deleteProfilePicUrl(fromCollection: "posts")
-                                    deleteProfilePicUrl(fromCollection: "replies")
+                                    // Document updated successfully
+                                    completion(true, nil)
                                 }
                             }
                         }
                     }
+                } else {
+                    // Profile picture URL not found
+                    completion(false, nil)
                 }
             }
         }
     }
 
-    func updateProfilePicUrl(forEmail email: String, withUrl urlString: String, completion: @escaping (Bool, Error?) -> Void) {
+
+    func updateProfilePicUrlForPostAndReplies(forEmail email: String, withUrl urlString: String, completion: @escaping (Bool, Error?) -> Void) {
         // Define function to update 'profile_pic_url' in documents in a given collection where the 'email' field matches the given email
         func updateProfilePicUrlInCollection(_ collection: String) {
             let userDocsRef = db.collection(collection).whereField("email", isEqualTo: email)
@@ -364,12 +337,11 @@ class FirestoreService:FirebaseManagerProtocol {
     }
 
 
-    func deletePostAndReplies(_ post: ClassPost, completion: @escaping (Bool) -> Void) {
+    func deletePostAndItsReplies(_ post: ClassPost, completion: @escaping (Bool) -> Void) {
         let postRef = db.collection("posts").document(post.id)
         let repliesRef = db.collection("replies")
             .whereField("for_post_id", isEqualTo: post.id)
-            .whereField("for_class", isEqualTo: post.forClass)
-            .whereField("for_college", isEqualTo: post.forCollege)
+            
 
         repliesRef.getDocuments { (querySnapshot, error) in
             if let error = error {
@@ -537,7 +509,7 @@ class FirestoreService:FirebaseManagerProtocol {
 
     func deleteUsersPostAndRepliesFromClass(fromClasses c: [String], email:String, college:String, completion: @escaping (Bool, Error?) -> Void) {
         guard !email.isEmpty, !college.isEmpty
-              else {
+        else {
             completion(false, nil)
             return
         }
@@ -546,16 +518,13 @@ class FirestoreService:FirebaseManagerProtocol {
             .whereField("college", isEqualTo: college)
             .whereField("email", isEqualTo: email)
             .whereField("for_class", in: c)
-        
-        let queryReplies = db.collection("replies")
-            .whereField("college", isEqualTo: college)
-            .whereField("email", isEqualTo: email)
-            .whereField("for_class", in: c)
 
-        let postBatch = db.batch()
-        let replyBatch = db.batch()
+        let queryUserReplies = db.collection("replies")
+            .whereField("email", isEqualTo: email)
         
-        // Deleting the posts
+        let batch = db.batch()
+
+        // Deleting the posts and their replies
         queryPosts.getDocuments { [weak self] querySnapshot, error in
             guard let self = self else {
                 completion(false, nil)
@@ -563,40 +532,38 @@ class FirestoreService:FirebaseManagerProtocol {
             }
 
             if let error = error {
-                // Handle the error
                 print("Error retrieving documents: \(error)")
                 completion(false, error)
                 return
             }
 
             let documents = querySnapshot?.documents ?? []
-            
+
             for document in documents {
-                postBatch.deleteDocument(document.reference)
-            }
-            
-            // Commit the post batch
-            postBatch.commit { commitError in
-                if let commitError = commitError {
-                    // Handle the commit error
-                    print("Error deleting posts: \(commitError)")
-                    completion(false, commitError)
-                } else {
-                    // Deletion of posts successful
-                    print("Posts deleted successfully.")
+                let postId = document.documentID
+                batch.deleteDocument(document.reference)
+
+                let queryReplies = self.db.collection("replies").whereField("for_post", isEqualTo: postId)
+
+                queryReplies.getDocuments { (querySnapshot, error) in
+                    if let error = error {
+                        print("Error retrieving replies: \(error)")
+                        completion(false, error)
+                        return
+                    }
+
+                    let replyDocuments = querySnapshot?.documents ?? []
+
+                    for replyDocument in replyDocuments {
+                        batch.deleteDocument(replyDocument.reference)
+                    }
                 }
             }
         }
 
-        // Deleting the replies
-        queryReplies.getDocuments { [weak self] querySnapshot, error in
-            guard let self = self else {
-                completion(false, nil)
-                return
-            }
-
+        // Deleting the user's replies
+        queryUserReplies.getDocuments { (querySnapshot, error) in
             if let error = error {
-                // Handle the error
                 print("Error retrieving replies: \(error)")
                 completion(false, error)
                 return
@@ -605,25 +572,22 @@ class FirestoreService:FirebaseManagerProtocol {
             let replyDocuments = querySnapshot?.documents ?? []
 
             for replyDocument in replyDocuments {
-                replyBatch.deleteDocument(replyDocument.reference)
+                batch.deleteDocument(replyDocument.reference)
             }
-            
-            // Commit the reply batch
-            replyBatch.commit { commitError in
-                if let commitError = commitError {
-                    // Handle the commit error
-                    print("Error deleting replies: \(commitError)")
-                    completion(false, commitError)
-                } else {
-                    // Deletion of replies successful
-                    print("Replies deleted successfully.")
-                    
-                    // Completion handler should be invoked after both posts and replies are deleted
-                    completion(true, nil)
-                }
+        }
+
+        // Commit the batch
+        batch.commit { commitError in
+            if let commitError = commitError {
+                print("Error deleting posts and replies: \(commitError)")
+                completion(false, commitError)
+            } else {
+                print("Posts and replies successfully deleted.")
+                completion(true, nil)
             }
         }
     }
+
 
 
 
@@ -719,17 +683,43 @@ class FirestoreService:FirebaseManagerProtocol {
                     print("Error getting documents: \(err)")
                     completion(false, err)
                 } else {
-                    // Delete all the posts
+                    // Delete all the replies of the post
                     for document in querySnapshot!.documents {
-                        document.reference.delete { err in
-                            if let err = err {
-                                print("Error deleting document: \(err)")
-                                completion(false, err)
-                            } else {
-                                print("Document successfully deleted")
+                        let postID = document.data()["for_post"]
+                        
+                        // Query all replies for the given post
+                        db.collection("replies")
+                            .whereField("for_post", isEqualTo: postID)
+                            .getDocuments { (replyQuerySnapshot, err) in
+                                
+                                if let err = err {
+                                    print("Error getting documents: \(err)")
+                                } else {
+                                    // Delete each reply
+                                    for replyDocument in replyQuerySnapshot!.documents {
+                                        replyDocument.reference.delete { err in
+                                            if let err = err {
+                                                print("Error deleting document: \(err)")
+                                            } else {
+                                                print("Reply document successfully deleted")
+                                            }
+                                        }
+                                    }
+
+                                    // Delete the post itself
+                                    document.reference.delete { err in
+                                        if let err = err {
+                                            print("Error deleting document: \(err)")
+                                            completion(false, err)
+                                        } else {
+                                            print("Post document successfully deleted")
+                                            completion(true, nil)
+                                        }
+                                    }
+                                }
                             }
-                        }
                     }
+
                 }
             }
 

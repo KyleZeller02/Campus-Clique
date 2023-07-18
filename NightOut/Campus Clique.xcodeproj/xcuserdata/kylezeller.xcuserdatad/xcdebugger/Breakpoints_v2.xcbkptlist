@@ -14,24 +14,8 @@
             filePath = "NightOut/Views/InAppViewModel.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "396"
-            endingLineNumber = "396"
-            landmarkName = "handleEdit(newCollege:newClasses:newMajor:newFirstName:newLastName:newProfilePicture:didEditPhoto:)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "93489AAD-B059-4010-A3C9-E5EA45C99C88"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "NightOut/Views/InAppViewModel.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "433"
-            endingLineNumber = "433"
+            startingLineNumber = "397"
+            endingLineNumber = "397"
             landmarkName = "handleEdit(newCollege:newClasses:newMajor:newFirstName:newLastName:newProfilePicture:didEditPhoto:)"
             landmarkType = "7">
          </BreakpointContent>

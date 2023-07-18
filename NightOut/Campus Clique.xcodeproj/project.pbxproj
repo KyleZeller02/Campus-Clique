@@ -56,6 +56,7 @@
 		02947E7C28834581005133D5 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 02947E7B28834581005133D5 /* GoogleService-Info.plist */; };
 		02C593552A2D6D7A00A79E28 /* InAppViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02C593542A2D6D7A00A79E28 /* InAppViewModel.swift */; };
 		02D7C15C29BBE1AA002F8223 /* InAppView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02D7C15B29BBE1AA002F8223 /* InAppView.swift */; };
+		02E731722A65FBB0001BD522 /* Reply.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02E731712A65FBB0001BD522 /* Reply.swift */; };
 		02E8C3692A1FB1850028BACD /* OnboardingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02E8C3682A1FB1850028BACD /* OnboardingViewModel.swift */; };
 /* End PBXBuildFile section */
 
@@ -98,6 +99,7 @@
 		02947E7B28834581005133D5 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		02C593542A2D6D7A00A79E28 /* InAppViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppViewModel.swift; sourceTree = "<group>"; };
 		02D7C15B29BBE1AA002F8223 /* InAppView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppView.swift; sourceTree = "<group>"; };
+		02E731712A65FBB0001BD522 /* Reply.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Reply.swift; sourceTree = "<group>"; };
 		02E8C3682A1FB1850028BACD /* OnboardingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingViewModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -276,6 +278,7 @@
 			isa = PBXGroup;
 			children = (
 				02943C8C2972320400DB7DF6 /* ClassPosts.swift */,
+				02E731712A65FBB0001BD522 /* Reply.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -467,6 +470,7 @@
 				02943C8D2972320400DB7DF6 /* ClassPosts.swift in Sources */,
 				02943B2229526CF000DB7DF6 /* UserProfileView.swift in Sources */,
 				02947E6A2879F727005133D5 /* LoginView.swift in Sources */,
+				02E731722A65FBB0001BD522 /* Reply.swift in Sources */,
 				02943C34296E2B3D00DB7DF6 /* Constants.swift in Sources */,
 				02947E682879F727005133D5 /* NightOutApp.swift in Sources */,
 				023C2A0D28B28B820045904F /* UserBirthdayAcquisition.swift in Sources */,

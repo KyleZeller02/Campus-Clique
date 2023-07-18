@@ -216,11 +216,6 @@ struct DetailView: View{
                         }
                         .background(Color.black)
                     }
-                    
-                    
-                    
-                    
-                    
                 }
                 .onTapGesture {
                     hideKeyboard()
@@ -231,7 +226,8 @@ struct DetailView: View{
                     self.addingReply = true
                 }) {
                     Text("Add Reply")
-                        .foregroundColor(.cyan)
+                        .foregroundColor(.white)
+                        .font(.title2)
                 })
                 
                 
