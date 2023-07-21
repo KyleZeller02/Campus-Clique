@@ -193,7 +193,7 @@ struct UserProfileView: View {
                                 .frame(width: 50, height: 50)
                                 .clipShape(Circle())
                         }
-                        Text("\(selectedPost.postAuthor)")
+                        Text("\(selectedPost.firstName) \(selectedPost.lastName)")
                             .padding(10)
                             .foregroundColor(.cyan)
                             .cornerRadius(10.0)

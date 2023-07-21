@@ -58,7 +58,7 @@ struct DetailView: View{
                                         .frame(width: 50, height: 50)
                                         .clipShape(Circle())
                                 }
-                                Text("\(selectedPost.postAuthor)")
+                                Text("\(selectedPost.firstName) \(selectedPost.lastName)")
                                     .padding(10)
                                     .foregroundColor(.cyan)
                                     .cornerRadius(10.0)
@@ -104,7 +104,7 @@ struct DetailView: View{
                                 .disabled(viewModel.isVotingInProgress)
                                 .padding(10)
                                 .buttonStyle(BorderlessButtonStyle())
-                                .foregroundColor(selectedPost.usersLiked.contains(viewModel.userDoc.Email ) ? Color.green : Color.gray)
+                                .foregroundColor(selectedPost.usersLiked.contains(viewModel.userDoc.PhoneNumber ) ? Color.green : Color.gray)
                                
                                 .cornerRadius(10)
                                 .overlay(
@@ -136,7 +136,7 @@ struct DetailView: View{
                                 }
                                 .padding(10)
                                 .buttonStyle(BorderlessButtonStyle())
-                                .foregroundColor(selectedPost.usersDisliked.contains(viewModel.userDoc.Email) ? Color.red : Color.gray)
+                                .foregroundColor(selectedPost.usersDisliked.contains(viewModel.userDoc.PhoneNumber) ? Color.red : Color.gray)
                                 .disabled(viewModel.isVotingInProgress)
                                
                                 .cornerRadius(10)
@@ -237,7 +237,7 @@ struct DetailView: View{
                             
                                 VStack {
                                     if #available(iOS 16.0, *) {
-                                        TextField("reply to \(selectedPost.postAuthor)", text: $addedReply,axis:.vertical)
+                                        TextField("reply to \(selectedPost.firstName) \(selectedPost.lastName)", text: $addedReply,axis:.vertical)
                                             .padding([.top, .bottom, .leading])
                                             .padding(.trailing, 35)  // Increase this number if needed
                                             .background(Color.gray.opacity(0.2))
@@ -287,7 +287,7 @@ struct DetailView: View{
 
                                     } else {
                                         // Fallback on earlier versions
-                                        TextField("reply to \(selectedPost.postAuthor)", text: $addedReply)
+                                        TextField("reply to \(selectedPost.firstName) \(selectedPost.lastName)", text: $addedReply)
                                             .padding([.top, .bottom, .leading])
                                             .padding(.trailing, 70)  // Increase this number if needed
                                             .background(Color.gray.opacity(0.2))
@@ -424,7 +424,7 @@ struct ReplyView: View {
                             .frame(width: 50, height: 50)
                             .clipShape(Circle())
                     }
-                    Text("\(reply.replyAuthor)")
+                    Text("\(reply.firstName) \(reply.lastName)")
                         .padding(10)
                         .foregroundColor(.cyan)
                         .cornerRadius(10.0)
@@ -461,7 +461,7 @@ struct ReplyView: View {
                     }
                     .padding(10)
                     .buttonStyle(BorderlessButtonStyle())
-                    .foregroundColor(reply.UsersLiked.contains(viewModel.userDoc.Email ) ? Color.green : Color.gray)
+                    .foregroundColor(reply.UsersLiked.contains(viewModel.userDoc.PhoneNumber ) ? Color.green : Color.gray)
                     
                     .cornerRadius(10)
                     .disabled(viewModel.isVotingInProgress)
@@ -482,7 +482,7 @@ struct ReplyView: View {
                     }
                     .padding(10)
                     .buttonStyle(BorderlessButtonStyle())
-                    .foregroundColor(reply.UserDownVotes.contains(viewModel.userDoc.Email ) ? Color.red : Color.gray)
+                    .foregroundColor(reply.UserDownVotes.contains(viewModel.userDoc.PhoneNumber ) ? Color.red : Color.gray)
                     
                     .cornerRadius(10)
                     .disabled(viewModel.isVotingInProgress)

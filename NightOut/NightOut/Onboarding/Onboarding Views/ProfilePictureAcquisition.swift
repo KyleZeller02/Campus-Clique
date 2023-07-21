@@ -15,7 +15,7 @@ struct ProfilePictureAcquisition: View {
     @State private var selectedImage: UIImage?
     @Binding var selection: Int
     @State private var showingAlert = false
-    @Binding var showingSheetTab: Bool
+    
     @EnvironmentObject var onboardingVM: OnboardingViewModel
     
     
@@ -70,7 +70,7 @@ struct ProfilePictureAcquisition: View {
                         switch result {
                         case .success(let urlString):
                             print("Picture updated successfully: \(urlString)")
-                            showingSheetTab = false
+                            
                             showOnboarding = false
                             // Use urlString to do something if needed
                         case .failure(let error):
@@ -111,7 +111,7 @@ struct ProfilePictureAcquisition: View {
 
 struct ProfilePictureAcquisition_Previews: PreviewProvider {
     static var previews: some View {
-        ProfilePictureAcquisition(selection: .constant(1), showingSheetTab: .constant(true))
+        ProfilePictureAcquisition(selection: .constant(1))
     }
 }
     

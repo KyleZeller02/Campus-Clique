@@ -19,7 +19,7 @@ class UserInfo {
     var classes: [String]
     var major: String
     
-    var email: String
+    var phoneNumber: String
     
     var profilePicURL: String
 
@@ -29,7 +29,7 @@ class UserInfo {
          classes: [String] = [],
          major: String = "",
         
-         email: String = "",
+         phoneNumber: String = "",
          profilePicURL: String = ""
          
     ) {
@@ -39,65 +39,63 @@ class UserInfo {
         self.classes = classes
         self.major = major
        
-        self.email = email
+        self.phoneNumber = phoneNumber
         self.profilePicURL = profilePicURL
+        
+        
     
     }
 }
 
 class OnboardingViewModel: ObservableObject {
     @Published var userInformation = UserInfo()
+    
+    @Published var showlogin: Bool = true
+        @Published var showOnboardingTab: Bool = false
+    
     let db = Firestore.firestore()
-    
-    
-    func signUp(withEmail email: String, withPassword pass: String, completion: @escaping (Result<Bool, Error>) -> Void) {
-        guard !email.isEmpty, !pass.isEmpty else {
-            completion(.failure(OnboardingError.emptyField))
-            return
-        }
-        Auth.auth().createUser(withEmail: email, password: pass) { authResult, error in
-            if let error = error {
-                completion(.failure(error))
-            } else {
-                self.updateEmail(email: email)
-                print(self.userInformation.email)
-                completion(.success(true))
-            }
+    init(){
+        let user = Auth.auth().currentUser
+        if let user = user{
+            self.showOnboardingTab = false
+            self.showlogin = false
         }
         
     }
     
-    func logIn(withEmail email: String, withPassword pass: String, completion: @escaping (Result<Bool, Error>) -> Void) {
-        guard !email.isEmpty, !pass.isEmpty else {
-            completion(.failure(OnboardingError.emptyField))
-            return
-        }
-        
-        Auth.auth().signIn(withEmail: email, password: pass) { authResult, error in
+    
+    
+    func sendCode(phoneNumber: String, completion: @escaping (Bool) -> Void) {
+        PhoneAuthProvider.provider().verifyPhoneNumber(phoneNumber, uiDelegate: nil) { (verificationID, error) in
             if let error = error {
-                completion(.failure(error))
-            } else {
-                completion(.success(true))
-                //set default values in the document in firebase
-                
-                
-               
+                print("\(error.localizedDescription)")
+                completion(false)
+                return
+            }
+            if let verificationID = verificationID {
+                UserDefaults.standard.set(verificationID, forKey: "authVerificationID")
+                UserDefaults.standard.set(phoneNumber, forKey: "phoneNumber") // Store the phone number
+                completion(true)
             }
         }
-        
     }
+    
+    
     func updateFirstLastCollege(first:String, last: String, College: String){
-        print(self.userInformation.email)
+      
         self.userInformation.firstName = first
         self.userInformation.lastName = last
         self.userInformation.college = College
     }
     
-    func updateClassesMajor(Classes: [String], Major: String, email: String){
+    func updateClassesMajor(Classes: [String], Major: String){
         self.userInformation.classes = Classes
         self.userInformation.major = Major
-        self.userInformation.email = email
+       
         
+    }
+    func updatePhoneNumber(number:String){
+        self.userInformation.phoneNumber = number
     }
     
     func updatePicture(image: UIImage, completion: @escaping (Result<String, Error>) -> ()) {
@@ -114,9 +112,7 @@ class OnboardingViewModel: ObservableObject {
             }
         }
     }
-    func updateEmail(email:String){
-        self.userInformation.email = email
-    }
+    
 
 
     
@@ -126,7 +122,7 @@ class OnboardingViewModel: ObservableObject {
             return
         }
        
-        let userRef = db.collection("Users").document(self.userInformation.email)
+        let userRef = db.collection("Users").document(self.userInformation.phoneNumber)
         let userInfoDict: [String: Any] = [
             "first_name": self.userInformation.firstName,
             "last_name": self.userInformation.lastName,
@@ -134,7 +130,7 @@ class OnboardingViewModel: ObservableObject {
             "classes": self.userInformation.classes,
             "profile_picture_url": self.userInformation.profilePicURL,
             "major": self.userInformation.major,
-            "email" : self.userInformation.email
+            "phone_number" : self.userInformation.phoneNumber
         ]
 
         userRef.setData(userInfoDict) { error in
@@ -144,6 +140,7 @@ class OnboardingViewModel: ObservableObject {
                 print("Document successfully created!")
             }
         }
+        self.showOnboardingTab = false
     }
 
 

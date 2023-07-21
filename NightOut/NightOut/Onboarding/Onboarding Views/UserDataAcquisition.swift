@@ -137,7 +137,7 @@ struct UserDataAcquisition: View {
 
                                             
                                             //add information to view model
-                                            onboardingVM.updateClassesMajor(Classes: classes, Major: self.Major, email: email ?? "")
+                                            onboardingVM.updateClassesMajor(Classes: classes, Major: self.Major)
                                             //
                                             
                                             withAnimation{

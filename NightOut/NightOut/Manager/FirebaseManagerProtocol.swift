@@ -39,7 +39,7 @@ protocol FirebaseManagerProtocol {
     
     func fetchReply(forPost post: ClassPost, replyId: String, completion: @escaping (Reply?, Error?) -> Void)
     
-    func deleteUsersPostAndRepliesFromClass(fromClasses c: [String], email:String, college:String, completion: @escaping (Bool, Error?) -> Void)
+    func deleteUsersPostAndRepliesAndRepliesOnEachPostFromClass(fromClasses c: [String], email:String, college:String, completion: @escaping (Bool, Error?) -> Void)
     
     func getReplies(forPost post: ClassPost, completion: @escaping ([Reply]) -> Void)
     

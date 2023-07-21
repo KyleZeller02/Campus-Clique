@@ -17,7 +17,7 @@ class UserDocument: Identifiable, ObservableObject {
     
     var Major: String
     var Classes: [String]
-    var Email: String
+    var PhoneNumber: String
    
     var profilePictureURL: String?
     
@@ -25,14 +25,14 @@ class UserDocument: Identifiable, ObservableObject {
         return "\(FirstName) \(LastName)"
     }
     
-    init(FirstName: String, LastName: String, College: String,  Major: String, Classes: [String], Email: String, profilePictureURL: String?) {
+    init(FirstName: String, LastName: String, College: String,  Major: String, Classes: [String], phoneNumber: String, profilePictureURL: String?) {
         self.FirstName = FirstName
         self.LastName = LastName
         self.College = College
        
         self.Major = Major
         self.Classes = Classes
-        self.Email = Email
+        self.PhoneNumber = phoneNumber
         self.profilePictureURL = profilePictureURL
     }
 }

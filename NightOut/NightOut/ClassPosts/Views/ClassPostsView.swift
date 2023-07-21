@@ -205,7 +205,7 @@ struct PostCellView: View {
                             .frame(width: 50, height: 50)
                             .clipShape(Circle())
                     }
-                    Text("\(selectedPost.postAuthor)")
+                    Text("\(selectedPost.firstName) \(selectedPost.lastName)")
                         .padding(10)
                         .foregroundColor(.cyan)
                         .cornerRadius(10.0)
@@ -242,7 +242,7 @@ struct PostCellView: View {
                     }
                     .buttonStyle(BorderlessButtonStyle())
                     .padding(10) // This line moved down
-                    .foregroundColor(selectedPost.usersLiked.contains(viewModel.userDoc.Email ) ? Color.green : Color.gray)
+                    .foregroundColor(selectedPost.usersLiked.contains(viewModel.userDoc.PhoneNumber ) ? Color.green : Color.gray)
                     
                     .cornerRadius(10)
                     .overlay(
@@ -264,7 +264,7 @@ struct PostCellView: View {
                         }
                         .buttonStyle(BorderlessButtonStyle())
                         .padding(10)
-                        .foregroundColor(selectedPost.usersDisliked.contains(viewModel.userDoc.Email ) ? Color.red : Color.gray)
+                        .foregroundColor(selectedPost.usersDisliked.contains(viewModel.userDoc.PhoneNumber ) ? Color.red : Color.gray)
                         
                         .cornerRadius(10)
                         .overlay(
@@ -317,14 +317,14 @@ struct PostCellView: View {
 
 func isAuthorPost(ofPost post:ClassPost) ->Bool{
     let user = Auth.auth().currentUser
-    let email = user?.email
-    return email == post.email
+    let phoneNumber = user?.phoneNumber
+    return phoneNumber == post.phoneNumber
 }
 
 func isAuthorReply(ofReply reply:Reply) ->Bool{
     let user = Auth.auth().currentUser
-    let email = user?.email
-    return email == reply.email
+    let phoneNumber = user?.phoneNumber
+    return phoneNumber == reply.phoneNumber
 }
 
 

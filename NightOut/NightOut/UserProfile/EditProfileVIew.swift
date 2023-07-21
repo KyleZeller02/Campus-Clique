@@ -110,22 +110,52 @@ struct EditProfileView: View {
             }
             Spacer()
             Button {
-                let classes = [self.newClass1, self.newClass2, self.newClass3, self.newClass4, self.newClass5, self.newClass6].compactMap { $0 }
-                let trimmedClasses = classes.map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
-                let nonEmptyClasses = trimmedClasses.filter { !$0.isEmpty }
+                let classes = [newClass1, newClass2, newClass3, newClass4, newClass5, newClass6]
+                    .compactMap { $0 }
+                    .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
+                    .filter { !$0.isEmpty }
 
-                
-                if let error = vm.handleEdit(newCollege: self.newCollege, newClasses: nonEmptyClasses, newMajor: self.newMajor, newFirstName: self.newFirstName, newLastName: self.newLastName, newProfilePicture: self.selectedImage,didEditPhoto: self.didChangeImage) {
-                    
-                    vm.curError = error
+                let fieldMapping: [(value: String, key: String, comparison: String)] = [
+                    (newMajor.trimmingCharacters(in: .whitespacesAndNewlines), "major", vm.userDoc.Major),
+                    (newCollege.trimmingCharacters(in: .whitespacesAndNewlines), "college", vm.userDoc.College),
+                    (newFirstName.trimmingCharacters(in: .whitespacesAndNewlines), "first_name", vm.userDoc.FirstName),
+                    (newLastName.trimmingCharacters(in: .whitespacesAndNewlines), "last_name", vm.userDoc.LastName)
+                ]
+
+                var changedFields: Set<String> = []
+                var updatedValues: [String:Any] = [:]
+
+                fieldMapping.forEach {
+                    if $0.value != $0.comparison {
+                        changedFields.insert($0.key)
+                        updatedValues[$0.key] = $0.value
+                    }
                 }
+
+                // Check classes
+                let oldClasses = Set(vm.userDoc.Classes)
+                let newClasses = Set(classes)
+                if oldClasses != newClasses {
+                    changedFields.insert("classes")
+                    updatedValues["classes"] = Array(newClasses)
+                }
+
+                // Check profile pic
+                if didChangeImage {
+                    changedFields.insert("profile_picture")
+                    updatedValues["profile_picture"] = selectedImage
+                }
+
+                vm.handleEdit(changedFields: changedFields, updatedValues: updatedValues)
                 presentationMode.wrappedValue.dismiss()
+
             } label: {
                 Text("Done")
                     .foregroundColor(.cyan)
                     .bold()
                     .font(.system(size: 18))
             }
+
         }.padding(.horizontal,20)
     }
     

@@ -14,7 +14,7 @@ import Kingfisher
 class inAppViewVM: ObservableObject{
     @Published var postsForClass: [ClassPost] = []
     @Published var postsforUser: [ClassPost] = []
-    @Published var userDoc: UserDocument = UserDocument(FirstName: "", LastName: "", College: "",  Major: "", Classes: [], Email: "", profilePictureURL: nil)
+    @Published var userDoc: UserDocument = UserDocument(FirstName: "", LastName: "", College: "",  Major: "", Classes: [], phoneNumber: "", profilePictureURL: nil)
     @Published var curError: String = ""
     @Published var isVotingInProgress = false
     @Published var selectedClass: String = ""
@@ -146,7 +146,7 @@ class inAppViewVM: ObservableObject{
     
     
     func removeAllPostsFromUser(){
-        firebaseManager.deletePostsAndRepliesOfUser(userEmail: self.userDoc.Email) { (success, error) in
+        firebaseManager.deletePostsAndRepliesOfUser(phoneNumber: self.userDoc.PhoneNumber) { (success, error) in
             if success {
                 print("Successfully deleted all posts and replies for the user.")
                 // Update your UI or take further actions here.
@@ -196,11 +196,11 @@ class inAppViewVM: ObservableObject{
     func addReply(_ replyBody: String, to post: ClassPost, completion: @escaping (Result<Reply, Error>) -> Void) {
        
         guard !self.userDoc.FullName.isEmpty,
-              !self.userDoc.Email.isEmpty else {
+              !self.userDoc.PhoneNumber.isEmpty else {
             return
         }
         
-        firebaseManager.addReply(replyBody, to: post, author: self.userDoc.FullName, email: self.userDoc.Email, profilePictureURL: self.userDoc.profilePictureURL ?? "") { [weak self] result in
+        firebaseManager.addReply(replyBody, to: post, firstName: self.userDoc.FirstName, LastName: self.userDoc.LastName, phoneNumber: self.userDoc.PhoneNumber, profilePictureURL: self.userDoc.profilePictureURL ?? "") { [weak self] result in
             switch result {
             case .success(let reply):
                 //post.replies.append(reply)
@@ -219,7 +219,7 @@ class inAppViewVM: ObservableObject{
     
     func addNewPost(_ postBody: String) {
         guard !self.userDoc.College.isEmpty,
-              !self.userDoc.Email.isEmpty,
+              !self.userDoc.PhoneNumber.isEmpty,
               !self.userDoc.FullName.isEmpty else {
             print("Error: Missing User Info")
             return
@@ -227,7 +227,7 @@ class inAppViewVM: ObservableObject{
         
         let selectedClass = self.selectedClass
         
-        firebaseManager.addNewPost(author: self.userDoc.FullName, postBody: postBody, forClass: selectedClass, college: self.userDoc.College, email: self.userDoc.Email, profilePictureURL: self.userDoc.profilePictureURL ?? "") { post, error in
+        firebaseManager.addNewPost(firstName:self.userDoc.FirstName, lastName: self.userDoc.LastName, postBody: postBody, forClass: selectedClass, college: self.userDoc.College, phoneNumber:  self.userDoc.PhoneNumber, profilePictureURL: self.userDoc.profilePictureURL ?? "") { post, error in
             if let error = error {
                 print("Error adding new post: \(error)")
                 self.curError = "Something went wrong publishing your post. Try Again"
@@ -285,7 +285,7 @@ class inAppViewVM: ObservableObject{
     
     
     func handleVoteOnReply(_ vote: VoteType, onPost post: ClassPost, onReply reply: Reply) {
-        guard let user = Auth.auth().currentUser, let email = user.email else {
+        guard let user = Auth.auth().currentUser, let phoneNumber = user.phoneNumber else {
             print("User is not authenticated.")
             return
         }
@@ -376,7 +376,7 @@ class inAppViewVM: ObservableObject{
     func getPostsForUser(completion: @escaping (Bool) -> Void) {
         guard !self.userDoc.College.isEmpty else { return }
         //self.isLoadingPosts = true
-        firebaseManager.getPostsForUser(college: self.userDoc.College, user: self.userDoc.Email) { [weak self] posts, error in
+        firebaseManager.getPostsForUser(college: self.userDoc.College, user: self.userDoc.PhoneNumber) { [weak self] posts, error in
             DispatchQueue.main.asyncAfter(deadline: .now() + 1) { // Adding 2 seconds delay
                 //self?.isLoadingPosts = false
                 
@@ -393,135 +393,312 @@ class inAppViewVM: ObservableObject{
         }
     }
 
-    //this method needs to be abstracted and modulated more
-    func handleEdit(newCollege: String, newClasses: [String], newMajor: String, newFirstName: String, newLastName: String, newProfilePicture: UIImage?, didEditPhoto:Bool) -> String? {
-        guard !newCollege.isEmpty, !self.userDoc.Email.isEmpty else {
-            return "Edit could not be done. Log out and log back in."
-        }
+    
+    
 
-        var returnedError: String? = nil
-        let userDocLocation = db.collection("Users").document(self.userDoc.Email)
-        var updatedFields: [String: Any] = [:]
-
-        if newCollege != self.userDoc.College {
-            updatedFields["college"] = newCollege
-            let oldCollege = self.userDoc.College
-            let email = self.userDoc.Email
-            // if college has changed: delete all posts made by that user in that college, as well as its replies. delete all replies made from that user
-            firebaseManager.deletePostsAndRepliesOfUserFromCollege(fromCollege: oldCollege, userEmail: email) { success, error in
-                if error != nil {
-                    returnedError = "Posts could not be deleted from old college."
-                } else {
-                    if !success {
-                        returnedError = "Posts could not be deleted from old college."
+    func handleEdit(changedFields: Set<String>, updatedValues: [String: Any]) {
+        let fieldPriority: [String: Int] = ["classes": 1, "major": 1, "college": 1, "first_name": 2, "last_name": 2, "profile_picture": 2]
+        // Sort changedFields based on priority
+        let sortedChangedFields = Array(changedFields).sorted(by: { fieldPriority[$0] ?? Int.max < fieldPriority[$1] ?? Int.max })
+        
+        let group = DispatchGroup()
+        
+        for field in sortedChangedFields {
+            if let value = updatedValues[field] {
+                group.enter()
+                updateField(forPhoneNumber: self.userDoc.PhoneNumber, field: field, newValue: value) { err in
+                    if let err = err {
+                        print("Error updating field \(field): \(err.localizedDescription)")
                     }
+                    group.leave()
                 }
             }
         }
-
-        if newMajor != self.userDoc.Major {
-            updatedFields["major"] = newMajor
-        }
-
-        if newFirstName != self.userDoc.FirstName {
-            updatedFields["first_name"] = newFirstName
-        }
-
-        if newLastName != self.userDoc.LastName {
-            updatedFields["last_name"] = newLastName
-        }
-
-        var deletedClasses: [String] = []
-        let curUserClasses = self.userDoc.Classes
-
-        for c in curUserClasses {
-            if !newClasses.contains(c) {
-                deletedClasses.append(c)
-            }
-        }
-
-        if deletedClasses.count > 0 {
-            firebaseManager.deleteUsersPostAndRepliesFromClass(fromClasses: deletedClasses, email: self.userDoc.Email, college: self.userDoc.College) { success, error in
-                if error != nil {
-                    returnedError = "Posts could not be deleted."
-                } else {
-                    if !success {
-                        returnedError = "Posts could not be deleted."
-                    }
-                }
-            }
-        }
-
-        if let returnedError = returnedError {
-            return returnedError
-        }
-
-        updatedFields["classes"] = newClasses
-
-        // Update the Firestore document with the new values
-        userDocLocation.updateData(updatedFields) { error in
-            if let error = error {
-                print("Error updating document: \(error)")
-                returnedError = "Error updating profile."
-            } else {
-                print("Document successfully updated")
-            }
-        }
-
-        // Handle the newProfilePicture
-        if didEditPhoto {
-            if let newImage = newProfilePicture {
-                // Delete the old picture from Firestore.
-                firebaseManager.deleteProfilePictureFromFirestore(forEmail: self.userDoc.Email) { success, error in
-                    
-                    if error != nil {
-                        returnedError = "Old profile picture could not be deleted."
-                        print("Old profile picture could not be deleted")
-                    } else {
-                        print("success: \(success)")
-                        if success {
-                            // Upload the new picture to Firestore.
-                            self.firebaseManager.uploadProfileImage(newImage) { result in
-                                switch result {
-                                case .success(let urlString):
-                                    print("url is \(urlString)")
-                                    updatedFields["profile_picture_url"] = urlString
-                                    userDocLocation.updateData(updatedFields)
-                                    
-                                    // Update 'profile_pic_url' in any posts and replies made by the user
-                                    self.firebaseManager.updateProfilePicUrlForPostAndReplies(forEmail: self.userDoc.Email, withUrl: urlString) { (success, error) in
-                                        if let error = error {
-                                            print("Error occurred: \(error)")
-                                        } else if success {
-                                            KingfisherManager.shared.cache.clearMemoryCache()
-                                            KingfisherManager.shared.cache.clearDiskCache()
-                                            self.refreshPosts() { success in }
-                                            print("Profile picture URLs updated successfully!")
-                                        } else {
-                                            print("Operation did not complete successfully.")
-                                        }
-                                    }
-
-                                case .failure(let error):
-                                    returnedError = "New profile picture could not be uploaded: \(error.localizedDescription)"
-                                    print("New profile picture could not be uploaded: \(error.localizedDescription)")
-                                }
+        
+        group.notify(queue: .main) {
+            if !sortedChangedFields.isEmpty {
+                self.firebaseManager.getDocument() { doc, err in
+                    if let doc = doc {
+                        DispatchQueue.main.async {
+                            self.userDoc = doc
+                            if sortedChangedFields.contains("first_name") || sortedChangedFields.contains("last_name") {
+                                self.updateNameOnPostAndReplies()
                             }
-                        } else {
-                            returnedError = "Old profile picture could not be deleted."
+                            if sortedChangedFields.contains("profile_picture") {
+                                self.updatePhotoUrl()
+                            }
+                            self.objectWillChange.send()
                         }
                     }
                 }
             }
         }
-        
-      
-
-        objectWillChange.send()
-
-        return returnedError
     }
 
+
+
+    func updateNameOnPostAndReplies(){
+        for post in postsforUser{
+            if isAuthorPost(ofPost: post){
+                post.firstName = userDoc.FirstName
+                post.lastName = userDoc.LastName
+                objectWillChange.send()
+            }
+        }
+        for post in postsForClass{
+            if isAuthorPost(ofPost: post){
+                post.firstName = userDoc.FirstName
+                post.lastName = userDoc.LastName
+                objectWillChange.send()
+            }
+        }
+        for reply in curReplies {
+            if isAuthorReply(ofReply: reply){
+                reply.firstName = userDoc.FirstName
+                reply.lastName = userDoc.LastName
+                objectWillChange.send()
+            }
+        }
+      
+    }
+    
+    func updatePhotoUrl(){
+        for post in postsforUser{
+            if isAuthorPost(ofPost: post){
+                post.profilePicURL = userDoc.profilePictureURL
+              
+                objectWillChange.send()
+            }
+        }
+        for post in postsForClass{
+            if isAuthorPost(ofPost: post){
+                post.profilePicURL = userDoc.profilePictureURL
+                objectWillChange.send()
+            }
+        }
+        for reply in curReplies {
+            if isAuthorReply(ofReply: reply){
+                reply.profilePicURL = userDoc.profilePictureURL
+                objectWillChange.send()
+            }
+        }
+    }
+    func updateField(forPhoneNumber phoneNumber: String, field: String, newValue: Any, completion: @escaping (Error?) -> Void) {
+        switch field {
+        case "first_name":
+            updateFirstName(forPhoneNumber: phoneNumber, newFirstName: newValue as! String) { err in
+                if let err = err {
+                    completion(err)
+                } else {
+                    completion(nil)
+                }
+            }
+        case "last_name":
+            updateLastName(forPhoneNumber: phoneNumber, newLastName: newValue as! String) { err in
+                if let err = err {
+                    completion(err)
+                } else {
+                    completion(nil)
+                }
+            }
+        case "classes":
+            updateClasses(forPhoneNumber: phoneNumber, newClasses: newValue as! [String], oldClasses: self.userDoc.Classes) { err in
+                if let err = err {
+                    completion(err)
+                } else {
+                    completion(nil)
+                }
+            }
+        case "major":
+            updateMajor(forPhoneNumber: phoneNumber, newMajor: newValue as! String) { err in
+                if let err = err {
+                    completion(err)
+                } else {
+                    completion(nil)
+                }
+            }
+        case "college":
+            updateCollege(forPhoneNumber: phoneNumber, newCollege: newValue as! String) { err in
+                if let err = err {
+                    completion(err)
+                } else {
+                    completion(nil)
+                }
+            }
+        case "profile_picture":
+            updateProfilePicture(forPhoneNumber: phoneNumber, newProfilePicture: newValue as! UIImage) { err in
+                if let err = err {
+                    completion(err)
+                } else {
+                    KingfisherManager.shared.cache.removeImage(forKey: phoneNumber) //remove the cached image after successful update
+                    completion(nil)
+                }
+            }
+        default:
+            print("Unsupported field: \(field)")
+            let unsupportedError = NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey : "Unsupported field: \(field)"])
+            completion(unsupportedError)
+        }
+    }
+
+
+    
+    private func updateFirstName(forPhoneNumber phoneNumber: String, newFirstName: String, completion: @escaping (Error?) -> Void) {
+        //update user document
+        let userDocLocation = db.collection("Users").document(phoneNumber)
+        
+        userDocLocation.updateData(["first_name" : newFirstName]) { error in
+            if let error = error {
+                print("Error updating document in updateFirstName(): \(error)")
+                completion(error)
+            } else {
+                //for all post documents and reply documents made by user, update first name
+                self.firebaseManager.updateFirstNameOnPostsAndReplies(wherePhoneNumber: self.userDoc.PhoneNumber, firstName: newFirstName){ error in
+                    if let error = error{
+                        print("error in updateFirstNameOnPostsAndReplies(): \(error.localizedDescription) ")
+                        completion(error)
+                    } else {
+                        completion(nil)
+                    }
+                }
+            }
+        }
+    }
+
+    
+    private func updateLastName( forPhoneNumber: String, newLastName: String, completion: @escaping (Error?) -> Void) {
+        //update user document
+        let userDocLocation = db.collection("Users").document(forPhoneNumber)
+        userDocLocation.updateData(["last_name" : newLastName]) { error in
+            if let error = error {
+                print("Error updating document in updateLastName(): \(error)")
+                completion(error)
+            } else {
+                //for all post documents and reply documents made by user, update last name
+                self.firebaseManager.updateLastNameOnPostsAndReplies(wherePhoneNumber: self.userDoc.PhoneNumber, lastName: newLastName){ error in
+                    if let error = error{
+                        print("error in updateLastNameOnPostsAndReplies(): \(error.localizedDescription) ")
+                        completion(error)
+                    } else {
+                        completion(nil)
+                    }
+                }
+            }
+        }
+    }
+
+    
+   
+    private func updateClasses(forPhoneNumber phoneNumber: String, newClasses: [String], oldClasses: [String], completion: @escaping (Error?) -> Void) {
+        //save out old classes and prep variables
+        let newClassesSet = Set<String>(newClasses)
+        let oldClassesSet = Set<String>(oldClasses)
+        //update user document
+        let userDocLocation = db.collection("Users").document(phoneNumber)
+        userDocLocation.updateData(["classes": Array(newClassesSet)]) { error in
+            if let error = error {
+                print("Error updating classes in updateClasses(): \(error)")
+                completion(error)
+            } else {
+                let classesToRemove = Array(oldClassesSet.subtracting(newClassesSet))
+                if classesToRemove.count > 0 {
+                    // remove all posts, their replies, as well as replies made by user on other posts, in classes they are no logner taking
+                    self.firebaseManager.deleteUsersPostAndRepliesAndRepliesOnEachPostFromClass(fromClasses:classesToRemove, forPhoneNumber: self.userDoc.PhoneNumber, college: self.userDoc.College){ (res,err) in
+                        if let err = err{
+                            print("error in deleteUsersPostAndRepliesAndRepliesOnEachPostFromClass() : \(err.localizedDescription)")
+                            completion(err)
+                        } else {
+                            completion(nil)
+                        }
+                    }
+                } else {
+                    completion(nil)
+                }
+            }
+        }
+    }
+
+
+    
+    private func updateMajor(forPhoneNumber phoneNumber: String, newMajor: String, completion: @escaping (Error?) -> Void) {
+        //update user document
+        let userDocLocation = db.collection("Users").document(phoneNumber)
+        userDocLocation.updateData(["major": newMajor]) { error in
+            if let error = error {
+                print("Error updating major in updateMajor(): \(error)")
+                completion(error)
+            } else {
+                completion(nil)
+            }
+        }
+        //there is currently nothing that relies on major
+    }
+
+    private func updateCollege(forPhoneNumber phoneNumber: String, newCollege: String, completion: @escaping (Error?) -> Void) {
+        //update user document
+        let userDocLocation = db.collection("Users").document(phoneNumber)
+        userDocLocation.updateData(["college": newCollege]) { error in
+            if let error = error {
+                print("Error updating college in updateCollege(): \(error)")
+                completion(error)
+                return
+            }
+
+            //remove all posts, their replies, and replies made by that user on other posts, in that old college
+            self.firebaseManager.removePostsRepliesAndPostsOfUserRepliesFromCollege(wherePhoneNumber: self.userDoc.PhoneNumber, whereCollege: self.userDoc.College){ error in
+                if let error = error {
+                    print("Error in removePostsRepliesAndPostsOfUserRepliesFromCollege(): \(error)")
+                    completion(error)
+                } else {
+                    completion(nil)
+                }
+            }
+        }
+    }
+
+    func updateProfilePicture(forPhoneNumber phoneNumber: String, newProfilePicture: UIImage, completion: @escaping (Error?) -> Void) {
+        firebaseManager.uploadProfileImage(newProfilePicture) { res in
+            switch res {
+            case .success(let newProfilePicURL):
+                self.firebaseManager.deleteOldProfilePictureFromFirestore(forPhoneNumber: phoneNumber) { (isDeleted, error) in
+                    if let error = error {
+                        print("Error deleting old profile picture: \(error)")
+                        completion(error)
+                    } else {
+                        print("Old profile picture deleted successfully.")
+                        self.firebaseManager.updateProfilePictureURL(forPhoneNumber: phoneNumber, newProfilePicURL: newProfilePicURL) { error in
+                            if let error = error {
+                                print("Error updating user document: \(error)")
+                                completion(error)
+                            } else {
+                                self.firebaseManager.updateProfilePicOnPostsAndReplies(wherePhoneNumber: phoneNumber, profilePicURL: newProfilePicURL) { error in
+                                    if let error = error {
+                                        print("Error updating posts and replies: \(error)")
+                                        completion(error)
+                                    } else {
+                                        print("Posts and replies updated successfully.")
+                                        completion(nil)
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            case .failure(let error):
+                print("Error uploading profile image: \(error)")
+                completion(error)
+            }
+        }
+    }
+
+
+
+    
+
+    
+
+    //this method needs to be abstracted and modulated more
+    
     
 
 

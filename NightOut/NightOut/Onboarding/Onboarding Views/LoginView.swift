@@ -19,182 +19,197 @@ struct AlertState {
     var alertType: AlertType
     var message: String
 }
- func hideKeyboard() {
+func hideKeyboard() {
 #if os(iOS)
     UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
 #endif
 }
 
 struct LoginView: View {
+    @State var code: String = "111111"
+    @State private var phoneNumber: String = "+17852246907"
     @State private var email: String = ""
     @State private var password: String = ""
-    @AppStorage("showOnboarding") var showOnboarding: Bool = true
-
+    
+    @State private var showPasswordInput:Bool = false
     @State private var alertState = AlertState(showAlert: false, alertType: .invalidInput, message: "")
     
-  
-    @State private var selection: Int = 0
-    @StateObject var onboardingViewModel: OnboardingViewModel = OnboardingViewModel()
+    
+    
+    @EnvironmentObject var onboardingViewModel: OnboardingViewModel 
     @State var showingSheetTab: Bool = false
     
     var body: some View {
         
-            ZStack {
-                Color.gray.ignoresSafeArea(.all)
+        ZStack {
+            Color.gray.ignoresSafeArea(.all)
+            
+            VStack(spacing: 20) {
+                //Spacer().frame(height: 40)
                 
-                VStack(spacing: 20) {
-                    Spacer().frame(height: 40)
-                    
-                    Text("\(ProgramConstants.AppName)")
-                        .font(.system(size: 40))
-                        .fontWeight(.semibold)
-                        .foregroundColor(.Black)
-                        .multilineTextAlignment(.center)
-                    
-                    Image("AppLogo")
-                        .resizable()
-                        .aspectRatio(contentMode: .fill)
-                        .frame(width: 150, height: 150)
-                        .clipped()
-                        .cornerRadius(150)
-                    
-                    Text("The College Experience Awaits")
-                        .font(.headline)
-                    
-                    TextField("Email", text: $email)
+                Text("\(ProgramConstants.AppName)")
+                    .font(.system(size: 40))
+                    .fontWeight(.semibold)
+                    .foregroundColor(.Black)
+                    .multilineTextAlignment(.center)
+                
+                Image("AppLogo")
+                    .resizable()
+                    .aspectRatio(contentMode: .fill)
+                    .frame(width: 150, height: 150)
+                    .clipped()
+                    .cornerRadius(150)
+                
+                Text("The College Experience Awaits")
+                    .font(.headline)
+                    .foregroundColor(.White)
+                
+                
+                
+                
+
+                VStack{
+                    TextField("Phone Number", text: $phoneNumber)
                         .autocapitalization(.none)
                         .padding()
                         .background(Color.Gray)
                         .cornerRadius(5.0)
                         .padding(.bottom, 20)
                         .foregroundColor(.black)
-                        
                     
-                    SecureField("Password", text: $password)
+                        Button(action: {
+                            onboardingViewModel.sendCode(phoneNumber: phoneNumber) { success in
+                                    if success {
+                                        self.showPasswordInput = true
+                                    } else {
+                                        // Optionally, handle the error case here
+                                        print("Failed to send code.")
+                                    }
+                                }
+                        }, label: {
+                            Text("Send Code")
+                               .font(.headline)
+                               .foregroundColor(.white)
+                               .padding()
+                               .frame(maxWidth: .infinity)
+                               .background(
+                                   LinearGradient(
+                                       gradient: Gradient(colors: [.Purple, .Black]),
+                                       startPoint: .leading,
+                                       endPoint: .trailing
+                                   )
+                               )
+                               .cornerRadius(15.0)
+                        })
+                        .alert(isPresented: $alertState.showAlert) {
+                            Alert(title: Text(alertTitle()), message: Text(alertState.message), dismissButton: .default(Text("Got it!")))
+                        }
+
+                        .alert(isPresented: $alertState.showAlert) {
+                            Alert(title: Text(alertTitle()), message: Text(alertState.message), dismissButton: .default(Text("Got it!")))
+                        }
+                    
+                }
+                Spacer()
+                
+                
+            }
+            
+            .padding()
+            
+            
+        }
+        .navigationBarHidden(true)
+        .onAppear {
+            let user = Auth.auth().currentUser
+            if user != nil {
+                
+            }
+        }
+        .onTapGesture {
+            hideKeyboard()
+        }
+        
+        .sheet(isPresented: $showPasswordInput){
+           
+            ZStack{
+                Color.gray.ignoresSafeArea(.all)
+                VStack{
+                    Text("Verify Your Phone Number")
+                        .font(.title)
+                    
+                    TextField("Your Passcode", text: $code)
                         .autocapitalization(.none)
                         .padding()
                         .background(Color.Gray)
                         .cornerRadius(5.0)
-                        .padding(.bottom, 10)
+                        .padding(.bottom, 20)
                         .foregroundColor(.black)
-                    VStack{
-                        Spacer()
-                        HStack(spacing: 20) {
-                            Button(action: {
-                                if email.isEmpty || password.isEmpty {
-                                    self.alertState = AlertState(showAlert: true, alertType: .invalidInput, message: "Enter Email and Password")
+                    Button {
+                        guard let verificationID = UserDefaults.standard.string(forKey: "authVerificationID") else {
+                               print("Cannot retrieve verification ID from UserDefaults")
+                               return
+                           }
+
+                           // Log the contents of the code variable
+                           print("Verification code: \(code)")
+
+                           // Create a credential with the verification ID and the code entered by the user
+                           let credential = PhoneAuthProvider.provider().credential(
+                               withVerificationID: verificationID,
+                               verificationCode: code)
+
+                                        // Sign in with the provided credential
+                        Auth.auth().signIn(with: credential) { authResult, error in
+                            if let error = error {
+                                print("Sign-in failed with error: \(error.localizedDescription)")
+                            } else {
+                                print("Sign-in successful!")
+
+                                // Retrieve the phone number from UserDefaults
+                                guard let phoneNumber = UserDefaults.standard.string(forKey: "phoneNumber") else {
+                                    print("Cannot retrieve phone number from UserDefaults")
                                     return
                                 }
-                                
-                                onboardingViewModel.logIn(withEmail: email, withPassword: password) { result in
-                                    DispatchQueue.main.async {
-                                        switch result {
-                                        case .success(_):
-                                            //show inapp views
-                                            showOnboarding = false
-                                            
-                                           
-                                        case .failure(let error):
-                                            alertState = AlertState(showAlert: true, alertType: .badLogin, message: error.localizedDescription)
-                                        }
+
+                                let db = Firestore.firestore()
+                                let docRef = db.collection("Users").document(phoneNumber) // Use the phone number as the document ID
+
+                                docRef.getDocument { (document, error) in
+                                    if let document = document, document.exists {
+                                        print("User exists, log them in")
+                                        onboardingViewModel.showlogin = false
+                                        onboardingViewModel.showOnboardingTab = false
+                                        // Perform login actions here
+                                    } else {
+                                        print("New user, create an account")
+                                        // Here you would create a new user document in your Firestore
+                                    docRef.setData(["phoneNumber" : phoneNumber])
+                                        onboardingViewModel.updatePhoneNumber(number: phoneNumber)
+                                        // Make sure to customize to fit your user model
+                                        showPasswordInput = false
+                                        onboardingViewModel.showlogin = false
+                                        onboardingViewModel.showOnboardingTab = true
+                                        onboardingViewModel.objectWillChange.send()
                                     }
                                 }
-                            }) {
-                                Text("Log in")
-                                    .font(.headline)
-                                    .foregroundColor(.white)
-                                    .padding()
-                                    .frame(maxWidth: .infinity)
-                                    .background(
-                                        Color.Gray
-                                    )
-                                    .cornerRadius(15.0)
-                            }
-                            .alert(isPresented: $alertState.showAlert) {
-                                Alert(title: Text(alertTitle()), message: Text(alertState.message), dismissButton: .default(Text("Got it!")))
-                            }
-                            
-                            Button(action: {
-                                if email.isEmpty || password.isEmpty {
-                                    self.alertState = AlertState(showAlert: true, alertType: .invalidInput, message: "Enter Email and Password")
-                                    return
-                                }
-                                
-                                onboardingViewModel.signUp(withEmail: email, withPassword: password) { result in
-                                    DispatchQueue.main.async {
-                                        switch result {
-                                        case .success(_):
-                                            showingSheetTab = true
-                                            
-                                        case .failure(let error):
-                                            alertState = AlertState(showAlert: true, alertType: .badSignUp, message: error.localizedDescription)
-                                        }
-                                    }
-                                }
-                            }) {
-                                Text("Sign up")
-                                    .font(.headline)
-                                    .foregroundColor(.white)
-                                    .padding()
-                                    .frame(maxWidth: .infinity)
-                                    .background(
-                                        LinearGradient(
-                                            gradient: Gradient(colors: [.Purple, .Black]),
-                                            startPoint: .leading,
-                                            endPoint: .trailing
-                                        )
-                                    )
-                                    .cornerRadius(15.0)
-                            }
-                            .alert(isPresented: $alertState.showAlert) {
-                                Alert(title: Text(alertTitle()), message: Text(alertState.message), dismissButton: .default(Text("Got it!")))
                             }
                         }
+
+                    } label: {
+                        Text("Verify")
                     }
-                    
-                    
-                   
+
                 }
+            }
+           
                 
-                .padding()
-                .frame(minWidth: 0, maxWidth: .infinity)
-            }
-            .navigationBarHidden(true)
-            .onAppear {
-                let user = Auth.auth().currentUser
-                if user != nil {
-                  
-                }
-            }
-            .onTapGesture {
-                hideKeyboard()
-            }
-            .fullScreenCover(isPresented: $showingSheetTab){
-                TabView(selection: $selection){
-                    CreateUserProfile(selection: $selection)
-                        .tag(0)
-                        .environmentObject(onboardingViewModel)
-                        .edgesIgnoringSafeArea(.all)
-                    UserDataAcquisition(selection: $selection)
-                        
-                        .tag(1)
-                        .environmentObject(onboardingViewModel)
-                        .edgesIgnoringSafeArea(.all)
-                    ProfilePictureAcquisition(selection: $selection, showingSheetTab: $showingSheetTab)
-                        .tag(2)
-                        .environmentObject(onboardingViewModel)
-                        .edgesIgnoringSafeArea(.all)
-                }
-#if os(iOS)
-        .tabViewStyle(.page(indexDisplayMode: .always))
-        .indexViewStyle(.page(backgroundDisplayMode: .always))
-#endif
-                
-                .background(Color.gray.edgesIgnoringSafeArea(.all))
-            }
+        }
         
     }
-     func alertTitle() -> String {
+    
+    
+    func alertTitle() -> String {
         switch alertState.alertType {
         case .invalidInput:
             return "Invalid Input"

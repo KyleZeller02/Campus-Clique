@@ -9,8 +9,9 @@ import Foundation
 
 class Reply: Identifiable, ObservableObject, Equatable {
     var replyBody: String
-    var replyAuthor: String
-    var email: String
+    @Published var firstName : String
+     @Published var lastName : String
+    var phoneNumber: String
     @Published var votes: Int64
     let id: String
     var DatePosted: Double = 0.0
@@ -22,10 +23,11 @@ class Reply: Identifiable, ObservableObject, Equatable {
     var forCollege: String
  
    
-    init(replyBody: String, replyAuthor: String,  DatePosted: Double, votes: Int64, id: String, usersLiked: Set<String>, usersDisliked: Set<String>, email: String, picURL: String?, postID:String, inClass:String, inCollege:String) {
+    init(replyBody: String, firstName: String, lastName: String,  DatePosted: Double, votes: Int64, id: String, usersLiked: Set<String>, usersDisliked: Set<String>, phoneNumber: String, picURL: String?, postID:String, inClass:String, inCollege:String) {
         self.replyBody = replyBody
-        self.replyAuthor = replyAuthor
-        self.email = email
+        self.firstName = firstName
+        self.lastName = lastName
+        self.phoneNumber = phoneNumber
         self.DatePosted = DatePosted
         self.votes = votes
         self.id = id
@@ -40,8 +42,9 @@ class Reply: Identifiable, ObservableObject, Equatable {
     static func == (lhs: Reply, rhs: Reply) -> Bool {
         return lhs.id == rhs.id
             && lhs.replyBody == rhs.replyBody
-            && lhs.replyAuthor == rhs.replyAuthor
-            && lhs.email == rhs.email
+            && lhs.firstName == rhs.firstName
+        && lhs.lastName == rhs.lastName
+            && lhs.phoneNumber == rhs.phoneNumber
             && lhs.votes == rhs.votes
             && lhs.DatePosted == rhs.DatePosted
             && lhs.UsersLiked == rhs.UsersLiked
