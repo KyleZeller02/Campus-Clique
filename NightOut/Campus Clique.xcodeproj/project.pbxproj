@@ -13,7 +13,6 @@
 		023C2A0528B1B7180045904F /* UserProfileModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 023C2A0428B1B7180045904F /* UserProfileModel.swift */; };
 		023C2A0D28B28B820045904F /* UserBirthdayAcquisition.swift in Sources */ = {isa = PBXBuildFile; fileRef = 023C2A0C28B28B820045904F /* UserBirthdayAcquisition.swift */; };
 		0257795B2A6B1CA700829886 /* OnboardingTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0257795A2A6B1CA700829886 /* OnboardingTabView.swift */; };
-		025779642A6B3BE700829886 /* Campus_CliqueTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 025779632A6B3BE700829886 /* Campus_CliqueTests.swift */; };
 		02618F672A1C508A00885900 /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 02618F662A1C508A00885900 /* FirebaseAnalytics */; };
 		02618F692A1C509F00885900 /* FirebaseMessaging in Frameworks */ = {isa = PBXBuildFile; productRef = 02618F682A1C509F00885900 /* FirebaseMessaging */; };
 		02618F6B2A1C50B800885900 /* FirebaseDatabaseSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 02618F6A2A1C50B800885900 /* FirebaseDatabaseSwift */; };
@@ -51,16 +50,6 @@
 		02E8C3692A1FB1850028BACD /* OnboardingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02E8C3682A1FB1850028BACD /* OnboardingViewModel.swift */; };
 /* End PBXBuildFile section */
 
-/* Begin PBXContainerItemProxy section */
-		025779652A6B3BE700829886 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 02947E5C2879F727005133D5 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 02947E632879F727005133D5;
-			remoteInfo = "Campus Clique";
-		};
-/* End PBXContainerItemProxy section */
-
 /* Begin PBXFileReference section */
 		023B24A32A5A50780082910A /* FirebaseManagerProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseManagerProtocol.swift; sourceTree = "<group>"; };
 		023C29F82883A9200045904F /* UserDataAcquisition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDataAcquisition.swift; sourceTree = "<group>"; };
@@ -68,9 +57,6 @@
 		023C2A0428B1B7180045904F /* UserProfileModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileModel.swift; sourceTree = "<group>"; };
 		023C2A0C28B28B820045904F /* UserBirthdayAcquisition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserBirthdayAcquisition.swift; sourceTree = "<group>"; };
 		0257795A2A6B1CA700829886 /* OnboardingTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingTabView.swift; sourceTree = "<group>"; };
-		0257795C2A6B3B8300829886 /* CampusCliqueTesting.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = CampusCliqueTesting.xctestplan; sourceTree = "<group>"; };
-		025779612A6B3BE700829886 /* Campus CliqueTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Campus CliqueTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
-		025779632A6B3BE700829886 /* Campus_CliqueTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Campus_CliqueTests.swift; sourceTree = "<group>"; };
 		0263CB442A2EC4BA004E40D7 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		0263CB462A2EC4DF004E40D7 /* EditProfileVIew.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditProfileVIew.swift; sourceTree = "<group>"; };
 		0263CB482A2EC5C9004E40D7 /* DetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailView.swift; sourceTree = "<group>"; };
@@ -99,13 +85,6 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		0257795E2A6B3BE700829886 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		02947E612879F727005133D5 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -136,14 +115,6 @@
 				02C593542A2D6D7A00A79E28 /* InAppViewModel.swift */,
 			);
 			path = Views;
-			sourceTree = "<group>";
-		};
-		025779622A6B3BE700829886 /* Campus CliqueTests */ = {
-			isa = PBXGroup;
-			children = (
-				025779632A6B3BE700829886 /* Campus_CliqueTests.swift */,
-			);
-			path = "Campus CliqueTests";
 			sourceTree = "<group>";
 		};
 		028283A92A2522620029DE7E /* Manager */ = {
@@ -217,11 +188,9 @@
 		02947E5B2879F727005133D5 = {
 			isa = PBXGroup;
 			children = (
-				0257795C2A6B3B8300829886 /* CampusCliqueTesting.xctestplan */,
 				02E731732A6A018F001BD522 /* Campus Clique.entitlements */,
 				02947E662879F727005133D5 /* NightOut */,
 				02947E7B28834581005133D5 /* GoogleService-Info.plist */,
-				025779622A6B3BE700829886 /* Campus CliqueTests */,
 				02947E652879F727005133D5 /* Products */,
 				02943C47296F801D00DB7DF6 /* Frameworks */,
 			);
@@ -231,7 +200,6 @@
 			isa = PBXGroup;
 			children = (
 				02947E642879F727005133D5 /* Campus Clique.app */,
-				025779612A6B3BE700829886 /* Campus CliqueTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -300,24 +268,6 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		025779602A6B3BE700829886 /* Campus CliqueTests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 025779672A6B3BE700829886 /* Build configuration list for PBXNativeTarget "Campus CliqueTests" */;
-			buildPhases = (
-				0257795D2A6B3BE700829886 /* Sources */,
-				0257795E2A6B3BE700829886 /* Frameworks */,
-				0257795F2A6B3BE700829886 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				025779662A6B3BE700829886 /* PBXTargetDependency */,
-			);
-			name = "Campus CliqueTests";
-			productName = "Campus CliqueTests";
-			productReference = 025779612A6B3BE700829886 /* Campus CliqueTests.xctest */;
-			productType = "com.apple.product-type.bundle.unit-test";
-		};
 		02947E632879F727005133D5 /* Campus Clique */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 02947E722879F72A005133D5 /* Build configuration list for PBXNativeTarget "Campus Clique" */;
@@ -360,10 +310,6 @@
 				LastSwiftUpdateCheck = 1430;
 				LastUpgradeCheck = 1340;
 				TargetAttributes = {
-					025779602A6B3BE700829886 = {
-						CreatedOnToolsVersion = 14.3.1;
-						TestTargetID = 02947E632879F727005133D5;
-					};
 					02947E632879F727005133D5 = {
 						CreatedOnToolsVersion = 13.4.1;
 					};
@@ -389,19 +335,11 @@
 			projectRoot = "";
 			targets = (
 				02947E632879F727005133D5 /* Campus Clique */,
-				025779602A6B3BE700829886 /* Campus CliqueTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		0257795F2A6B3BE700829886 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		02947E622879F727005133D5 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -415,14 +353,6 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		0257795D2A6B3BE700829886 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				025779642A6B3BE700829886 /* Campus_CliqueTests.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		02947E602879F727005133D5 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -457,54 +387,103 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
-/* Begin PBXTargetDependency section */
-		025779662A6B3BE700829886 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 02947E632879F727005133D5 /* Campus Clique */;
-			targetProxy = 025779652A6B3BE700829886 /* PBXContainerItemProxy */;
-		};
-/* End PBXTargetDependency section */
-
 /* Begin XCBuildConfiguration section */
-		025779682A6B3BE700829886 /* Debug */ = {
+		0237906B2A6B4EDC0072846F /* FireStoreManagerTests */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 54C5LRJ7S7;
-				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.4;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.KyleZeller.Campus-CliqueTests";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Campus Clique.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Campus Clique";
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.5;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "Campus Clique";
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
-			name = Debug;
+			name = FireStoreManagerTests;
 		};
-		025779692A6B3BE700829886 /* Release */ = {
+		0237906C2A6B4EDC0072846F /* FireStoreManagerTests */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "Campus Clique.entitlements";
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"NightOut/Preview Content\"";
 				DEVELOPMENT_TEAM = 54C5LRJ7S7;
+				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.4;
+				INFOPLIST_FILE = NightOut/Info.plist;
+				INFOPLIST_KEY_NSFileProviderDomainUsageDescription = "Please Allow NightOut the ability to access your camera roll";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.KyleZeller.Campus-CliqueTests";
+				PRODUCT_BUNDLE_IDENTIFIER = com.KyleZeller.NightOut;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_EMIT_LOC_STRINGS = NO;
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Campus Clique.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Campus Clique";
 			};
-			name = Release;
+			name = FireStoreManagerTests;
 		};
 		02947E702879F72A005133D5 /* Debug */ = {
 			isa = XCBuildConfiguration;
@@ -697,19 +676,11 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		025779672A6B3BE700829886 /* Build configuration list for PBXNativeTarget "Campus CliqueTests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				025779682A6B3BE700829886 /* Debug */,
-				025779692A6B3BE700829886 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
 		02947E5F2879F727005133D5 /* Build configuration list for PBXProject "Campus Clique" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				02947E702879F72A005133D5 /* Debug */,
+				0237906B2A6B4EDC0072846F /* FireStoreManagerTests */,
 				02947E712879F72A005133D5 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -719,6 +690,7 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				02947E732879F72A005133D5 /* Debug */,
+				0237906C2A6B4EDC0072846F /* FireStoreManagerTests */,
 				02947E742879F72A005133D5 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;

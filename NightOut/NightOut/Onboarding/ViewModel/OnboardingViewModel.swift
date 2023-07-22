@@ -50,15 +50,15 @@ class UserInfo {
 class OnboardingViewModel: ObservableObject {
     @Published var userInformation = UserInfo()
     
-    @Published var showlogin: Bool = true
+    
         @Published var showOnboardingTab: Bool = false
     
     let db = Firestore.firestore()
     init(){
         let user = Auth.auth().currentUser
         if let user = user{
+           
             self.showOnboardingTab = false
-            self.showlogin = false
         }
         
     }

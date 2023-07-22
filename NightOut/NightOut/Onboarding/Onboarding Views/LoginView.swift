@@ -26,10 +26,12 @@ func hideKeyboard() {
 }
 
 struct LoginView: View {
-    @State var code: String = "111111"
-    @State private var phoneNumber: String = "+17852246907"
+    @State var code: String = ""
+    @State private var phoneNumber: String = ""
+    @State private var countryCode:String = "+1"
     @State private var email: String = ""
     @State private var password: String = ""
+    @AppStorage("showOnboarding") var showOnboarding: Bool = true
     
     @State private var showPasswordInput:Bool = false
     @State private var alertState = AlertState(showAlert: false, alertType: .invalidInput, message: "")
@@ -69,16 +71,28 @@ struct LoginView: View {
                 
 
                 VStack{
-                    TextField("Phone Number", text: $phoneNumber)
-                        .autocapitalization(.none)
-                        .padding()
-                        .background(Color.Gray)
-                        .cornerRadius(5.0)
-                        .padding(.bottom, 20)
-                        .foregroundColor(.black)
+                    HStack{
+                        TextField("CountryCode", text: $countryCode)
+                            .autocapitalization(.none)
+                            .padding()
+                            .background(Color.Gray)
+                            .cornerRadius(5.0)
+                            .padding(.bottom, 20)
+                            .foregroundColor(.black)
+                            .frame(maxWidth: 80)
+                        TextField("Phone Number", text: $phoneNumber)
+                            .autocapitalization(.none)
+                            .padding()
+                            .background(Color.Gray)
+                            .cornerRadius(5.0)
+                            .padding(.bottom, 20)
+                            .foregroundColor(.black)
+                    }
+                   
                     
                         Button(action: {
-                            onboardingViewModel.sendCode(phoneNumber: phoneNumber) { success in
+                            let finalNumber = self.countryCode + self.phoneNumber
+                            onboardingViewModel.sendCode(phoneNumber: finalNumber) { success in
                                     if success {
                                         self.showPasswordInput = true
                                     } else {
@@ -178,8 +192,9 @@ struct LoginView: View {
                                 docRef.getDocument { (document, error) in
                                     if let document = document, document.exists {
                                         print("User exists, log them in")
-                                        onboardingViewModel.showlogin = false
+                                        showOnboarding = false
                                         onboardingViewModel.showOnboardingTab = false
+                                        onboardingViewModel.objectWillChange.send()
                                         // Perform login actions here
                                     } else {
                                         print("New user, create an account")
@@ -188,7 +203,8 @@ struct LoginView: View {
                                         onboardingViewModel.updatePhoneNumber(number: phoneNumber)
                                         // Make sure to customize to fit your user model
                                         showPasswordInput = false
-                                        onboardingViewModel.showlogin = false
+                                        showOnboarding = false
+                                        
                                         onboardingViewModel.showOnboardingTab = true
                                         onboardingViewModel.objectWillChange.send()
                                     }

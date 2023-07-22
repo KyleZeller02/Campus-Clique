@@ -9,6 +9,7 @@ import SwiftUI
 import FirebaseCore
 import FirebaseAuth
 
+
 //this class was copied from the set up from firebase
 class AppDelegate: NSObject, UIApplicationDelegate {
     
@@ -33,12 +34,12 @@ struct NightOutApp: App {
     //line below was also copied as instructed
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
     @StateObject var onboardingViewModel: OnboardingViewModel  = OnboardingViewModel()
-    
+    @AppStorage("showOnboarding") var showOnboarding: Bool = false
     
     var body: some Scene {
             WindowGroup {
                 ZStack{
-                    if onboardingViewModel.showlogin{
+                    if showOnboarding{
                         LoginView()
                             .environmentObject(onboardingViewModel)
                     }

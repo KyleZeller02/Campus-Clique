@@ -38,7 +38,7 @@ class inAppViewVM: ObservableObject{
                 self?.userDoc.Classes.sort()
                 self?.selectedClass = self?.userDoc.Classes.first ?? ""
                 self?.fetchFirst30PostsForClass() { completed in
-                    print("There are \(self?.postsForClass.count) posts")
+                   
                     if completed {
                         self?.getPostsForUser { completed in
                             if completed {
@@ -193,8 +193,8 @@ class inAppViewVM: ObservableObject{
     
     
     
-    func addReply(_ replyBody: String, to post: ClassPost, completion: @escaping (Result<Reply, Error>) -> Void) {
-       
+    func addReply(_ replyBody: String, to post: ClassPost) {
+           
         guard !self.userDoc.FullName.isEmpty,
               !self.userDoc.PhoneNumber.isEmpty else {
             return
@@ -203,16 +203,14 @@ class inAppViewVM: ObservableObject{
         firebaseManager.addReply(replyBody, to: post, firstName: self.userDoc.FirstName, LastName: self.userDoc.LastName, phoneNumber: self.userDoc.PhoneNumber, profilePictureURL: self.userDoc.profilePictureURL ?? "") { [weak self] result in
             switch result {
             case .success(let reply):
-                //post.replies.append(reply)
+                self?.curReplies.append(reply)
                 self?.objectWillChange.send()
-                completion(.success(reply))
             case .failure(let error):
                 print("Error adding reply: \(error)")
-                completion(.failure(error))
             }
         }
     }
-    
+
     
     
     

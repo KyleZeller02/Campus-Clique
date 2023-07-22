@@ -261,15 +261,7 @@ struct DetailView: View{
                                                     Button(action: {
                                                         let reply = addedReply.trimmingCharacters(in: .whitespacesAndNewlines)
                                                         if !reply.isEmpty{
-                                                            viewModel.addReply(reply, to: selectedPost) { result in
-                                                                switch result {
-                                                                case .success(let reply):
-                                                                    viewModel.curReplies.append(reply)
-                                                                case .failure(let error):
-                                                                    // handle error
-                                                                    break
-                                                                }
-                                                            }
+                                                            viewModel.addReply(reply, to: selectedPost)
                                                         }
                                                         self.addedReply = ""
                                                         self.addingReply = false
@@ -311,15 +303,7 @@ struct DetailView: View{
                                                     Button(action: {
                                                         let reply = addedReply.trimmingCharacters(in: .whitespacesAndNewlines)
                                                         if !reply.isEmpty{
-                                                            viewModel.addReply(reply, to: selectedPost) { result in
-                                                                switch result {
-                                                                case .success(let reply):
-                                                                    viewModel.curReplies.append(reply)
-                                                                case .failure(let error):
-                                                                    // handle error
-                                                                    break
-                                                                }
-                                                            }
+                                                            viewModel.addReply(reply, to: selectedPost) 
                                                         }
                                                         self.addedReply = ""
                                                         self.addingReply = false

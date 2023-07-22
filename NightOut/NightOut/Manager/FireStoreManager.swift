@@ -17,7 +17,14 @@ import UIKit
     case down
 }
 
-class FirestoreService {
+class FirestoreService: FirebaseManagerProtocol{
+    
+    
+    
+    
+    
+    
+    
     let db = Firestore.firestore()
 
     func uploadProfileImage(_ image: UIImage, completion: @escaping (Result<String, Error>) -> ()) {
@@ -129,35 +136,7 @@ class FirestoreService {
 
 
     
-    func fetchPosts(fromClass selectedClass: String, fromCollege college: String, completion: @escaping ([ClassPost]?, Error?) -> Void) {
-            
-        db.collection("posts")
-            .whereField("college", isEqualTo: college)
-            .whereField("for_class", isEqualTo: selectedClass)
-            .order(by: "time_stamp", descending: true)
-            .getDocuments { querySnapshot, error in
-                
-                if let error = error {
-                    completion(nil, error)
-                    return
-                }
-                
-                guard let documents = querySnapshot?.documents else {
-                    completion(nil, nil)
-                    return
-                }
-                
-                var posts: [ClassPost] = []
-                
-                for document in documents {
-                    let data = document.data()
-                    if let post = self.createClassPost(from: data){
-                        posts.append(post)
-                    }
-                }
-                completion(posts, nil)
-            }
-        }
+
     func fetchPost(byId id: String, completion: @escaping (ClassPost?, Error?) -> Void) {
         db.collection("posts").document(id).getDocument { document, error in
             if let error = error {
@@ -324,7 +303,7 @@ class FirestoreService {
                 completion(.failure(error))
             } else {
                 let reply = Reply(replyBody: replyBody, firstName: firstName,lastName: LastName, DatePosted: datePosted, votes: 0, id: replyId, usersLiked: Set([String]()), usersDisliked: Set([String]()), phoneNumber: phoneNumber, picURL: profilePictureURL, postID: post.id,inClass: post.forClass, inCollege: post.forCollege)
-                completion(.success(reply))
+                
             }
         }
     }

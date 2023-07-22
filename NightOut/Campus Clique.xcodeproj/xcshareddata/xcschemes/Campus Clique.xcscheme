@@ -26,12 +26,65 @@
       buildConfiguration = "Debug"
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
-      shouldUseLaunchSchemeArgsEnv = "YES">
-      <TestPlans>
-         <TestPlanReference
-            reference = "container:CampusCliqueTesting.xctestplan">
-         </TestPlanReference>
-      </TestPlans>
+      shouldUseLaunchSchemeArgsEnv = "YES"
+      shouldAutocreateTestPlan = "YES">
+      <Testables>
+         <TestableReference
+            skipped = "NO"
+            parallelizable = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "0237903F2A6B3D9E0072846F"
+               BuildableName = "Campus CliqueTests.xctest"
+               BlueprintName = "Campus CliqueTests"
+               ReferencedContainer = "container:Campus Clique.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO"
+            parallelizable = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "023790532A6B4B660072846F"
+               BuildableName = "MockFireStoreManagerTest.xctest"
+               BlueprintName = "MockFireStoreManagerTest"
+               ReferencedContainer = "container:Campus Clique.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO"
+            parallelizable = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "023790602A6B4DE10072846F"
+               BuildableName = "FireStoreManagerTests.xctest"
+               BlueprintName = "FireStoreManagerTests"
+               ReferencedContainer = "container:Campus Clique.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO"
+            parallelizable = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "023790712A6B517A0072846F"
+               BuildableName = "Campus Clique_Tests.xctest"
+               BlueprintName = "Campus Clique_Tests"
+               ReferencedContainer = "container:Campus Clique.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO"
+            parallelizable = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "023790822A6B53D70072846F"
+               BuildableName = "Campus Clique_UITests.xctest"
+               BlueprintName = "Campus Clique_UITests"
+               ReferencedContainer = "container:Campus Clique.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
+      </Testables>
    </TestAction>
    <LaunchAction
       buildConfiguration = "Debug"
