@@ -1,0 +1,1753 @@
+916	A.T. Still University	Kirksville
+503	Abilene Christian University	Abilene
+1459	Abraham Baldwin Agricultural College	Tifton
+521	Academy of Art University	San Francisco
+997	Adams State University	Alamosa
+465	Adelphi University	Garden City
+1587	Adler Graduate School	Minnetonka
+1276	Adler University	Chicago ...
+967	Adrian College	Adrian
+1256	AdventHealth University	Orlando
+531	Agnes Scott College	Decatur
+1270	Air Force Institute of Technology	Wright-Patterson AFB
+872	Alabama A&M University	Huntsville
+1032	Alabama State University	Montgomery
+1681	Alaska Bible College	Palmer
+1093	Alaska Pacific University	Anchorage
+1504	Albany College of Pharmacy and Health Sciences	Albany
+1113	Albany Law School	Albany
+758	Albany Medical College	Albany
+1028	Albany State University	Albany
+1259	Albertus Magnus College	New Haven
+623	Albion College	Albion
+954	Albright College	Reading
+1143	Alcorn State University	Lorman
+1401	Alderson Broaddus University	Philippi
+1086	Alfred State College	Alfred
+626	Alfred University	Alfred
+1543	Alice Lloyd College	Pippa Passes
+744	Allegheny College	Meadville
+1655	Allen College	Waterloo
+1649	Allen University	Columbia
+1472	Alliance University	New York City
+882	Alliant International University	San Diego ...
+994	Alma College	Alma
+990	Alvernia University	Reading
+1024	Alverno College	Milwaukee
+1557	Amberton University	Garland
+1614	American Baptist College	Nashville
+1635	American Film Institute Conservatory	Los Angeles
+1168	American International College	Springfield
+1114	American Jewish University	Los Angeles ...
+109	American University	Washington
+224	Amherst College	Amherst
+1196	Anderson University	Anderson
+1132	Anderson University, Indiana	Anderson ...
+468	Andrews University	Berrien Springs
+608	Angelo State University	San Angelo
+1316	Anna Maria College	Paxton
+559	Antioch University	Yellow Springs ...
+Un	Antioch University Los Angeles	Culver City
+Un	Antioch University New England	Keene
+Un	Antioch University Santa Barbara	Santa Barbara
+Un	Antioch University Seattle	Seattle
+1645	Appalachian Bible College	Mount Hope
+1644	Appalachian College of Pharmacy	Oakwood
+200	Appalachian State University	Boone
+1040	Aquinas College	Grand Rapids
+1654	Aquinas College, Tennessee	Nashville
+649	Arcadia University	Glenside
+1448	Arizona Christian University	Glendale
+24	Arizona State University	Tempe ...
+1594	Arkansas Baptist College	Little Rock
+407	Arkansas State University	Jonesboro
+757	Arkansas Tech University	Russellville
+1715	Arlington Baptist University	Arlington
+1583	Art Academy of Cincinnati	Cincinnati
+464	ArtCenter College of Design	Pasadena
+1134	Asbury University	Wilmore
+644	Ashland University	Ashland
+494	Assumption University	Worcester
+1127	Athens State University	Athens
+1650	Atlanta Metropolitan State College	Atlanta
+115	Auburn University	Auburn
+727	Auburn University at Montgomery	Montgomery
+590	Augsburg University	Minneapolis
+345	Augusta University	Augusta
+700	Augustana College	Rock Island
+787	Augustana University	Sioux Falls
+746	Aurora University	Aurora ...
+873	Austin College	Sherman
+576	Austin Peay State University	Clarksville
+1179	Ave Maria University	Ave Maria
+1294	Averett University	Danville ...
+1201	Avila University	Kansas City
+401	Azusa Pacific University	Azusa
+292	Babson College	Babson Park
+1595	Bacone College	Muskogee
+836	Baker College	Owosso ...
+1190	Baker University	Baldwin City
+647	Baldwin Wallace University	Berea
+241	Ball State University	Muncie
+959	Bank Street College of Education	New York City
+1718	Baptist Bible College	Springfield
+1684	Baptist Health Sciences University	Memphis
+1716	Baptist University of the Americas	San Antonio
+1561	Barclay College	Haviland
+215	Bard College	Annandale-on-Hudson
+1104	Bard College at Simon's Rock	Great Barrington
+311	Barnard College	New York City
+642	Barry University	Miami ...
+1404	Barton College	Wilson
+762	Baruch College, CUNY	New York City
+784	Bastyr University	Kenmore
+376	Bates College	Lewiston
+1135	Bay Path University	Longmeadow
+1566	Bay State College	Boston ...
+201	Baylor College of Medicine	Houston
+113	Baylor University	Waco
+1487	Beacon College	Leesburg
+1092	Belhaven University	Jackson
+578	Bellarmine University	Louisville
+805	Bellevue College	Bellevue
+721	Bellevue University	Bellevue ...
+1714	Bellin College	Green Bay
+1347	Belmont Abbey College	Belmont
+479	Belmont University	Nashville
+475	Beloit College	Beloit
+854	Bemidji State University	Bemidji
+1306	Benedict College	Columbia
+1075	Benedictine College	Atchison
+702	Benedictine University	Lisle
+1565	Benjamin Franklin Institute of Technology	Boston
+1047	Bennett College	Greensboro
+660	Bennington College	Bennington
+379	Bentley University	Waltham
+481	Berea College	Berea
+1272	Berkeley College	New York City ...
+216	Berklee College of Music	Boston
+730	Berry College	Mount Berry
+1530	Bethany College	Bethany
+1554	Bethany College, Kansas	Lindsborg
+1548	Bethany Lutheran College	Mankato
+1048	Bethel College	North Newton
+1424	Bethel University	Mishawaka
+636	Bethel University	Saint Paul ...
+1564	Bethel University, Tennessee	McKenzie
+1725	Bethesda University	Anaheim
+783	Bethune-Cookman University	Daytona Beach
+1705	Beulah Heights University	Atlanta
+153	Binghamton University, State University of New York	Vestal
+322	Biola University	La Mirada
+1050	Birmingham-Southern College	Birmingham
+1250	Bismarck State College	Bismarck
+1070	Black Hills State University	Spearfish
+1521	Blackburn College	Carlinville
+1611	Blessing-Rieman College of Nursing and Health Sciences	Quincy
+1173	Bloomfield College	Bloomfield
+616	Bloomsburg University of Pennsylvania	Bloomsburg
+1619	Blue Mountain College	Blue Mountain
+1520	Bluefield State University	Bluefield
+1391	Bluefield University	Bluefield
+591	Bluffton University	Bluffton
+707	Bob Jones University	Greenville
+1688	Boise Bible College	Boise ...
+194	Boise State University	Boise
+1710	Boricua College	New York City
+1012	Boston Architectural College	Boston
+93	Boston College	Chestnut Hill
+1599	Boston Graduate School of Psychoanalysis	Brookline ...
+39	Boston University	Boston ...
+267	Bowdoin College	Brunswick
+755	Bowie State University	Bowie
+175	Bowling Green State University	Bowling Green ...
+392	Bradley University	Peoria
+128	Brandeis University	Waltham
+1481	Brazosport College	Lake Jackson
+1077	Brenau University	Gainesville
+1406	Brescia University	Owensboro
+1339	Brevard College	Brevard
+1527	Brewton-Parker College	Mount Vernon
+1373	Briar Cliff University	Sioux City
+867	Bridgewater College	Bridgewater
+445	Bridgewater State University	Bridgewater
+56	Brigham Young University	Provo
+792	Brigham Young University-Hawaii	Laie
+352	Brigham Young University-Idaho	Rexburg
+871	Brooklyn College	Brooklyn
+688	Brooklyn Law School	Brooklyn
+562	Broward College	Fort Lauderdale
+55	Brown University	Providence
+1240	Bryan College	Dayton ...
+1691	Bryan College of Health Sciences	Lincoln
+1154	Bryant and Stratton College	Buffalo ...
+655	Bryant University	Smithfield
+1666	Bryn Athyn College	Bryn Athyn
+208	Bryn Mawr College	Bryn Mawr
+233	Bucknell University	Lewisburg
+957	Buena Vista University	Storm Lake
+1342	Buffalo State College	Buffalo
+1596	Bushnell University	Eugene
+423	Butler University	Indianapolis
+Un	Cabarrus College of Health Sciences	Concord
+1183	Cabrini University	Radnor
+1489	Cairn University	Langhorne ...
+1182	Caldwell University	Caldwell
+789	California Baptist University	Riverside ...
+601	California College of the Arts	San Francisco ...
+669	California Institute of Integral Studies	San Francisco
+53	California Institute of Technology	Pasadena
+476	California Institute of the Arts	Valencia
+662	California Lutheran University	Thousand Oaks
+164	California Polytechnic State University, San Luis Obispo	San Luis Obispo
+238	California State Polytechnic University, Pomona	Pomona
+637	California State University Channel Islands	Camarillo
+1044	California State University Maritime Academy	Vallejo
+371	California State University San Marcos	San Marcos ...
+643	California State University, Bakersfield	Bakersfield
+197	California State University, Chico	Chico
+360	California State University, Dominguez Hills	Carson ...
+483	California State University, East Bay	Hayward ...
+264	California State University, Fresno	Fresno
+171	California State University, Fullerton	Fullerton ...
+167	California State University, Long Beach	Long Beach
+341	California State University, Los Angeles	Los Angeles
+548	California State University, Monterey Bay	Seaside
+125	California State University, Northridge	Northridge
+232	California State University, Sacramento	Sacramento
+269	California State University, San Bernardino	San Bernardino ...
+388	California State University, Stanislaus	Turlock ...
+1163	California Western School of Law	San Diego
+1541	Calumet College of St. Joseph	Whiting
+1658	Calvary University	Kansas City
+212	Calvin University	Grand Rapids
+1245	Cambridge College	Boston ...
+963	Cameron University	Lawton ...
+610	Campbell University	Buies Creek
+1102	Campbellsville University	Campbellsville
+594	Canisius College	Buffalo
+690	Capital University	Columbus
+980	Capitol Technology University	Laurel
+1101	Cardinal Stritch University	Milwaukee
+188	Carleton College	Northfield
+1079	Carlow University	Pittsburgh
+25	Carnegie Mellon University	Pittsburgh ...
+1624	Carolina University	Winston Salem ...
+974	Carroll College	Helena
+918	Carroll University	Waukesha ...
+598	Carson-Newman University	Jefferson City
+728	Carthage College	Kenosha
+107	Case Western Reserve University	Cleveland
+1297	Castleton University	Castleton
+1191	Catawba College	Salisbury
+1439	Cazenovia College	Cazenovia
+1111	Cedar Crest College	Allentown
+564	Cedarville University	Cedarville
+949	Centenary College of Louisiana	Shreveport
+1193	Centenary University	Hackettstown
+1618	Central Baptist College	Conway
+1579	Central Christian College of Kansas	McPherson
+1643	Central Christian College of the Bible	Moberly ...
+910	Central College	Pella
+368	Central Connecticut State University	New Britain
+1279	Central Methodist University	Fayette
+242	Central Michigan University	Mount Pleasant
+1601	Central Penn College	Summerdale
+1139	Central State University	Wilberforce
+337	Central Washington University	Ellensburg ...
+1498	Centralia College	Centralia
+722	Centre College	Danville
+1103	Chadron State College	Chadron
+1015	Chamberlain University	Addison ...
+995	Chaminade University of Honolulu	Honolulu
+552	Champlain College	Burlington ...
+231	Chapman University	Orange
+1252	Charles R. Drew University of Medicine and Science	Los Angeles
+942	Charleston Southern University	Charleston
+684	Chatham University	Pittsburgh
+1321	Chestnut Hill College	Philadelphia
+1255	Cheyney University of Pennsylvania	Cheyney
+842	Chicago State University	Chicago
+1636	Chipola College	Marianna
+1358	Chowan University	Murfreesboro
+857	Christian Brothers University	Memphis
+520	Christopher Newport University	Newport News
+1125	City University of Seattle	Seattle ...
+1332	Claflin University	Orangeburg
+477	Claremont Graduate University	Claremont ...
+512	Claremont McKenna College	Claremont
+650	Clark Atlanta University	Atlanta
+220	Clark University	Worcester
+1123	Clarke University	Dubuque
+1443	Clarks Summit University	Clarks Summit
+1473	Clarkson College	Omaha
+383	Clarkson University	Potsdam ...
+860	Clayton State University	Morrow
+1709	Clear Creek Baptist Bible College	Pineville
+1427	Cleary University	Howell ...
+97	Clemson University	Clemson
+1119	Cleveland Institute of Art	Cleveland
+1215	Cleveland Institute of Music	Cleveland
+271	Cleveland State University	Cleveland
+1567	Cleveland University-Kansas City	Overland Park
+508	Coastal Carolina University	Conway ...
+921	Coe College	Cedar Rapids
+1408	Coker University	Hartsville
+259	Colby College	Waterville
+1232	Colby-Sawyer College	New London
+330	Colgate University	Hamilton
+1022	College for Creative Studies	Detroit
+1685	College of Biblical Studies	Houston ...
+1322	College of Central Florida	Ocala
+272	College of Charleston	Charleston
+1525	College of Coastal Georgia	Brunswick
+1353	College of Mount Saint Vincent	The Bronx
+1363	College of Our Lady of the Elms	Chicopee
+370	College of Saint Benedict/Saint John's University	St. Joseph ...
+1243	College of Saint Mary	Omaha
+935	College of Southern Nevada	Las Vegas
+1471	College of Staten Island	Staten Island
+906	College of the Atlantic	Bar Harbor
+354	College of the Holy Cross	Worcester
+1055	College of the Ozarks	Point Lookout
+138	College of William & Mary	Williamsburg
+668	Colorado Christian University	Lakewood
+382	Colorado College	Colorado Springs ...
+720	Colorado Mesa University	Grand Junction
+302	Colorado School of Mines	Golden
+66	Colorado State University	Fort Collins
+981	Colorado State University-Pueblo	Pueblo ...
+736	Colorado Technical University	Colorado Springs ...
+1351	Columbia Basin College	Pasco
+927	Columbia College	Columbia
+420	Columbia College Chicago	Chicago
+1657	Columbia College Hollywood	Tarzana
+1319	Columbia College, South Carolina	Columbia
+1239	Columbia International University	Columbia
+8	Columbia University in the City of New York	New York City
+1349	Columbus College of Art and Design	Columbus
+710	Columbus State University	Columbus
+1304	Concord University	Athens
+674	Concordia College	Moorhead
+1449	Concordia University Ann Arbor	Ann Arbor
+1169	Concordia University Chicago	River Forest
+877	Concordia University Irvine	Irvine
+932	Concordia University Texas	Austin
+772	Concordia University Wisconsin	Mequon
+1100	Concordia University, Nebraska	Seward
+861	Concordia University, St. Paul	Saint Paul
+398	Connecticut College	New London
+1230	Converse College	Spartanburg
+1673	Conway School of Landscape Design	Northampton
+1141	Coppin State University	Baltimore
+1417	Corban University	Salem
+820	Cornell College	Mount Vernon
+4	Cornell University	Ithaca
+1034	Cornerstone University	Grand Rapids
+1174	Cornish College of the Arts	Seattle
+1544	Cottey College	Nevada
+1249	Covenant College	Lookout Mountain
+1675	Cox College	Springfield
+1371	Cranbrook Academy of Art	Bloomfield Hills
+237	Creighton University	Omaha
+1651	Criswell College	Dallas
+1730	Crowley's Ridge College	Paragould
+1284	Crown College	St. Bonifacius ...
+1409	Culver-Stockton College	Canton
+1428	Cumberland University	Lebanon
+1678	CUNY School of Law	Long Island City
+1160	Curry College	Milton
+893	Curtis Institute of Music	Philadelphia
+1054	Daemen University	Amherst
+667	Dakota State University	Madison ...
+1184	Dakota Wesleyan University	Mitchell
+950	Dallas Baptist University	Dallas
+1578	Dallas Christian College	Dallas
+1227	Dalton State College	Dalton
+69	Dartmouth College	Hanover
+1005	Davenport University	Grand Rapids ...
+307	Davidson College	Davidson
+1558	Davis and Elkins College	Elkins
+1707	Davis College	Johnson City ...
+1080	Daytona State College	Daytona Beach
+1313	Dean College	Franklin
+1415	Defiance College	Defiance
+539	Delaware State University	Dover
+1115	Delaware Valley University	Doylestown
+989	Delta State University	Cleveland
+496	Denison University	Granville
+1729	Denver College of Nursing	Denver
+139	DePaul University	Chicago
+400	DePauw University	Greencastle
+923	Des Moines University	Des Moines
+796	DeSales University	Center Valley
+452	DeVry University	Naperville ...
+1683	Dharma Realm Buddhist University	Ukiah
+282	Dickinson College	Carlisle
+1445	Dickinson State University	Dickinson
+886	Dillard University	New Orleans
+1067	Doane University	Crete
+1677	Dominican School of Philosophy & Theology	Berkeley
+834	Dominican University	River Forest
+1523	Dominican University	Orangeburg
+692	Dominican University of California	San Rafael
+1653	Donnelly College	Kansas City
+1020	Dordt University	Sioux Center
+416	Drake University	Des Moines
+450	Drew University	Madison
+99	Drexel University	Philadelphia
+803	Drury University	Springfield ...
+29	Duke University	Durham
+1515	Dunwoody College of Technology	Minneapolis
+280	Duquesne University	Pittsburgh
+1029	D'Youville College	Buffalo
+309	Earlham College	Richmond
+221	East Carolina University	Greenville
+1084	East Central University	Ada
+1403	East Georgia State College	Swainsboro ...
+846	East Stroudsburg University	East Stroudsburg
+283	East Tennessee State University	Johnson City ...
+1384	East Texas Baptist University	Marshall
+823	Eastern Connecticut State University	Willimantic
+372	Eastern Illinois University	Charleston
+303	Eastern Kentucky University	Richmond
+793	Eastern Mennonite University	Harrisonburg ...
+331	Eastern Michigan University	Ypsilanti ...
+1308	Eastern Nazarene College	Quincy
+818	Eastern New Mexico University	Portales
+817	Eastern Oregon University	La Grande
+808	Eastern University	St. Davids
+695	Eastern Virginia Medical School	Norfolk
+472	Eastern Washington University	Cheney
+1689	East-West University	Chicago
+1724	Ecclesia College	Springdale
+756	Eckerd College	Saint Petersburg ...
+894	ECPI University	Virginia Beach
+999	Edgewood College	Madison
+1053	Edward Waters University	Jacksonville
+1200	Elizabeth City State University	Elizabeth City
+622	Elizabethtown College	Elizabethtown
+586	Elmhurst University	Elmhurst
+1107	Elmira College	Elmira
+278	Elon University	Elon
+253	Embry-Riddle Aeronautical University	Daytona Beach ...
+377	Emerson College	Boston
+1072	Emmanuel College	Boston
+1622	Emmanuel College, Georgia	Franklin Springs
+1597	Emmaus Bible College	Dubuque
+1116	Emory & Henry College	Emory ...
+79	Emory University	Atlanta
+482	Emporia State University	Emporia
+926	Endicott College	Beverly
+1377	Erskine College	Due West
+1496	Eureka College	Eureka ...
+1166	Evangel University	Springfield
+1593	Everglades University	Boca Raton ...
+456	Fairfield University	Fairfield
+385	Fairleigh Dickinson University	Teaneck ...
+1303	Fairmont State University	Fairmont
+1560	Faith Baptist Bible College and Theological Seminary	Ankeny
+897	Farmingdale State College	Farmingdale
+336	Fashion Institute of Technology	New York City
+1108	Faulkner University	Montgomery
+759	Fayetteville State University	Fayetteville
+1175	Felician University	Lodi ...
+279	Ferris State University	Big Rapids
+1199	Ferrum College	Ferrum
+1292	Fielding Graduate University	Santa Barbara
+1390	Finlandia University	Hancock
+1592	Fisher College	Boston ...
+731	Fisk University	Nashville
+1011	Fitchburg State University	Fitchburg
+1659	Five Towns College	Dix Hills
+835	Flagler College	St. Augustine ...
+493	Florida Agricultural and Mechanical University	Tallahassee
+146	Florida Atlantic University	Boca Raton ...
+1620	Florida College	Temple Terrace
+1647	Florida Gateway College	Lake City
+404	Florida Gulf Coast University	Fort Myers
+284	Florida Institute of Technology	Melbourne
+104	Florida International University	Miami
+1501	Florida Memorial University	Miami Gardens
+1457	Florida National University	Hialeah
+763	Florida Southern College	Lakeland
+1188	Florida SouthWestern State College	Fort Myers
+866	Florida State College at Jacksonville	Jacksonville
+72	Florida State University	Tallahassee ...
+1285	Fontbonne University	St. Louis
+91	Fordham University	The Bronx ...
+523	Fort Hays State University	Hays
+627	Fort Lewis College	Durango
+1131	Fort Valley State University	Fort Valley
+941	Framingham State University	Framingham
+938	Francis Marion University	Florence
+1640	Franciscan Missionaries of Our Lady University	Baton Rouge
+876	Franciscan University of Steubenville	Steubenville
+438	Franklin and Marshall College	Lancaster
+1226	Franklin College	Franklin
+1178	Franklin Pierce University	Rindge ...
+680	Franklin University	Columbus ...
+809	Franklin W. Olin College of Engineering	Needham
+1411	Freed-Hardeman University	Henderson
+930	Fresno Pacific University	Fresno ...
+1224	Friends University	Wichita ...
+510	Frostburg State University	Frostburg ...
+333	Furman University	Greenville
+339	Gallaudet University	Washington
+833	Gannon University	Erie
+1142	Gardner-Webb University	Boiling Springs ...
+Un	Geisinger Commonwealth School of Medicine	Scranton
+983	Geneva College	Beaver Falls
+609	George Fox University	Newberg
+64	George Mason University	Fairfax
+65	George Washington University	Washington ...
+501	Georgetown College	Georgetown
+46	Georgetown University	Washington
+589	Georgia College and State University	Milledgeville ...
+1208	Georgia Gwinnett College	Lawrenceville
+47	Georgia Institute of Technology	Atlanta
+287	Georgia Southern University	Statesboro ...
+1229	Georgia Southwestern State University	Americus
+83	Georgia State University	Atlanta
+1213	Georgian Court University	Lakewood
+361	Gettysburg College	Gettysburg
+1562	Glenville State University	Glenville
+1138	Goddard College	Plainfield ...
+1701	God's Bible School and College	Cincinnati
+605	Golden Gate University	San Francisco ...
+1497	Goldey-Beacom College	Wilmington
+1697	Goldfarb School of Nursing at Barnes-Jewish College	St. Louis
+356	Gonzaga University	Spokane
+1733	Good Samaritan College of Nursing and Health Science	Cincinnati
+1301	Goodwin University	East Hartford
+665	Gordon College	Wenham ...
+1513	Gordon State College	Barnesville
+653	Goshen College	Goshen
+534	Goucher College	Baltimore
+795	Governors State University	University Park
+1668	Grace Christian University	Wyoming
+1052	Grace College	Winona Lake ...
+1109	Graceland University	Lamoni
+903	Grambling State University	Grambling
+262	Grand Canyon University	Phoenix
+210	Grand Valley State University	Allendale ...
+1233	Grand View University	Des Moines
+1476	Granite State College	Concord
+1633	Gratz College	Melrose Park
+1381	Great Basin College	Elko ...
+1692	Great Lakes Christian College	Lansing
+1542	Greensboro College	Greensboro
+1094	Greenville University	Greenville
+350	Grinnell College	Grinnell
+778	Grove City College	Grove City
+908	Guilford College	Greensboro
+1359	Gulf Coast State College	Panama City
+543	Gustavus Adolphus College	St. Peter
+937	Gwynedd Mercy University	Gwynedd Valley
+342	Hamilton College	Clinton
+495	Hamline University	Saint Paul
+890	Hampden-Sydney College	Hampden-Sydney
+433	Hampshire College	Amherst
+556	Hampton University	Hampton
+1478	Hannibal-LaGrange University	Hannibal
+327	Hanover College	Hanover
+683	Harding University	Searcy ...
+1268	Hardin-Simmons University	Abilene
+1269	Harrisburg University of Science and Technology	Harrisburg
+1444	Harris-Stowe State University	St. Louis
+929	Hartwick College	Oneonta
+2	Harvard University	Cambridge
+290	Harvey Mudd College	Claremont ...
+1368	Hastings College	Hastings
+355	Haverford College	Haverford
+740	Hawaii Pacific University	Honolulu
+1388	Hebrew College	Newton Centre
+1120	Heidelberg University	Tiffin
+1735	Helene Fuld College of Nursing	New York City
+1098	Henderson State University	Arkadelphia
+718	Hendrix College	Conway
+1669	Heritage Christian University	Florence
+1379	Heritage University	Toppenish
+852	Herzing University	Madison
+567	High Point University	High Point
+1433	Hilbert College	Hamburg
+358	Hillsdale College	Hillsdale
+1043	Hiram College	Hiram
+434	Hobart and William Smith Colleges	Geneva
+1392	Hodges University	Fort Myers
+247	Hofstra University	Hempstead
+892	Hollins University	Roanoke
+1585	Holy Apostles College and Seminary	Cromwell
+1551	Holy Cross College	Notre Dame
+1475	Holy Family University	Philadelphia
+1257	Holy Names University	Oakland
+678	Hood College	Frederick
+426	Hope College	Holland
+1430	Hope International University	Fullerton
+1083	Houghton University	Houghton ...
+996	Houston Baptist University	Houston
+1434	Howard Payne University	Brownwood
+211	Howard University	Washington
+558	Hult International Business School	Cambridge ...
+254	Humboldt State University	Arcata
+1617	Humphreys University	Stockton
+498	Hunter College, CUNY	New York City
+1242	Huntingdon College	Montgomery
+1128	Huntington University	Huntington ...
+1003	Husson University	Bangor
+1293	Huston-Tillotson University	Austin
+486	Icahn School of Medicine at Mount Sinai	New York City
+270	Idaho State University	Pocatello ...
+1262	Illinois College	Jacksonville
+1628	Illinois College of Optometry	Chicago
+169	Illinois Institute of Technology	Chicago
+234	Illinois State University	Normal
+526	Illinois Wesleyan University	Bloomington
+1203	Immaculata University	Immaculata ...
+1393	Indian River State College	Fort Pierce ...
+1162	Indiana Institute of Technology	Fort Wayne ...
+316	Indiana State University	Terre Haute
+136	Indiana University - Purdue University Indianapolis	Indianapolis
+43	Indiana University Bloomington	Bloomington
+1485	Indiana University East	Richmond
+1740	Indiana University Fort Wayne	Fort Wayne
+1563	Indiana University Kokomo	Kokomo
+1019	Indiana University Northwest	Gary
+380	Indiana University of Pennsylvania	Indiana
+814	Indiana University South Bend	South Bend ...
+885	Indiana University Southeast	New Albany
+672	Indiana Wesleyan University	Marion
+791	Iona University	New Rochelle
+58	Iowa State University	Ames
+1591	Iowa Wesleyan University	Mount Pleasant
+Un	Irell and Manella Graduate School of Biological Sciences	Duarte
+263	Ithaca College	Ithaca
+661	Jackson State University	Jackson
+645	Jacksonville State University	Jacksonville
+753	Jacksonville University	Jacksonville
+186	James Madison University	Harrisonburg
+1706	Jamestown Business College	Jamestown
+1568	Jarvis Christian University	Hawkins
+943	John Brown University	Siloam Springs
+618	John Carroll University	University Heights
+1337	John F. Kennedy University	Pleasant Hill ...
+1066	John Jay College of Criminal Justice	New York City
+1646	John Paul the Great Catholic University	Escondido
+18	Johns Hopkins University	Baltimore ...
+405	Johnson and Wales University	Providence ...
+1263	Johnson C. Smith University	Charlotte
+1559	Johnson University	Knoxville ...
+1425	Judson University	Elgin ...
+779	Juniata College	Huntingdon
+631	Kalamazoo College	Kalamazoo
+1282	Kansas City Art Institute	Kansas City
+1320	Kansas City University	Kansas City
+152	Kansas State University	Manhattan ...
+1460	Kansas Wesleyan University	Salina
+555	Kean University	Union ...
+914	Keck Graduate Institute	Claremont
+751	Keene State College	Keene
+829	Keiser University	Fort Lauderdale
+206	Kennesaw State University	Kennesaw ...
+131	Kent State University	Kent ...
+1634	Kentucky Christian University	Grayson
+837	Kentucky State University	Frankfort
+1394	Kentucky Wesleyan College	Owensboro
+276	Kenyon College	Gambier
+1639	Kettering College	Kettering
+593	Kettering University	Flint
+1310	Keuka College	Keuka Park
+1452	Keystone College	La Plume
+1010	King University	Bristol
+799	King's College	Wilkes-Barre
+666	Knox College	Galesburg ...
+654	Kutztown University of Pennsylvania	Kutztown
+1652	Kuyper College	Grand Rapids
+1458	La Roche University	Pittsburgh
+582	La Salle University	Philadelphia
+1025	La Sierra University	Riverside
+1699	Labouré College	Milton
+430	Lafayette College	Easton
+1387	LaGrange College	LaGrange
+1642	Laguna College of Art and Design	Laguna Beach
+1573	Lake Erie College	Painesville
+810	Lake Forest College	Lake Forest
+1704	Lake Forest Graduate School of Management	Lake Forest
+553	Lake Superior State University	Sault Ste. Marie
+1334	Lake Washington Institute of Technology	Kirkland
+1271	Lakeland University	Plymouth
+1719	Lakeview College of Nursing	Danville
+323	Lamar University	Beaumont
+1277	Lancaster Bible College	Lancaster
+745	Lander University	Greenwood
+1362	Landmark College	Putney
+1508	Lane College	Jackson
+1258	Langston University	Langston
+1248	Lasell University	Newton
+748	Lawrence Technological University	Southfield
+509	Lawrence University	Appleton
+568	Le Moyne College	Syracuse
+925	Lebanon Valley College	Annville
+934	Lee University	Cleveland
+1280	Lees-McRae College	Banner Elk
+180	Lehigh University	Bethlehem
+455	Lehman College, CUNY	The Bronx
+1468	LeMoyne-Owen College	Memphis
+1035	Lenoir-Rhyne University	Hickory
+561	Lesley University	Cambridge ...
+1076	LeTourneau University	Longview
+301	Lewis & Clark College	Portland
+773	Lewis University	Romeoville
+920	Lewis-Clark State College	Lewiston ...
+154	Liberty University	Lynchburg
+1602	Life Pacific University	San Dimas ...
+1089	Life University	Marietta
+1506	LIM College	New York City
+1329	Limestone University	Gaffney
+1609	Lincoln Christian University	Lincoln
+1519	Lincoln College	Lincoln
+774	Lincoln Memorial University	Harrogate
+905	Lincoln University	Lincoln University
+984	Lincoln University, Missouri	Jefferson City
+786	Lindenwood University	St. Charles
+970	Lindsey Wilson College	Columbia
+869	Linfield University	McMinnville ...
+765	Lipscomb University	Nashville
+1537	Livingstone College	Salisbury
+381	Lock Haven University	Lock Haven ...
+1421	Logan University	Chesterfield
+729	Loma Linda University	Loma Linda
+374	Long Island University	Brookville ...
+607	Longwood University	Farmville
+1105	Loras College	Dubuque
+1237	Louisiana Christian University	Pineville
+94	Louisiana State University	Baton Rouge
+518	Louisiana State University Health Sciences Center	New Orleans ...
+1172	Louisiana State University Health Sciences Center-Shreveport	Shreveport
+978	Louisiana State University in Shreveport	Shreveport ...
+1369	Louisiana State University of Alexandria	Alexandria
+444	Louisiana Tech University	Ruston
+1219	Lourdes University	Sylvania
+249	Loyola Marymount University	Los Angeles
+149	Loyola University Chicago	Chicago
+408	Loyola University Maryland	Baltimore
+399	Loyola University New Orleans	New Orleans
+1335	Lubbock Christian University	Lubbock
+673	Luther College	Decorah
+807	Lycoming College	Williamsport
+891	Lynn University	Boca Raton
+1149	Lyon College	Batesville
+359	Macalester College	Saint Paul
+1311	Madonna University	Livonia ...
+1676	Magdalen College of the Liberal Arts	Warner
+533	Maharishi International University	Fairfield
+1060	Maine College of Art	Portland
+1059	Maine Maritime Academy	Castine
+1194	Malone University	Canton
+966	Manchester University	North Manchester ...
+1606	Manhattan Christian College	Manhattan
+713	Manhattan College	Riverdale
+1063	Manhattan School of Music	New York City
+880	Manhattanville College	Purchase
+1090	Mansfield University of Pennsylvania	Mansfield
+1429	Maranatha Baptist University	Watertown
+1680	Maria College	Albany
+895	Marian University	Indianapolis
+1432	Marian University, Wisconsin	Fond du Lac
+785	Marietta College	Marietta
+214	Marist College	Poughkeepsie
+143	Marquette University	Milwaukee
+1386	Mars Hill University	Mars Hill
+1612	Marshall B. Ketchum University	Fullerton ...
+281	Marshall University	Huntington
+1483	Martin Luther College	New Ulm
+1700	Martin University	Indianapolis
+1136	Mary Baldwin University	Staunton
+638	Maryland Institute College of Art	Baltimore
+1512	Maryland University of Integrative Health	Laurel
+1382	Marymount Manhattan College	New York City
+813	Marymount University	Arlington
+1383	Maryville College	Maryville
+332	Maryville University	St. Louis
+968	Marywood University	Scranton
+794	Massachusetts College of Art and Design	Boston
+1124	Massachusetts College of Liberal Arts	North Adams
+1	Massachusetts Institute of Technology	Cambridge
+1238	Massachusetts Maritime Academy	Buzzards Bay
+1623	Massachusetts School of Law	Andover
+887	Mayo Clinic College of Medicine and Science	Rochester
+1454	Mayville State University	Mayville
+781	McDaniel College	Westminster ...
+1049	McKendree University	Lebanon
+1189	McMurry University	Abilene
+883	McNeese State University	Lake Charles
+1324	McPherson College	McPherson
+976	MCPHS University	Boston ...
+1330	Medaille University	Buffalo ...
+1667	Medgar Evers College	Brooklyn
+320	Medical College of Wisconsin	Milwaukee
+252	Medical University of South Carolina	Charleston
+952	Meharry Medical College	Nashville
+1451	Menlo College	Atherton ...
+461	Mercer University	Macon ...
+619	Mercy College	Dobbs Ferry
+1589	Mercy College of Health Sciences	Des Moines
+1615	Mercy College of Ohio	Toledo
+862	Mercyhurst University	Erie
+827	Meredith College	Raleigh
+712	Merrimack College	North Andover
+575	Messiah University	Mechanicsburg
+1731	Methodist College	Peoria
+1177	Methodist University	Fayetteville
+1531	Metropolitan College of New York	New York City
+961	Metropolitan State University	Saint Paul
+513	Metropolitan State University of Denver	Denver
+1350	MGH Institute of Health Professions	Boston
+436	Miami Dade College	Miami
+223	Miami University	Oxford ...
+1690	Michigan School of Psychology	Farmington Hills
+22	Michigan State University	East Lansing
+141	Michigan Technological University	Houghton
+1556	Mid-America Christian University	Oklahoma City
+1223	MidAmerica Nazarene University	Olathe
+1702	Mid-Atlantic Christian University	Elizabeth City
+1121	Middle Georgia State University	Macon
+1717	Middle Tennessee School of Anesthesia	Madison
+165	Middle Tennessee State University	Murfreesboro
+178	Middlebury College	Middlebury
+1447	Midland College	Midland
+1526	Midland University	Fremont
+1356	Midway University	Midway
+699	Midwestern State University	Wichita Falls
+743	Midwestern University	Downers Grove ...
+1419	Miles College	Fairfield
+583	Millersville University of Pennsylvania	Millersville
+1290	Milligan University	Elizabethton ...
+896	Millikin University	Decatur
+1071	Millsaps College	Jackson
+1360	Milwaukee Institute of Art and Design	Milwaukee
+573	Milwaukee School of Engineering	Milwaukee
+863	Minneapolis College of Art and Design	Minneapolis
+633	Minnesota State University Moorhead	Moorhead
+325	Minnesota State University, Mankato	Mankato ...
+1214	Minot State University	Minot
+1112	Misericordia University	Dallas
+714	Mississippi College	Clinton
+134	Mississippi State University	Mississippi State ...
+1078	Mississippi University for Women	Columbus
+1231	Mississippi Valley State University	Itta Bena
+1499	Missouri Baptist University	St. Louis
+1157	Missouri Southern State University	Joplin
+260	Missouri State University	Springfield ...
+296	Missouri University of Science and Technology	Rolla
+1469	Missouri Valley College	Marshall
+993	Missouri Western State University	St. Joseph
+1518	Mitchell College	New London
+868	Mitchell Hamline School of Law	Saint Paul
+1051	Molloy University	Rockville Centre
+1395	Monmouth College	Monmouth
+274	Monmouth University	West Long Branch
+1152	Monroe College	The Bronx ...
+150	Montana State University	Bozeman
+825	Montana State University Billings	Billings
+1345	Montana State University-Northern	Havre ...
+851	Montana Tech	Butte
+245	Montclair State University	Montclair
+1148	Montreat College	Montreat ...
+1545	Montserrat College of Art	Beverly
+800	Moody Bible Institute	Chicago
+1275	Moore College of Art and Design	Philadelphia
+801	Moravian University	Bethlehem
+901	Morehead State University	Morehead ...
+484	Morehouse College	Atlanta
+694	Morehouse School of Medicine	Atlanta
+478	Morgan State University	Baltimore
+1212	Morningside University	Sioux City
+1588	Morris College	Sumter
+1001	Morrisville State College	Morrisville
+1426	Mount Aloysius College	Cresson
+1613	Mount Carmel College of Nursing	Columbus
+222	Mount Holyoke College	South Hadley
+1580	Mount Marty University	Yankton
+1281	Mount Mary University	Milwaukee
+1145	Mount Mercy University	Cedar Rapids
+1217	Mount Saint Mary College	Newburgh
+1397	Mount Saint Mary's University	Los Angeles
+986	Mount St. Joseph University	Cincinnati
+1088	Mount St. Mary's University	Emmitsburg ...
+1348	Mount Vernon Nazarene University	Mount Vernon ...
+560	Muhlenberg College	Allentown
+1389	Multnomah University	Portland ...
+554	Murray State University	Murray ...
+790	Muskingum University	New Concord
+998	Naropa University	Boulder
+1267	National American University	Rapid City ...
+457	National Defense University	Fort Lesley J McNair
+726	National Louis University	Chicago ...
+542	National University	La Jolla
+1400	National University of Health Sciences	Lombard ...
+435	Naval Postgraduate School	Monterey
+1626	Nazarene Bible College	Colorado Springs
+874	Nazareth College	Rochester
+1418	Nebraska Methodist College	Omaha
+975	Nebraska Wesleyan University	Lincoln ...
+1147	Neumann University	Aston
+1582	Nevada State College	Henderson
+830	New College of Florida	Sarasota
+1006	New England College	Henniker ...
+1632	New England College of Optometry	Boston
+843	New England Conservatory	Boston
+1207	New England Institute of Technology	East Greenwich
+1074	New England Law | Boston	Boston
+1723	New Hope Christian College	Eugene
+724	New Jersey City University	Jersey City
+199	New Jersey Institute of Technology	Newark
+1073	New Mexico Highlands University	Las Vegas
+335	New Mexico Institute of Mining and Technology	Socorro
+147	New Mexico State University	Las Cruces
+1494	New York Academy of Art	New York City
+1165	New York City College of Technology, CUNY	Brooklyn
+1574	New York College of Podiatric Medicine	New York City
+485	New York Institute of Technology	Old Westbury ...
+624	New York Law School	New York City
+839	New York Medical College	Valhalla
+1538	New York School of Interior Design	New York City
+19	New York University	New York City ...
+1317	Newberry College	Newberry
+1361	Newman University	Wichita ...
+1464	NewSchool of Architecture and Design	San Diego
+734	Niagara University	Niagara University
+944	Nicholls State University	Thibodaux
+1039	Nichols College	Dudley
+819	Norfolk State University	Norfolk
+397	North Carolina Agricultural and Technical State University	Greensboro
+587	North Carolina Central University	Durham
+41	North Carolina State University	Raleigh
+1085	North Carolina Wesleyan University	Rocky Mount ...
+635	North Central College	Naperville ...
+1435	North Central University	Minneapolis
+229	North Dakota State University	Fargo
+1453	North Greenville University	Tigerville
+732	North Park University	Chicago
+1222	Northeast Ohio Medical University	Rootstown
+584	Northeastern Illinois University	Chicago
+841	Northeastern State University	Tahlequah
+87	Northeastern University	Boston ...
+142	Northern Arizona University	Flagstaff ...
+137	Northern Illinois University	DeKalb
+410	Northern Kentucky University	Highland Heights ...
+365	Northern Michigan University	Marquette
+1572	Northern New Mexico College	Espanola ...
+824	Northern State University	Aberdeen
+1097	Northern Vermont University	Johnson ...
+1164	Northland College	Ashland
+1720	Northpoint Bible College	Haverhill
+1465	Northwest Florida State College	Niceville
+691	Northwest Missouri State University	Maryville ...
+812	Northwest Nazarene University	Nampa
+1197	Northwest University	Kirkland ...
+1126	Northwestern College	Orange City
+1402	Northwestern Health Sciences University	Bloomington
+1480	Northwestern Oklahoma State University	Alva ...
+847	Northwestern State University of Louisiana	Natchitoches
+36	Northwestern University	Evanston ...
+1031	Northwood University	Midland ...
+536	Norwich University	Northfield
+1354	Notre Dame College	Cleveland
+1441	Notre Dame de Namur University	Belmont
+1065	Notre Dame of Maryland University	Baltimore
+185	Nova Southeastern University	Fort Lauderdale ...
+1693	Oak Hills Christian College	Bemidji
+1696	Oak Point University	Chicago
+1549	Oakland City University	Oakland City
+268	Oakland University	Rochester Hills
+1261	Oakwood University	Huntsville
+256	Oberlin College	Oberlin
+403	Occidental College	Los Angeles
+982	Oglethorpe University	Atlanta
+1507	Ohio Christian University	Circleville
+1309	Ohio Dominican University	Columbus
+671	Ohio Northern University	Ada
+187	Ohio University	Athens ...
+Un	Ohio University Southern	Ironton
+Un	Ohio University-Chillicothe	Chillicothe
+571	Ohio Wesleyan University	Delaware ...
+1186	Oklahoma Baptist University	Shawnee
+1000	Oklahoma Christian University	Edmond ...
+798	Oklahoma City University	Oklahoma City
+1405	Oklahoma Panhandle State University	Goodwell
+114	Oklahoma State University	Stillwater ...
+1315	Oklahoma Wesleyan University	Bartlesville
+189	Old Dominion University	Norfolk
+1414	Olivet College	Olivet
+715	Olivet Nazarene University	Bourbonnais
+663	Oral Roberts University	Tulsa
+170	Oregon Health & Science University	Portland ...
+856	Oregon Institute of Technology	Klamath Falls
+57	Oregon State University	Corvallis ...
+749	Otis College of Art and Design	Los Angeles
+1033	Ottawa University	Ottawa ...
+962	Otterbein University	Westerville
+1045	Ouachita Baptist University	Arkadelphia
+1096	Our Lady of the Lake University	San Antonio
+1517	Ozark Christian College	Joplin
+213	Pace University	New York City ...
+522	Pacific Lutheran University	Tacoma
+1603	Pacific Oaks College	Pasadena
+1026	Pacific Union College	Angwin
+439	Pacific University	Forest Grove
+1503	Pacifica Graduate Institute	Carpinteria ...
+1450	Paine College	Augusta
+979	Palm Beach Atlantic University	West Palm Beach ...
+991	Palm Beach State College	Lake Worth
+1365	Palo Alto University	Palo Alto
+1671	Pardee RAND Graduate School	Santa Monica
+844	Park University	Parkville ...
+1500	Parker University	Dallas
+Un	Paul Quinn College	Dallas
+1058	Paul Smith's College	Paul Smiths
+1604	Peirce College	Philadelphia
+1289	Penn State College of Medicine	Hershey
+31	Penn State University	University Park ...
+693	Pennsylvania Academy of the Fine Arts	Philadelphia
+1621	Pennsylvania College of Art and Design	Lancaster
+1694	Pennsylvania College of Health Sciences	Lancaster
+754	Pennsylvania College of Technology	Williamsport
+1057	PennWest California	California
+845	PennWest Clarion	Clarion
+884	PennWest Edinboro	Edinboro
+1535	Pensacola State College	Pensacola
+217	Pepperdine University	Malibu ...
+1352	Peru State College	Peru
+1110	Pfeiffer University	Misenheimer
+1577	Philander Smith College	Little Rock
+1314	Piedmont College	Demorest
+1711	Pillar College	Newark ...
+1484	Pine Manor College	Chestnut Hill
+620	Pittsburg State University	Pittsburg
+432	Pitzer College	Claremont
+1721	Plaza College	New York City
+473	Plymouth State University	Plymouth
+878	Point Loma Nazarene University	San Diego ...
+888	Point Park University	Pittsburgh
+1665	Point University	West Point
+1159	Polk State College	Winter Haven
+306	Pomona College	Claremont
+1656	Pontifical Faculty of the Immaculate Conception	Washington
+117	Portland State University	Portland
+1153	Post University	Waterbury
+706	Prairie View A&M University	Prairie View ...
+414	Pratt Institute	Brooklyn
+1023	Presbyterian College	Clinton
+1150	Prescott College	Prescott
+1625	Presentation College	Aberdeen
+17	Princeton University	Princeton
+1610	Principia College	Elsah
+1728	Providence Christian College	Pasadena
+544	Providence College	Providence
+639	Purchase College, State University of New York	Purchase
+16	Purdue University	West Lafayette
+458	Purdue University Fort Wayne	Fort Wayne
+767	Purdue University Northwest	Hammond
+1144	Queens College, City University of New York	New York City
+804	Queens University of Charlotte	Charlotte
+1082	Quincy University	Quincy
+156	Quinnipiac University	Hamden
+346	Radford University	Radford
+617	Ramapo College of New Jersey	Mahwah
+1236	Randolph College	Lynchburg
+969	Randolph-Macon College	Ashland
+321	Rasmussen University	St. Cloud ...
+300	Reed College	Portland
+469	Regent University	Virginia Beach
+777	Regis College	Weston
+612	Regis University	Denver
+1375	Reinhardt University	Waleska
+1466	Relay Graduate School of Education	New York City
+111	Rensselaer Polytechnic Institute	Troy ...
+1734	Research College of Nursing	Kansas City
+524	Rhode Island College	Providence
+347	Rhode Island School of Design	Providence
+537	Rhodes College	Memphis
+1736	Richmont Graduate University	Chattanooga
+393	Rider University	Lawrenceville ...
+848	Ringling College of Art and Design	Sarasota
+1004	Ripon College	Ripon
+1254	Rivier University	Nashua
+675	Roanoke College	Salem
+864	Robert Morris University	Moon Township ...
+1069	Roberts Wesleyan University	Rochester
+90	Rochester Institute of Technology	Rochester
+1539	Rochester University	Rochester Hills
+1511	Rockford University	Rockford ...
+907	Rockhurst University	Kansas City
+1205	Rocky Mountain College	Billings
+1298	Rocky Mountain College of Art and Design	Lakewood
+1703	Rocky Mountain University of Health Professions	Provo
+1631	Rocky Vista University	Parker
+585	Roger Williams University	Bristol
+953	Rogers State University	Claremore
+487	Rollins College	Winter Park
+602	Roosevelt University	Chicago ...
+1087	Rosalind Franklin University of Medicine and Science	North Chicago
+449	Rose-Hulman Institute of Technology	Terre Haute
+1570	Roseman University of Health Sciences	Henderson
+1210	Rosemont College	Rosemont
+295	Rowan University	Glassboro ...
+1598	Rush University	Chicago
+1546	Rust College	Holly Springs
+30	Rutgers, The State University of New Jersey	New Brunswick ...
+588	Sacred Heart University	Fairfield ...
+689	Saginaw Valley State University	University Center
+570	Saint Anselm College	Manchester
+Un	Saint Anthony College of Nursing	Rockford
+1713	Saint Augustine College	Chicago
+1283	Saint Augustine's University	Raleigh
+1440	Saint Elizabeth University	Morristown
+Un	Saint Francis Medical Center College of Nursing	Peoria
+1046	Saint Francis University	Loretto
+1372	Saint Joseph's College of Maine	Standish ...
+367	Saint Joseph's University	Philadelphia
+648	Saint Leo University	Saint Leo ...
+179	Saint Louis University	St. Louis ...
+1007	Saint Martin's University	Lacey
+1291	Saint Mary-of-the-Woods College	Saint Mary of the Woods
+956	Saint Mary's College	Notre Dame ...
+615	Saint Mary's College of California	Moraga
+875	Saint Mary's University of Minnesota	Winona ...
+611	Saint Michael's College	Colchester ...
+1117	Saint Peter's University	Jersey City
+964	Saint Vincent College	Latrobe
+940	Saint Xavier University	Chicago
+1431	Salem College	Winston-Salem
+600	Salem State University	Salem
+1629	Salem University	Salem
+517	Salisbury University	Salisbury
+1474	Salus University	Elkins Park ...
+769	Salve Regina University	Newport ...
+291	Sam Houston State University	Huntsville
+499	Samford University	Birmingham
+1170	Samuel Merritt University	Oakland
+1637	San Diego Christian College	Santee
+100	San Diego State University	San Diego ...
+931	San Francisco Art Institute	San Francisco
+1061	San Francisco Conservatory of Music	San Francisco
+129	San Francisco State University	San Francisco
+1674	San Joaquin College of Law	Clovis
+120	San José State University	San Jose
+148	Santa Clara University	Santa Clara
+766	Santa Fe College	Gainesville
+525	Sarah Lawrence College	Bronxville
+310	Savannah College of Art and Design	Savannah ...
+1091	Savannah State University	Savannah
+1461	Saybrook University	Pasadena
+603	School of the Art Institute of Chicago	Chicago
+402	School of Visual Arts	New York City
+1514	Schreiner University	Kerrville
+911	Scripps College	Claremont
+960	Seattle Central College	Seattle
+460	Seattle Pacific University	Seattle
+304	Seattle University	Seattle
+859	Seminole State College of Florida	Sanford
+246	Seton Hall University	South Orange
+569	Seton Hill University	Greensburg
+497	Sewanee: The University of the South	Sewanee
+1274	Shaw University	Raleigh
+1018	Shawnee State University	Portsmouth
+853	Shenandoah University	Winchester
+972	Shepherd University	Shepherdstown
+391	Shippensburg University of Pennsylvania	Shippensburg
+1260	Shorter University	Rome
+443	Siena College	Loudonville
+1502	Siena Heights University	Adrian
+1486	Sierra Nevada University	Incline Village
+338	Simmons University	Boston
+919	Simpson College	Indianola
+1584	Simpson University	Redding
+750	SIT Graduate Institute	Brattleboro
+373	Skidmore College	Saratoga Springs
+698	Slippery Rock University of Pennsylvania	Slippery Rock
+204	Smith College	Northampton
+1151	Snow College	Ephraim
+1687	Sofia University	Palo Alto
+1171	Soka University of America	Aliso Viejo
+266	Sonoma State University	Rohnert Park
+1081	South Carolina State University	Orangeburg
+1413	South College	Knoxville
+708	South Dakota School of Mines and Technology	Rapid City
+351	South Dakota State University	Brookings
+1575	South Georgia State College	Douglas
+1133	South Texas College	McAllen
+1009	South Texas College of Law	Houston
+764	South University	Savannah
+541	Southeast Missouri State University	Cape Girardeau
+1739	Southeastern Baptist College	Laurel
+505	Southeastern Louisiana University	Hammond
+988	Southeastern Oklahoma State University	Durant
+936	Southeastern University	Lakeland
+822	Southern Adventist University	Collegedale
+1185	Southern Arkansas University	Magnolia
+1106	Southern California Institute of Architecture	Los Angeles
+1590	Southern College of Optometry	Memphis
+614	Southern Connecticut State University	New Haven
+192	Southern Illinois University Carbondale	Carbondale ...
+285	Southern Illinois University Edwardsville	Edwardsville ...
+122	Southern Methodist University	Dallas
+965	Southern Nazarene University	Bethany ...
+163	Southern New Hampshire University	Manchester
+613	Southern Oregon University	Ashland ...
+768	Southern University and A&M College	Baton Rouge
+1323	Southern University at New Orleans	New Orleans
+1529	Southern University Law Center	Baton Rouge
+545	Southern Utah University	Cedar City
+1479	Southern Virginia University	Buena Vista
+1305	Southern Wesleyan University	Central
+1355	Southwest Baptist University	Bolivar ...
+838	Southwest Minnesota State University	Marshall
+1241	Southwestern Adventist University	Keene
+1366	Southwestern Assemblies of God University	Waxahachie
+1698	Southwestern Christian University	Bethany ...
+1037	Southwestern College	Winfield
+1712	Southwestern College, Santa Fe	Santa Fe
+1008	Southwestern Law School	Los Angeles
+1030	Southwestern Oklahoma State University	Weatherford ...
+632	Southwestern University	Georgetown
+1167	Spalding University	Louisville
+557	Spelman College	Atlanta
+947	Spring Arbor University	Spring Arbor
+881	Spring Hill College	Mobile
+761	Springfield College	Springfield
+1516	St Andrews University	Laurinburg
+898	St John's College	Annapolis ...
+592	St Petersburg College	St. Petersburg
+806	St. Ambrose University	Davenport
+630	St. Bonaventure University	St. Bonaventure
+565	St. Catherine University	Saint Paul
+437	St. Cloud State University	St. Cloud
+604	St. Edward's University	Austin
+1192	St. Francis College	Brooklyn
+685	St. John Fisher University	Rochester
+1536	St. Johns River State College	Palatka
+319	St. John's University	Queens ...
+933	St. Joseph's University	Brooklyn ...
+563	St. Lawrence University	Canton
+1726	St. Louis Christian College	Florissant
+687	St. Mary's College of Maryland	St. Mary's City
+629	St. Mary's University	San Antonio
+716	St. Norbert College	De Pere
+375	St. Olaf College	Northfield
+1455	St. Thomas Aquinas College	Sparkill
+912	St. Thomas University	Miami Gardens
+3	Stanford University	Stanford ...
+1181	State College of Florida-Manatee-Sarasota	Bradenton
+641	State University of New York at Fredonia	Fredonia
+447	State University of New York at New Paltz	New Paltz
+362	State University of New York at Oswego	Oswego
+670	State University of New York College at Plattsburgh	Plattsburgh ...
+409	Stephen F. Austin State University	Nacogdoches
+1218	Stephens College	Columbia
+1027	Sterling College	Sterling
+1416	Sterling College, Vermont	Craftsbury Common
+353	Stetson University	DeLand
+340	Stevens Institute of Technology	Hoboken
+1211	Stevenson University	Stevenson ...
+1477	Stillman College	Tuscaloosa
+459	Stockton University	Galloway ...
+816	Stonehill College	Easton
+123	Stony Brook University	Stony Brook
+429	Strayer University	Washington ...
+294	Suffolk University	Boston ...
+1146	Sul Ross State University	Alpine
+1398	Sullivan University	Louisville ...
+581	SUNY Brockport	Brockport
+1265	SUNY Canton	Canton
+1129	SUNY Cobleskill	Cobleskill
+1234	SUNY College at Old Westbury	Old Westbury
+530	SUNY College at Oneonta	Oneonta
+386	SUNY College of Environmental Science and Forestry	Syracuse
+1420	SUNY College of Optometry	New York City
+448	SUNY Cortland	Cortland
+1307	SUNY Delhi	Delhi
+628	SUNY Downstate Medical Center	Brooklyn
+621	SUNY Empire State College	Saratoga Springs
+422	SUNY Geneseo	Geneseo
+1209	SUNY Maritime College	Throggs Neck
+651	SUNY Polytechnic Institute	Utica
+490	SUNY Upstate Medical University	Syracuse
+703	Susquehanna University	Selinsgrove
+160	Swarthmore College	Swarthmore
+411	Sweet Briar College	Sweet Briar
+67	Syracuse University	Syracuse
+1336	Tabor College	Hillsboro
+1380	Talladega College	Talladega
+606	Tarleton State University	Stephenville ...
+735	Taylor University	Upland ...
+95	Temple University	Philadelphia ...
+515	Tennessee State University	Nashville
+431	Tennessee Tech University	Cookeville
+1616	Tennessee Wesleyan University	Athens ...
+775	Texas A&M International University	Laredo
+37	Texas A&M University	College Station
+811	Texas A&M University at Galveston	Galveston
+634	Texas A&M University-Commerce	Commerce
+446	Texas A&M University-Corpus Christi	Corpus Christi
+717	Texas A&M University-Kingsville	Kingsville
+1482	Texas A&M University-San Antonio	San Antonio
+1346	Texas A&M University-Texarkana	Texarkana
+273	Texas Christian University	Fort Worth
+1555	Texas College	Tyler
+1333	Texas Lutheran University	Seguin
+652	Texas Southern University	Houston
+196	Texas State University	San Marcos ...
+132	Texas Tech University	Lubbock
+474	Texas Tech University Health Sciences Center	Lubbock ...
+1137	Texas Wesleyan University	Fort Worth
+507	Texas Woman's University	Denton ...
+922	The American College of Financial Services	King of Prussia
+1682	The Baptist College of Florida	Graceville ...
+225	The Catholic University of America	Washington
+1244	The Chicago School of Professional Psychology	Los Angeles ...
+580	The Citadel, The Military College of South Carolina	Charleston
+797	The City College of New York	New York City
+1235	The College of Idaho	Caldwell
+394	The College of New Jersey	Ewing
+1041	The College of Saint Rose	Albany
+704	The College of St. Scholastica	Duluth ...
+1672	The College of Westchester	White Plains
+500	The College of Wooster	Wooster
+480	The Cooper Union for the Advancement of Science and Art	New York City
+419	The Culinary Institute of America	Hyde Park ...
+334	The Evergreen State College	Olympia
+900	The Graduate Center, CUNY	New York City
+1156	The Institute of World Politics	Washington
+451	The Juilliard School	New York City
+1399	The King's College	New York City
+1708	The King's University	Southlake
+1246	The Master's University	Santa Clarita
+159	The New School	New York City
+40	The Ohio State University	Columbus ...
+277	The Rockefeller University	New York City
+1014	The Sage Colleges	Troy ...
+1627	The School of Architecture	Paradise Valley
+528	The State University of New York at Potsdam	Potsdam
+108	The University of Alabama	Tuscaloosa
+308	The University of Alabama in Huntsville	Huntsville
+32	The University of Arizona	Tucson
+162	The University of Maine	Orono
+209	The University of Memphis	Memphis ...
+182	The University of Montana	Missoula
+1364	The University of Montana Western	Dillon
+103	The University of Oklahoma	Norman ...
+551	The University of Oklahoma Health Sciences Center	Oklahoma City
+599	The University of Tampa	Tampa
+421	The University of Tennessee at Chattanooga	Chattanooga
+112	The University of Tennessee at Martin	Martin ...
+646	The University of Tennessee Health Science Center	Memphis
+1607	The University of Tennessee Southern	Pulaski
+89	The University of Tennessee, Knoxville	Knoxville ...
+174	The University of Texas at Arlington	Arlington
+12	The University of Texas at Austin	Austin
+133	The University of Texas at Dallas	Richardson
+226	The University of Texas at El Paso	El Paso
+183	The University of Texas at San Antonio	San Antonio
+664	The University of Texas at Tyler	Tyler ...
+305	The University of Texas Health Science Center at Houston	Houston
+289	The University of Texas Health Science Center at San Antonio	San Antonio
+1396	The University of Texas Health Science Center at Tyler	Tyler
+166	The University of Texas MD Anderson Cancer Center	Houston
+299	The University of Texas Medical Branch at Galveston	Galveston
+946	The University of Texas Permian Basin	Odessa
+701	The University of the Arts	Philadelphia
+343	The University of Tulsa	Tulsa
+42	The University of Utah	Salt Lake City
+1367	The University of Virginia's College at Wise	Wise
+924	The University of West Alabama	Livingston
+1722	The University of West Los Angeles	Inglewood
+1695	The Wright Institute	Berkeley
+1488	Thiel College	Greenville
+1180	Thomas Aquinas College	Santa Paula
+1357	Thomas College	Waterville
+1253	Thomas Edison State University	Trenton
+1278	Thomas Jefferson School of Law	San Diego
+240	Thomas Jefferson University	Philadelphia
+1638	Thomas More College of Liberal Arts	Merrimack
+1266	Thomas More University	Crestview Hills
+1641	Thomas University	Thomasville
+1410	Tiffin University	Tiffin ...
+1436	Toccoa Falls College	Toccoa Falls ...
+826	Tougaloo College	Tougaloo ...
+502	Touro University	New York City ...
+1534	Touro University California	Vallejo
+275	Towson University	Towson
+928	Transylvania University	Lexington
+1228	Trevecca Nazarene University	Nashville
+1064	Trine University	Angola
+1686	Trinity Bible College	Ellendale
+1187	Trinity Christian College	Palos Heights
+315	Trinity College	Hartford
+1648	Trinity College of Florida	Trinity
+1727	Trinity College of Nursing & Health Sciences	Rock Island
+1042	Trinity International University	Deerfield ...
+369	Trinity University	San Antonio
+1013	Trinity Washington University	Washington
+1737	Tri-State Bible College	South Point ...
+1662	Trocaire College	Buffalo
+511	Troy University	Troy ...
+1553	Truett McConnell University	Cleveland
+489	Truman State University	Kirksville
+45	Tufts University	Medford
+118	Tulane University	New Orleans
+1302	Tusculum University	Greeneville
+516	Tuskegee University	Tuskegee
+579	Uniformed Services University of the Health Sciences	Bethesda
+389	Union College	Schenectady
+1493	Union College, Kentucky	Barbourville
+1492	Union College, Nebraska	Lincoln
+1491	Union Institute & University	Cincinnati
+802	Union University	Jackson
+538	United States Air Force Academy	Colorado Springs
+858	United States Coast Guard Academy	New London
+855	United States Merchant Marine Academy	Kings Point ...
+168	United States Military Academy	West Point
+329	United States Naval Academy	Annapolis
+1340	United States Sports Academy	Daphne
+1679	United States University	San Diego
+951	Unity College	New Gloucester
+130	University at Albany, State University of New York	Albany
+70	University at Buffalo, State University of New York	Buffalo ...
+1296	University of Advancing Technology	Tempe
+230	University of Akron	Akron ...
+119	University of Alabama at Birmingham	Birmingham
+1571	University of Alaska Anchorage	Anchorage
+177	University of Alaska Fairbanks	Fairbanks ...
+1540	University of Alaska Southeast	Juneau ...
+121	University of Arkansas	Fayetteville
+1326	University of Arkansas - Fort Smith	Fort Smith
+366	University of Arkansas at Little Rock	Little Rock
+1299	University of Arkansas at Monticello	Monticello
+1300	University of Arkansas at Pine Bluff	Pine Bluff
+492	University of Arkansas for Medical Sciences	Little Rock
+326	University of Baltimore	Baltimore
+723	University of Bridgeport	Bridgeport ...
+424	University of California College of the Law, San Francisco	San Francisco
+5	University of California, Berkeley	Berkeley ...
+27	University of California, Davis	Davis ...
+38	University of California, Irvine	Irvine ...
+13	University of California, Los Angeles	Los Angeles ...
+297	University of California, Merced	Merced ...
+80	University of California, Riverside	Riverside ...
+23	University of California, San Diego	San Diego ...
+71	University of California, San Francisco	San Francisco ...
+48	University of California, Santa Barbara	Santa Barbara ...
+75	University of California, Santa Cruz	Santa Cruz ...
+442	University of Central Arkansas	Conway
+86	University of Central Florida	Orlando ...
+682	University of Central Missouri	Warrensburg
+821	University of Central Oklahoma	Edmond
+1328	University of Charleston	Charleston
+15	University of Chicago	Chicago
+106	University of Cincinnati	Cincinnati
+34	University of Colorado Boulder	Boulder
+324	University of Colorado Colorado Springs	Colorado Springs
+227	University of Colorado Denver	Denver
+77	University of Connecticut	Storrs ...
+760	University of Dallas	Irving
+207	University of Dayton	Dayton
+82	University of Delaware	Newark
+135	University of Denver	Denver
+566	University of Detroit Mercy	Detroit
+1158	University of Dubuque	Dubuque
+378	University of Evansville	Evansville
+733	University of Findlay	Findlay
+26	University of Florida	Gainesville
+52	University of Georgia	Athens
+471	University of Hartford	West Hartford
+831	University of Hawaii at Hilo	Hilo
+413	University of Hawaii at Manoa	Honolulu
+686	University of Hawaii-West Oahu	Kapolei
+1510	University of Health Sciences and Pharmacy in St. Louis	St. Louis
+1608	University of Holy Cross	New Orleans
+78	University of Houston	Houston
+776	University of Houston-Clear Lake	Houston ...
+741	University of Houston-Downtown	Houston
+1130	University of Houston-Victoria	Victoria
+151	University of Idaho	Moscow
+76	University of Illinois at Chicago	Chicago ...
+427	University of Illinois at Springfield	Springfield ...
+28	University of Illinois at Urbana-Champaign	Champaign ...
+577	University of Indianapolis	Indianapolis
+59	University of Iowa	Iowa City ...
+1216	University of Jamestown	Jamestown
+85	University of Kansas	Lawrence ...
+81	University of Kentucky	Lexington
+840	University of La Verne	La Verne ...
+384	University of Louisiana at Lafayette	Lafayette
+677	University of Louisiana at Monroe	Monroe
+181	University of Louisville	Louisville ...
+782	University of Lynchburg	Lynchburg
+1247	University of Maine at Augusta	Augusta
+1670	University of Maine at Farmington	Farmington
+1533	University of Maine at Fort Kent	Fort Kent
+1221	University of Maine at Machias	Machias
+1467	University of Maine at Presque Isle	Presque Isle ...
+1016	University of Mary	Bismarck
+987	University of Mary Hardin-Baylor	Belton
+462	University of Mary Washington	Fredericksburg
+35	University of Maryland	College Park
+948	University of Maryland Eastern Shore	Princess Anne
+191	University of Maryland, Baltimore	Baltimore
+126	University of Maryland, Baltimore County	Baltimore
+60	University of Massachusetts Amherst	Amherst
+202	University of Massachusetts Boston	Boston
+318	University of Massachusetts Dartmouth	North Dartmouth
+832	University of Massachusetts Global	Irvine
+228	University of Massachusetts Lowell	Lowell
+257	University of Massachusetts Medical School	Worcester
+96	University of Miami	Coral Gables ...
+6	University of Michigan	Ann Arbor ...
+415	University of Michigan-Dearborn	Dearborn
+719	University of Michigan-Flint	Flint ...
+11	University of Minnesota-Twin Cities	Minneapolis ...
+172	University of Mississippi	University
+550	University of Mississippi Medical Center	Jackson
+84	University of Missouri	Columbia
+161	University of Missouri-Kansas City	Kansas City
+265	University of Missouri-St. Louis	St. Louis
+1385	University of Mobile	Mobile
+1118	University of Montevallo	Montevallo
+1438	University of Mount Olive	Mount Olive ...
+1198	University of Mount Union	Alliance
+625	University of Nebraska at Kearney	Kearney
+258	University of Nebraska at Omaha	Omaha
+348	University of Nebraska Medical Center	Omaha
+51	University of Nebraska-Lincoln	Lincoln
+155	University of Nevada, Las Vegas	Las Vegas
+144	University of Nevada, Reno	Reno
+504	University of New England	Biddeford ...
+102	University of New Hampshire	Durham ...
+572	University of New Haven	West Haven ...
+88	University of New Mexico	Albuquerque ...
+425	University of New Orleans	New Orleans
+705	University of North Alabama	Florence
+529	University of North Carolina at Asheville	Asheville
+21	University of North Carolina at Chapel Hill	Chapel Hill
+140	University of North Carolina at Charlotte	Charlotte
+198	University of North Carolina at Greensboro	Greensboro
+574	University of North Carolina at Pembroke	Pembroke
+870	University of North Carolina School of the Arts	Winston-Salem
+293	University of North Carolina Wilmington	Wilmington
+239	University of North Dakota	Grand Forks
+286	University of North Florida	Jacksonville
+519	University of North Georgia	Dahlonega
+98	University of North Texas	Denton ...
+899	University of North Texas Health Science Center	Fort Worth
+406	University of Northern Colorado	Greeley
+251	University of Northern Iowa	Cedar Falls
+889	University of Northwestern - St. Paul	Saint Paul ...
+1412	University of Northwestern Ohio	Lima
+73	University of Notre Dame	Notre Dame
+74	University of Oregon	Eugene ...
+9	University of Pennsylvania	Philadelphia
+1312	University of Pikeville	Pikeville
+44	University of Pittsburgh	Pittsburgh ...
+596	University of Portland	Portland
+1522	University of Providence	Great Falls
+532	University of Puget Sound	Tacoma
+640	University of Redlands	Redlands
+145	University of Rhode Island	Kingston ...
+184	University of Richmond	Richmond
+1407	University of Rio Grande	Rio Grande
+54	University of Rochester	Rochester
+1524	University of Saint Francis	Fort Wayne ...
+1288	University of Saint Joseph	West Hartford
+1532	University of Saint Mary	Leavenworth ...
+235	University of San Diego	San Diego
+205	University of San Francisco	San Francisco
+1264	University of Science and Arts of Oklahoma	Chickasha
+488	University of Scranton	Scranton
+1286	University of Silicon Valley	San Jose ...
+1122	University of Sioux Falls	Sioux Falls
+466	University of South Alabama	Mobile
+92	University of South Carolina	Columbia ...
+992	University of South Carolina-Aiken	Aiken
+1220	University of South Carolina-Beaufort	Bluffton
+977	University of South Carolina-Upstate	Spartanburg
+317	University of South Dakota	Vermillion
+61	University of South Florida	Tampa ...
+20	University of Southern California	Los Angeles
+549	University of Southern Indiana	Evansville
+656	University of Southern Maine	Portland ...
+244	University of Southern Mississippi	Hattiesburg
+711	University of St. Augustine for Health Sciences	San Marcos ...
+971	University of St. Francis	Joliet
+298	University of St. Thomas	Saint Paul ...
+985	University of St. Thomas	Houston
+344	University of Texas Rio Grande Valley	Edinburg ...
+261	University of Texas Southwestern Medical Center	Dallas
+1206	University of the Cumberlands	Williamsburg
+739	University of the District of Columbia	Washington
+697	University of the Incarnate Word	San Antonio
+1446	University of the Ozarks	Clarksville
+363	University of the Pacific	Stockton ...
+1422	University of the Potomac	Washington ...
+1569	University of the Southwest	Hobbs
+1552	University of the West	Rosemead
+236	University of Toledo	Toledo
+1630	University of Valley Forge	Phoenixville
+101	University of Vermont	Burlington
+33	University of Virginia	Charlottesville ...
+7	University of Washington	Seattle ...
+418	University of West Florida	Pensacola ...
+467	University of West Georgia	Carrollton
+1463	University of Western States	Portland
+314	University of Wisconsin-Eau Claire	Eau Claire
+364	University of Wisconsin-Green Bay	Green Bay
+390	University of Wisconsin-La Crosse	La Crosse
+14	University of Wisconsin-Madison	Madison
+127	University of Wisconsin-Milwaukee	Milwaukee
+428	University of Wisconsin-Oshkosh	Oshkosh
+679	University of Wisconsin-Parkside	Kenosha
+657	University of Wisconsin-Platteville	Platteville
+709	University of Wisconsin-River Falls	River Falls
+312	University of Wisconsin-Stevens Point	Stevens Point
+470	University of Wisconsin-Stout	Menomonie
+955	University of Wisconsin-Superior	Superior
+454	University of Wisconsin-Whitewater	Whitewater
+157	University of Wyoming	Laramie
+1017	Upper Iowa University	Fayette ...
+737	Ursinus College	Collegeville
+1370	Ursuline College	Pepper Pike
+110	Utah State University	Logan ...
+742	Utah Tech University	St. George
+440	Utah Valley University	Orem ...
+780	Utica University	Utica
+491	Valdosta State University	Valdosta
+514	Valencia College	Orlando
+1344	Valley City State University	Valley City
+412	Valparaiso University	Valparaíso
+62	Vanderbilt University	Nashville
+1663	VanderCook College of Music	Chicago
+1036	Vanguard University of Southern California	Costa Mesa ...
+203	Vassar College	Poughkeepsie
+1470	Vaughn College of Aeronautics and Technology	Flushing
+1576	Vermont College of Fine Arts	Montpelier
+681	Vermont Law School	South Royalton
+1338	Vermont Technical College	Randolph
+1600	Villa Maria College	Buffalo
+218	Villanova University	Villanova
+945	Vincennes University	Vincennes
+105	Virginia Commonwealth University	Richmond
+597	Virginia Military Institute	Lexington
+50	Virginia Polytechnic Institute and State University	Blacksburg
+815	Virginia State University	Petersburg
+1155	Virginia Union University	Richmond
+1068	Virginia Wesleyan University	Virginia Beach
+1056	Viterbo University	La Crosse
+1325	Voorhees University	Denmark
+535	Wabash College	Crawfordsville
+1732	Wade College	Dallas
+973	Wagner College	Staten Island
+173	Wake Forest University	Winston-Salem
+1423	Waldorf University	Forest City
+1038	Walla Walla University	College Place
+1378	Walsh College	Troy
+915	Walsh University	North Canton
+1331	Warner Pacific University	Portland
+1547	Warner University	Lake Wales
+904	Warren Wilson College	Swannanoa
+909	Wartburg College	Waverly
+696	Washburn University	Topeka
+958	Washington & Jefferson College	Washington
+1550	Washington Adventist University	Takoma Park
+288	Washington and Lee University	Lexington
+658	Washington College	Chestertown
+63	Washington State University	Pullman
+49	Washington University in St. Louis	St. Louis
+1176	Wayland Baptist University	Plainview ...
+939	Wayne State College	Wayne
+124	Wayne State University	Detroit
+1295	Waynesburg University	Waynesburg
+1581	Webb Institute	Glen Cove
+1605	Webber International University	Babson Park
+349	Weber State University	Ogden ...
+357	Webster University	St. Louis
+1660	Welch College	Gallatin
+219	Wellesley College	Wellesley
+1202	Wells College	Aurora
+865	Wentworth Institute of Technology	Boston
+1374	Wesleyan College	Macon ...
+193	Wesleyan University	Middletown
+396	West Chester University of Pennsylvania	West Chester
+1095	West Coast University-Los Angeles	North Hollywood
+1225	West Liberty University	West Liberty
+441	West Texas A&M University	Canyon ...
+1586	West Virginia School of Osteopathic Medicine	Lewisburg
+1062	West Virginia State University	Institute
+116	West Virginia University	Morgantown ...
+1495	West Virginia University at Parkersburg	Parkersburg
+1287	West Virginia Wesleyan College	Buckhannon
+387	Western Carolina University	Cullowhee ...
+879	Western Colorado University	Gunnison
+540	Western Connecticut State University	Danbury
+395	Western Illinois University	Macomb ...
+243	Western Kentucky University	Bowling Green
+158	Western Michigan University	Kalamazoo
+1462	Western Nevada College	Carson City
+747	Western New England University	Springfield ...
+1021	Western New Mexico University	Silver City
+547	Western Oregon University	Monmouth
+752	Western University of Health Sciences	Pomona
+195	Western Washington University	Bellingham
+1664	Westfield State University	Westfield
+771	Westminster College	Salt Lake City
+1204	Westminster College, Missouri	Fulton
+902	Westminster College, Pennsylvania	New Wilmington
+770	Westmont College	Santa Barbara
+328	Wheaton College	Wheaton
+595	Wheaton College, Massachusetts	Norton
+1161	Wheeling University	Wheeling
+463	Whitman College	Walla Walla
+788	Whittier College	Whittier
+917	Whitworth University	Spokane
+255	Wichita State University	Wichita
+453	Widener University	Chester ...
+1456	Wilberforce University	Wilberforce
+1376	Wiley College	Marshall
+725	Wilkes University	Wilkes-Barre
+313	Willamette University	Salem
+1099	William Carey University	Hattiesburg ...
+1318	William James College	Newton
+1341	William Jessup University	Rocklin ...
+1195	William Jewell College	Liberty
+68	William Marsh Rice University	Houston
+527	William Paterson University	Wayne
+1343	William Peace University	Raleigh
+1490	William Penn University	Oskaloosa
+1442	William Woods University	Fulton
+1661	Williams Baptist University	Walnut Ridge
+190	Williams College	Williamstown
+1437	Wilmington College	Wilmington
+913	Wilmington University	New Castle ...
+1140	Wilson College	Chambersburg
+1327	Wingate University	Wingate
+659	Winona State University	Winona
+828	Winston-Salem State University	Winston-Salem
+546	Winthrop University	Rock Hill
+1251	Wisconsin Lutheran College	Milwaukee
+1741	Wisconsin School of Professional Psychology	Milwaukee
+850	Wittenberg University	Springfield
+676	Wofford College	Spartanburg
+1738	WON Institute of Graduate Studies	Warminster
+1273	Woodbury University	Burbank ...
+176	Worcester Polytechnic Institute	Worcester
+1002	Worcester State University	Worcester
+250	Wright State University	Dayton ...
+417	Xavier University	Cincinnati
+738	Xavier University of Louisiana	New Orleans
+10	Yale University	New Haven
+248	Yeshiva University	New York City
+849	York College of Pennsylvania	York
+1505	York College, City University of New York	Jamaica
+1509	York University	York
+1528	Young Harris College	Young Harris
+506	Youngstown State University	Youngstown

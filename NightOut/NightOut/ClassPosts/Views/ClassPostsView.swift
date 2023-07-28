@@ -4,327 +4,236 @@ import Firebase
 import Kingfisher
 import UIKit
 
+
+/**
+ The `ClassPosts` view displays a list of class posts and allows users to interact with them, including viewing post details and adding new posts.
+
+ This view depends on the `inAppViewVM` observable object, which manages the data and logic for the posts and user interactions.
+
+ ## Properties
+
+ - `inAppVM`: An environment object of type `inAppViewVM` that holds the view model for this view.
+ - `colorScheme`: An environment variable representing the current color scheme.
+ - `isShowingDetail`: A state variable to control whether the detail view is shown.
+ - `isShowingSheet`: A state variable to control whether the add post sheet is shown.
+ - `selectedPost`: A state variable to hold the selected post.
+ - `addedPost`: A state variable to hold the text of the added post.
+ - `isShowingClassSelector`: A state variable to control whether the class selector action sheet is shown.
+
+ ## Initialization
+
+ In the `init` block, the appearance of the navigation bar is customized to have an opaque background with a black color.
+
+ ## Methods
+
+ - `classButtons() -> [ActionSheet.Button]`: This method generates an array of `ActionSheet.Button` elements representing class options to be used in the class selector action sheet.
+
+ ## Body
+
+ The view's body consists of a `NavigationView` containing a `ScrollView` with a list of class posts displayed using a `LazyVStack`. The `NavigationView` has a `TitleDisplayMode` of `.inline`.
+
+ ## Interactions
+
+ - Users can change the selected class by tapping the class name on the navigation bar.
+ - Users can add a new post by tapping the "Add Post" button.
+ - Users can pull down the `ScrollView` to trigger a refresh and fetch the latest posts.
+
+ ## Note
+
+ This code assumes that `DetailView`, `PostCellView`, and `AddPostView` are SwiftUI views that handle post details, post cell representation, and adding a new post, respectively.
+ */
 struct ClassPosts: View {
-
+    
+    // MARK: - Properties
+    
+    // An environment object of type `inAppViewVM` that holds the view model for this view.
     @EnvironmentObject var inAppVM: inAppViewVM
+    
+    // An environment variable representing the current color scheme.
     @Environment(\.colorScheme) var colorScheme
+    
+    // A state variable to control whether the detail view is shown.
     @State private var isShowingDetail = false
+    
+    // A state variable to control whether the add post sheet is shown.
     @State private var isShowingSheet = false
+    
+    // A state variable to hold the selected post.
     @State private var selectedPost: ClassPost?
+    
+    // A state variable to hold the text of the added post.
     @State var addedPost: String = ""
+    
+    // A state variable to control whether the class selector action sheet is shown.
     @State private var isShowingClassSelector = false
-
+    
+    // MARK: - Initialization
+    //sets the navigation bar appearance
     init() {
-            let appearance = UINavigationBarAppearance()
-            appearance.configureWithOpaqueBackground()
-        appearance.backgroundColor = UIColor(Color.Black)
-
-            UINavigationBar.appearance().standardAppearance = appearance
-            UINavigationBar.appearance().scrollEdgeAppearance = appearance
-            UINavigationBar.appearance().compactAppearance = appearance
-        }
+        
+        let appearance = UINavigationBarAppearance()
+        appearance.configureWithOpaqueBackground()
+        appearance.backgroundColor = UIColor(Color.black)
+        
+        UINavigationBar.appearance().standardAppearance = appearance
+        UINavigationBar.appearance().scrollEdgeAppearance = appearance
+        UINavigationBar.appearance().compactAppearance = appearance
+    }
+    
+    // MARK: - Methods
+    
     func classButtons() -> [ActionSheet.Button] {
-        var buttons = inAppVM.userDoc.Classes.map { curClass in
+        var buttons = inAppVM.userDoc.classes.map { curClass in
             ActionSheet.Button.default(Text(curClass)) {
                 inAppVM.selectedClass = curClass
                 DispatchQueue.main.async {
-                    inAppVM.refreshPosts(){ _ in}
+                    inAppVM.refreshPosts() { _ in }
                 }
             }
         }
         buttons.append(.cancel())
         return buttons
     }
+    
+    // MARK: - Body
+    
     var body: some View {
-        NavigationView{
-            ZStack{
+        
+        // NavigationView provides a container for the main content with a navigation bar.
+        NavigationView {
+            ZStack {
+                // ZStack is used to overlay the content and navigation bar items.
                 ScrollView(showsIndicators: false) {
                     VStack(spacing: 8) {
+                        // Main content wrapped in a VStack to arrange the elements vertically.
+                        
                         LazyVStack(spacing: 8) {
+                            // LazyVStack is used to efficiently handle large numbers of posts.
+                            
                             if inAppVM.postsForClass.isEmpty {
+                                // Show a message if there are no posts available.
                                 Text("There might have been a problem fetching the posts, try reloading the app. Or, you're the first to the party. You can get the party started!")
                                     .font(.headline)
                                     .foregroundColor(.white)
                             } else {
+                                // Iterate through the posts using ForEach and create NavigationLinks for each post.
                                 ForEach(inAppVM.postsForClass.indices, id: \.self) { index in
                                     NavigationLink(destination: DetailView(selectedPost: inAppVM.postsForClass[index], isShowingDetail: $isShowingDetail)
-                                                    .environmentObject(inAppVM)) {
-                                        PostCellView(selectedPost: inAppVM.postsForClass[index])
-                                            .environmentObject(inAppVM)
-                                            .onAppear {
-                                                if index == inAppVM.postsForClass.count - 3 && !inAppVM.isLastPage {
-                                                    inAppVM.fetchNext30PostsForClass() { success in
-                                                        print("There are now \(inAppVM.postsForClass.count) posts")
+                                        .environmentObject(inAppVM)) {
+                                            // Each post is wrapped in a NavigationLink to navigate to the detail view.
+                                            PostCellView(selectedPost: inAppVM.postsForClass[index])
+                                                .environmentObject(inAppVM)
+                                                .onAppear {
+                                                    // Fetch more posts if the user scrolls to the end of the list.
+                                                    if index == inAppVM.postsForClass.count - 3 && !inAppVM.isLastPage {
+                                                        inAppVM.fetchNext30PostsForClass() { success in
+                                                            print("There are now \(inAppVM.postsForClass.count) posts")
+                                                        }
                                                     }
                                                 }
-                                            }
-                                    }
+                                        }
                                 }
-
                             }
                         }
                     }
                 }
                 
-           
-                .background(Color.Black)
+                .background(Color.black)
                 .refreshable {
+                    // Enable pull-to-refresh to update the post list.
                     withAnimation {
-                        inAppVM.refreshPosts() { success in
-                                
-                            }
+                        inAppVM.refreshPosts() { success in }
                     }
-                   
                 }
-                
                 
                 .navigationBarTitleDisplayMode(.inline)
                 .navigationBarItems(leading:
-                                        Button(action: {
-                                            self.isShowingClassSelector = true
-                                        }) {
-                                            
-                                                Text("\(inAppVM.selectedClass)")
-                                                    .foregroundColor(.white)
-                                                    .font(.largeTitle)
-                                        }
+                                        // Show a button with the currently selected class.
+                                    Button(action: {
+                    self.isShowingClassSelector = true
+                }) {
+                    Text("\(inAppVM.selectedClass)")
+                        .foregroundColor(.white)
+                        .font(.largeTitle)
+                }
                     .actionSheet(isPresented: $isShowingClassSelector) {
+                        // Show an action sheet to allow the user to change the selected class.
                         ActionSheet(title: Text("Change Class"), buttons: classButtons())
                     }
-
-
-                .toolbar{
+                )
+                
+                .toolbar {
+                    // Show a button to add a new post.
                     Button {
                         self.isShowingSheet = true
                     } label: {
-                            Text("Add Post")
+                        Text("Add Post")
                             .foregroundColor(.white)
                             .font(.title2)
                     }
                     .cornerRadius(10)
-
-                    .fullScreenCover(isPresented: $isShowingSheet)
-                    {
+                    .fullScreenCover(isPresented: $isShowingSheet) {
+                        // Show the AddPostView in full screen when the button is pressed.
                         AddPostView()
                             .environmentObject(inAppVM)
                     }
                 }
-                )
             }
-               
-
-
         }
-        .accentColor(.cyan)
+        .accentColor(.cyan) // Set the accent color for the view.
     }
-}
-
-                                    
-
-
-struct ProfileImageView: View {
-    let urlString: String?
-    
-    var body: some View {
-        if let urlString = urlString, let url = URL(string: urlString) {
-            KFImage(url)
-                .resizable()
-                .aspectRatio(contentMode: .fill)
-                .frame(width: 50, height: 50)
-                .clipShape(Circle())
-        } else {
-            Image(systemName: "person.fill")
-                .resizable()
-                .aspectRatio(contentMode: .fill)
-                .frame(width: 50, height: 50)
-                .clipShape(Circle())
-        }
-    }
-}
-
-
-
-
-func convertEpochTimeToDate(epochTime: Double) -> String {
-    let timeInterval = Date().timeIntervalSince1970 -  epochTime
     
     
-    let secondsInYear: TimeInterval = 31536000
-    let secondsInDay: TimeInterval = 86400
-    let secondsInHour: TimeInterval = 3600
-    let secondsInMinute: TimeInterval = 60
-    
-    if timeInterval < secondsInMinute {
-        let seconds = Int(timeInterval)
-        return "\(seconds) second\(seconds == 1 ? "" : "s") ago"
-    } else if timeInterval < secondsInHour {
-        let minutes = Int(timeInterval / secondsInMinute)
-        return "\(minutes) minute\(minutes == 1 ? "" : "s") ago"
-    } else if timeInterval < secondsInDay {
-        let hours = Int(timeInterval / secondsInHour)
-        return "\(hours) hour\(hours == 1 ? "" : "s") ago"
-    } else if timeInterval < secondsInYear {
-        let days = Int(timeInterval / secondsInDay)
-        return "\(days) day\(days == 1 ? "" : "s") ago"
-    } else {
-        let years = Int(timeInterval / secondsInYear)
-        return "\(years) year\(years == 1 ? "" : "s") ago"
-    }
-}
-
-
-
-
-
-
-
-
-struct PostCellView: View {
-    @State private var showingDeleteAlert = false
-    var selectedPost: ClassPost  // Replace `Post` with your actual data type
-    @EnvironmentObject var viewModel: inAppViewVM  // Replace `ViewModel` with your actual data type
-    
-    //Placeholder for your function to check if a post is authored by the current user
     
     
-    var body: some View {
-        ZStack {
-            VStack(alignment: .leading) {
-                // post author
-                HStack {
-                    if let urlString = selectedPost.profilePicURL, let url = URL(string: urlString) {
-                        KFImage(url)
-                            .resizable()
-                            .aspectRatio(contentMode: .fill)
-                            .frame(width: 50, height: 50)
-                            .clipShape(Circle())
-                    } else {
-                        Image(systemName: "person.fill")
-                            .resizable()
-                            .aspectRatio(contentMode: .fill)
-                            .frame(width: 50, height: 50)
-                            .clipShape(Circle())
-                    }
-                    Text("\(selectedPost.firstName) \(selectedPost.lastName)")
-                        .padding(10)
-                        .foregroundColor(.cyan)
-                        .cornerRadius(10.0)
-                    Spacer()
-                    Text("\(convertEpochTimeToDate(epochTime: selectedPost.datePosted))")
-                        .foregroundColor(Color.white)
-                        .padding(10)
-                }
-                .padding(.top,10)
-                .padding(.leading,5)
-                
-                // post body with rounded background color
-                Text("\(selectedPost.postBody)")
-                    .padding(10)
-                    .foregroundColor(Color.white)
-                    .cornerRadius(5.0)
-                    .frame(minWidth: 0, maxWidth: .infinity, alignment: .leading)
-                    .multilineTextAlignment(.leading) // Push text all the way to the left
-                
-                // vote buttons
-                HStack {
-                    // votes on the post
-                    Text("\(selectedPost.votes)")
-                        .foregroundColor(.cyan)
-                    
-                   
-                        // upvote button
-                    Button(action: {
-                        DispatchQueue.main.async {
-                            viewModel.handleVoteOnPost(UpOrDown: VoteType.up, onPost: selectedPost)
-                        }
-                    }) {
-                        Image(systemName: "chevron.up")
-                    }
-                    .buttonStyle(BorderlessButtonStyle())
-                    .padding(10) // This line moved down
-                    .foregroundColor(selectedPost.usersLiked.contains(viewModel.userDoc.PhoneNumber ) ? Color.green : Color.gray)
-                    
-                    .cornerRadius(10)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 10)
-                            .stroke(Color.cyan, lineWidth: 1)
-                    )
-                    .disabled(viewModel.isVotingInProgress)
-
-                        
-                        // downvote button
-                        Button(action: {
-                            DispatchQueue.main.async {
-                                viewModel.handleVoteOnPost(UpOrDown: VoteType.down, onPost: selectedPost)
-                                
-                            }
-                        }) {
-                            Image(systemName: "chevron.down")
-                               
-                        }
-                        .buttonStyle(BorderlessButtonStyle())
-                        .padding(10)
-                        .foregroundColor(selectedPost.usersDisliked.contains(viewModel.userDoc.PhoneNumber ) ? Color.red : Color.gray)
-                        
-                        .cornerRadius(10)
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 10)
-                                .stroke(Color.cyan, lineWidth: 1)
-                                
-                        )
-                        
-                        .disabled(viewModel.isVotingInProgress)
-                   
-                    
-                    Spacer()
-                    
-                    Button(action: {
-                        showingDeleteAlert = true
-                    }) {
-                        Image(systemName: "trash")
-                            .resizable()
-                            .frame(width: 20, height: 20)
-                            .padding()
-                            .foregroundColor(.red)
-                            .cornerRadius(10)
-                    }
-                    .alert(isPresented: $showingDeleteAlert) {
-                        Alert(
-                            title: Text("Delete Post"),
-                            message: Text("Are you sure you want to delete this post?"),
-                            primaryButton: .destructive(Text("Delete")) {
-                                viewModel.deletePostAndReplies(selectedPost)
-                            },
-                            secondaryButton: .cancel()
-                        )
-                    }
-                    .opacity(isAuthorPost(ofPost: selectedPost) ? 1.0 : 0.0)  // Adjusts the opacity based on whether the post is authored by the current user
-                    .disabled(!isAuthorPost(ofPost: selectedPost))  // Disables the button for posts not authored by the current user
-                }
-                .padding(.leading,10)
-                .padding(.trailing,10)
-                .cornerRadius(15)
+    
+    
+    
+    /// A view that displays a profile image from a given URL, or a default system image if the URL is nil or invalid.
+    struct ProfileImageView: View {
+        /// The URL string for the profile image.
+        let urlString: String?
+        
+        /// The body of the view that defines its content and layout.
+        var body: some View {
+            if let urlString = urlString, let url = URL(string: urlString) {
+                // If a valid URL is provided, use Kingfisher to load and display the profile image.
+                KFImage(url)
+                    .resizable()
+                    .aspectRatio(contentMode: .fill)
+                    .frame(width: 50, height: 50)
+                    .clipShape(Circle())
+            } else {
+                // If the URL is nil or invalid, display a default system image of a person.
+                Image(systemName: "person.fill")
+                    .resizable()
+                    .aspectRatio(contentMode: .fill)
+                    .frame(width: 50, height: 50)
+                    .clipShape(Circle())
             }
-            .background(Color.Gray)
-            
-            .padding(.top,1)
         }
-        .frame(minWidth: 0, maxWidth: .infinity, alignment: .center)
-        .cornerRadius(10)
     }
-}
-
-
-func isAuthorPost(ofPost post:ClassPost) ->Bool{
-    let user = Auth.auth().currentUser
-    let phoneNumber = user?.phoneNumber
-    return phoneNumber == post.phoneNumber
-}
-
-func isAuthorReply(ofReply reply:Reply) ->Bool{
-    let user = Auth.auth().currentUser
-    let phoneNumber = user?.phoneNumber
-    return phoneNumber == reply.phoneNumber
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
 }
 
 

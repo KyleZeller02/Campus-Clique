@@ -7,11 +7,13 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		023790CD2A6B6BF10072846F /* List.txt in Resources */ = {isa = PBXBuildFile; fileRef = 023790CC2A6B6BF10072846F /* List.txt */; };
+		023790CF2A745F570072846F /* ClassPostCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 023790CE2A745F570072846F /* ClassPostCell.swift */; };
+		023790D12A7467EF0072846F /* ReplyCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 023790D02A7467EF0072846F /* ReplyCell.swift */; };
 		023B24A42A5A50780082910A /* FirebaseManagerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 023B24A32A5A50780082910A /* FirebaseManagerProtocol.swift */; };
 		023C29F92883A9210045904F /* UserDataAcquisition.swift in Sources */ = {isa = PBXBuildFile; fileRef = 023C29F82883A9200045904F /* UserDataAcquisition.swift */; };
 		023C29FB2883A9670045904F /* CreateUserPofile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 023C29FA2883A9670045904F /* CreateUserPofile.swift */; };
 		023C2A0528B1B7180045904F /* UserProfileModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 023C2A0428B1B7180045904F /* UserProfileModel.swift */; };
-		023C2A0D28B28B820045904F /* UserBirthdayAcquisition.swift in Sources */ = {isa = PBXBuildFile; fileRef = 023C2A0C28B28B820045904F /* UserBirthdayAcquisition.swift */; };
 		0257795B2A6B1CA700829886 /* OnboardingTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0257795A2A6B1CA700829886 /* OnboardingTabView.swift */; };
 		02618F672A1C508A00885900 /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 02618F662A1C508A00885900 /* FirebaseAnalytics */; };
 		02618F692A1C509F00885900 /* FirebaseMessaging in Frameworks */ = {isa = PBXBuildFile; productRef = 02618F682A1C509F00885900 /* FirebaseMessaging */; };
@@ -25,17 +27,17 @@
 		02618F792A1C511100885900 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 02618F782A1C511100885900 /* FirebaseFirestore */; };
 		02618F7B2A1C511A00885900 /* FirebaseAuthCombine-Community in Frameworks */ = {isa = PBXBuildFile; productRef = 02618F7A2A1C511A00885900 /* FirebaseAuthCombine-Community */; };
 		0263CB452A2EC4BA004E40D7 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0263CB442A2EC4BA004E40D7 /* SettingsView.swift */; };
-		0263CB472A2EC4DF004E40D7 /* EditProfileVIew.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0263CB462A2EC4DF004E40D7 /* EditProfileVIew.swift */; };
+		0263CB472A2EC4DF004E40D7 /* EditProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0263CB462A2EC4DF004E40D7 /* EditProfileView.swift */; };
 		0263CB492A2EC5C9004E40D7 /* DetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0263CB482A2EC5C9004E40D7 /* DetailView.swift */; };
 		0263CB9C2A322E0E004E40D7 /* KeyboardObserving in Frameworks */ = {isa = PBXBuildFile; productRef = 0263CB9B2A322E0E004E40D7 /* KeyboardObserving */; };
-		027196852A0F06FE006FAD50 /* Edit Profile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 027196842A0F06FE006FAD50 /* Edit Profile.swift */; };
+		027196852A0F06FE006FAD50 /* AccountActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 027196842A0F06FE006FAD50 /* AccountActions.swift */; };
 		027196872A15AEF0006FAD50 /* AddPostView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 027196862A15AEF0006FAD50 /* AddPostView.swift */; };
 		028283AB2A26A66C0029DE7E /* FireStoreManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 028283AA2A26A66C0029DE7E /* FireStoreManager.swift */; };
 		028283AE2A27F87B0029DE7E /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = 028283AD2A27F87B0029DE7E /* Kingfisher */; };
 		02943B2229526CF000DB7DF6 /* UserProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02943B2129526CEF00DB7DF6 /* UserProfileView.swift */; };
 		02943BF0295398FB00DB7DF6 /* ProfilePictureAcquisition.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02943BEF295398FB00DB7DF6 /* ProfilePictureAcquisition.swift */; };
 		02943C2B2953AB6900DB7DF6 /* ImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02943C2A2953AB6900DB7DF6 /* ImagePicker.swift */; };
-		02943C2D29664CED00DB7DF6 /* DatabaseFetcherSender.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02943C2C29664CEC00DB7DF6 /* DatabaseFetcherSender.swift */; };
+		02943C2D29664CED00DB7DF6 /* OnboardingDatabaseManger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02943C2C29664CEC00DB7DF6 /* OnboardingDatabaseManger.swift */; };
 		02943C34296E2B3D00DB7DF6 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02943C33296E2B3D00DB7DF6 /* Constants.swift */; };
 		02943C892972299600DB7DF6 /* ClassPostsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02943C882972299600DB7DF6 /* ClassPostsView.swift */; };
 		02943C8D2972320400DB7DF6 /* ClassPosts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02943C8C2972320400DB7DF6 /* ClassPosts.swift */; };
@@ -51,22 +53,24 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		023790CC2A6B6BF10072846F /* List.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = List.txt; sourceTree = "<group>"; };
+		023790CE2A745F570072846F /* ClassPostCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClassPostCell.swift; sourceTree = "<group>"; };
+		023790D02A7467EF0072846F /* ReplyCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReplyCell.swift; sourceTree = "<group>"; };
 		023B24A32A5A50780082910A /* FirebaseManagerProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseManagerProtocol.swift; sourceTree = "<group>"; };
 		023C29F82883A9200045904F /* UserDataAcquisition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDataAcquisition.swift; sourceTree = "<group>"; };
 		023C29FA2883A9670045904F /* CreateUserPofile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateUserPofile.swift; sourceTree = "<group>"; };
 		023C2A0428B1B7180045904F /* UserProfileModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileModel.swift; sourceTree = "<group>"; };
-		023C2A0C28B28B820045904F /* UserBirthdayAcquisition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserBirthdayAcquisition.swift; sourceTree = "<group>"; };
 		0257795A2A6B1CA700829886 /* OnboardingTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingTabView.swift; sourceTree = "<group>"; };
 		0263CB442A2EC4BA004E40D7 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
-		0263CB462A2EC4DF004E40D7 /* EditProfileVIew.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditProfileVIew.swift; sourceTree = "<group>"; };
+		0263CB462A2EC4DF004E40D7 /* EditProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditProfileView.swift; sourceTree = "<group>"; };
 		0263CB482A2EC5C9004E40D7 /* DetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailView.swift; sourceTree = "<group>"; };
-		027196842A0F06FE006FAD50 /* Edit Profile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Edit Profile.swift"; sourceTree = "<group>"; };
+		027196842A0F06FE006FAD50 /* AccountActions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountActions.swift; sourceTree = "<group>"; };
 		027196862A15AEF0006FAD50 /* AddPostView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddPostView.swift; sourceTree = "<group>"; };
 		028283AA2A26A66C0029DE7E /* FireStoreManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FireStoreManager.swift; sourceTree = "<group>"; };
 		02943B2129526CEF00DB7DF6 /* UserProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileView.swift; sourceTree = "<group>"; };
 		02943BEF295398FB00DB7DF6 /* ProfilePictureAcquisition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfilePictureAcquisition.swift; sourceTree = "<group>"; };
 		02943C2A2953AB6900DB7DF6 /* ImagePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePicker.swift; sourceTree = "<group>"; };
-		02943C2C29664CEC00DB7DF6 /* DatabaseFetcherSender.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseFetcherSender.swift; sourceTree = "<group>"; };
+		02943C2C29664CEC00DB7DF6 /* OnboardingDatabaseManger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingDatabaseManger.swift; sourceTree = "<group>"; };
 		02943C33296E2B3D00DB7DF6 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		02943C882972299600DB7DF6 /* ClassPostsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClassPostsView.swift; sourceTree = "<group>"; };
 		02943C8C2972320400DB7DF6 /* ClassPosts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClassPosts.swift; sourceTree = "<group>"; };
@@ -130,7 +134,6 @@
 			isa = PBXGroup;
 			children = (
 				02943BEF295398FB00DB7DF6 /* ProfilePictureAcquisition.swift */,
-				023C2A0C28B28B820045904F /* UserBirthdayAcquisition.swift */,
 				02947E692879F727005133D5 /* LoginView.swift */,
 				023C29FA2883A9670045904F /* CreateUserPofile.swift */,
 				023C29F82883A9200045904F /* UserDataAcquisition.swift */,
@@ -162,9 +165,8 @@
 			children = (
 				023C2A0428B1B7180045904F /* UserProfileModel.swift */,
 				02943B2129526CEF00DB7DF6 /* UserProfileView.swift */,
-				027196842A0F06FE006FAD50 /* Edit Profile.swift */,
 				0263CB442A2EC4BA004E40D7 /* SettingsView.swift */,
-				0263CB462A2EC4DF004E40D7 /* EditProfileVIew.swift */,
+				0263CB462A2EC4DF004E40D7 /* EditProfileView.swift */,
 			);
 			path = UserProfile;
 			sourceTree = "<group>";
@@ -188,6 +190,7 @@
 		02947E5B2879F727005133D5 = {
 			isa = PBXGroup;
 			children = (
+				023790CC2A6B6BF10072846F /* List.txt */,
 				02E731732A6A018F001BD522 /* Campus Clique.entitlements */,
 				02947E662879F727005133D5 /* NightOut */,
 				02947E7B28834581005133D5 /* GoogleService-Info.plist */,
@@ -207,6 +210,7 @@
 		02947E662879F727005133D5 /* NightOut */ = {
 			isa = PBXGroup;
 			children = (
+				027196842A0F06FE006FAD50 /* AccountActions.swift */,
 				02943C35296E2F7E00DB7DF6 /* UserProfile */,
 				02943C32296E0A2F00DB7DF6 /* Onboarding */,
 				02947E7A28834509005133D5 /* Info.plist */,
@@ -245,6 +249,8 @@
 				02943C882972299600DB7DF6 /* ClassPostsView.swift */,
 				027196862A15AEF0006FAD50 /* AddPostView.swift */,
 				0263CB482A2EC5C9004E40D7 /* DetailView.swift */,
+				023790CE2A745F570072846F /* ClassPostCell.swift */,
+				023790D02A7467EF0072846F /* ReplyCell.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -260,7 +266,7 @@
 		02E8C36B2A1FB20B0028BACD /* DatabaseManager */ = {
 			isa = PBXGroup;
 			children = (
-				02943C2C29664CEC00DB7DF6 /* DatabaseFetcherSender.swift */,
+				02943C2C29664CEC00DB7DF6 /* OnboardingDatabaseManger.swift */,
 			);
 			path = DatabaseManager;
 			sourceTree = "<group>";
@@ -346,6 +352,7 @@
 			files = (
 				02947E6F2879F72A005133D5 /* Preview Assets.xcassets in Resources */,
 				02947E6C2879F72A005133D5 /* Assets.xcassets in Resources */,
+				023790CD2A6B6BF10072846F /* List.txt in Resources */,
 				02947E7C28834581005133D5 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -359,17 +366,18 @@
 			files = (
 				02E8C3692A1FB1850028BACD /* OnboardingViewModel.swift in Sources */,
 				0263CB452A2EC4BA004E40D7 /* SettingsView.swift in Sources */,
-				0263CB472A2EC4DF004E40D7 /* EditProfileVIew.swift in Sources */,
+				0263CB472A2EC4DF004E40D7 /* EditProfileView.swift in Sources */,
+				023790CF2A745F570072846F /* ClassPostCell.swift in Sources */,
 				02943BF0295398FB00DB7DF6 /* ProfilePictureAcquisition.swift in Sources */,
 				02D7C15C29BBE1AA002F8223 /* InAppView.swift in Sources */,
-				027196852A0F06FE006FAD50 /* Edit Profile.swift in Sources */,
+				027196852A0F06FE006FAD50 /* AccountActions.swift in Sources */,
 				02943C2B2953AB6900DB7DF6 /* ImagePicker.swift in Sources */,
 				023C29FB2883A9670045904F /* CreateUserPofile.swift in Sources */,
 				0263CB492A2EC5C9004E40D7 /* DetailView.swift in Sources */,
 				02C593552A2D6D7A00A79E28 /* InAppViewModel.swift in Sources */,
 				023C2A0528B1B7180045904F /* UserProfileModel.swift in Sources */,
 				02943C892972299600DB7DF6 /* ClassPostsView.swift in Sources */,
-				02943C2D29664CED00DB7DF6 /* DatabaseFetcherSender.swift in Sources */,
+				02943C2D29664CED00DB7DF6 /* OnboardingDatabaseManger.swift in Sources */,
 				028283AB2A26A66C0029DE7E /* FireStoreManager.swift in Sources */,
 				023C29F92883A9210045904F /* UserDataAcquisition.swift in Sources */,
 				0257795B2A6B1CA700829886 /* OnboardingTabView.swift in Sources */,
@@ -379,8 +387,8 @@
 				02E731722A65FBB0001BD522 /* Reply.swift in Sources */,
 				02943C34296E2B3D00DB7DF6 /* Constants.swift in Sources */,
 				02947E682879F727005133D5 /* NightOutApp.swift in Sources */,
-				023C2A0D28B28B820045904F /* UserBirthdayAcquisition.swift in Sources */,
 				027196872A15AEF0006FAD50 /* AddPostView.swift in Sources */,
+				023790D12A7467EF0072846F /* ReplyCell.swift in Sources */,
 				023B24A42A5A50780082910A /* FirebaseManagerProtocol.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -438,7 +446,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.5;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -463,10 +471,13 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = NightOut/Info.plist;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.social-networking";
 				INFOPLIST_KEY_NSFileProviderDomainUsageDescription = "Please Allow NightOut the ability to access your camera roll";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "We need access to your photo library to let you select profile pictures.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UIStatusBarStyle = "";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -481,7 +492,7 @@
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = FireStoreManagerTests;
 		};
@@ -535,7 +546,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.5;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -590,7 +601,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.5;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				PRODUCT_NAME = "Campus Clique";
@@ -615,10 +626,13 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = NightOut/Info.plist;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.social-networking";
 				INFOPLIST_KEY_NSFileProviderDomainUsageDescription = "Please Allow NightOut the ability to access your camera roll";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "We need access to your photo library to let you select profile pictures.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UIStatusBarStyle = "";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -633,7 +647,7 @@
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -651,10 +665,13 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = NightOut/Info.plist;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.social-networking";
 				INFOPLIST_KEY_NSFileProviderDomainUsageDescription = "Please Allow NightOut the ability to access your camera roll";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "We need access to your photo library to let you select profile pictures.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UIStatusBarStyle = "";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -669,7 +686,7 @@
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};

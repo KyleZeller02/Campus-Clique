@@ -8,186 +8,81 @@
 import SwiftUI
 import Kingfisher
 
-struct DetailView: View{
+/// `DetailView` represents a detailed view of a specific post and its replies within an application.
+/// This SwiftUI `View` displays a detailed version of a `ClassPost` object and allows users to add, view, or delete replies to the post.
+struct DetailView: View {
+    
+    // MARK: - Properties
+    
+    /// Selected post to display in detail.
     let selectedPost: ClassPost
+
+    /// View model used to fetch and handle data throughout the application.
     @EnvironmentObject var viewModel: inAppViewVM
+
+    /// State variable controlling visibility of the reply text field.
     @State var addingReply: Bool = false
+
+    /// State variable holding the text of the reply being added.
     @State var addedReply: String = ""
-    @FocusState private var focused:Bool
+
+    /// Controls focus on the reply text field.
+    @FocusState private var focused: Bool
+
+    /// Controls the presentation of the detail view.
     @Binding var isShowingDetail: Bool
-    @Environment (\.presentationMode) var presentationMode
-    @State private  var showingDeleteAlert: Bool = false
-    @State private  var showingDeleteAlertReply: Bool = false
+
+    /// Accesses the presentation mode of the view.
+    @Environment(\.presentationMode) var presentationMode
+
+    /// Manages the visibility of the delete post alert.
+    @State private var showingDeleteAlert: Bool = false
+
+    /// Manages the visibility of the delete reply alert.
+    @State private var showingDeleteAlertReply: Bool = false
+
+    /// Handles Firebase Firestore database interactions.
     let firebaseManager = FirestoreService()
+
+    /// Stores the height of the reply text field.
+    @State private var textFieldHeight: CGFloat = 0
+
+    // MARK: - Methods
+
+    /// Sets focus on the reply text field.
     func setFocus() {
         focused = true
     }
+
+    /// Hides the keyboard.
     private func hideKeyboard() {
-#if os(iOS)
+        #if os(iOS)
         UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
-#endif
+        #endif
     }
-    @State private var textFieldHeight: CGFloat = 0
-    
-    
-    
-    
+
+    // MARK: - Body
+
+    /// The main body of the DetailView.
     var body: some View {
         ZStack {
-            Color.black
-                .ignoresSafeArea(.all)
-            
+            // Full-screen background color
+            Color.black.ignoresSafeArea(.all)
+
+            // Main content area
             VStack(spacing: 0) {
-                
-                
+                // The scroll view shows all the post and replies
                 ScrollView(showsIndicators: false) {
-                    ZStack {
-                        VStack(alignment: .leading) {
-                            // post author
-                            HStack {
-                                if let urlString = selectedPost.profilePicURL, let url = URL(string: urlString) {
-                                    KFImage(url)
-                                        .resizable()
-                                        .aspectRatio(contentMode: .fill)
-                                        .frame(width: 50, height: 50)
-                                        .clipShape(Circle())
-                                } else {
-                                    Image(systemName: "person.fill")
-                                        .resizable()
-                                        .aspectRatio(contentMode: .fill)
-                                        .frame(width: 50, height: 50)
-                                        .clipShape(Circle())
-                                }
-                                Text("\(selectedPost.firstName) \(selectedPost.lastName)")
-                                    .padding(10)
-                                    .foregroundColor(.cyan)
-                                    .cornerRadius(10.0)
-                                Spacer()
-                                Text("\(convertEpochTimeToDate(epochTime: selectedPost.datePosted))")
-                                    .foregroundColor(Color.white)
-                                    .padding(10)
-                            }
-                            .padding(.top, 10)
-                            .padding(.leading, 5)
-                            
-                            // post body with rounded background color
-                            Text("\(selectedPost.postBody)")
-                                .padding(10)
-                                .foregroundColor(Color.white)
-                                .cornerRadius(5.0)
-                                .frame(minWidth: 0, maxWidth: .infinity, alignment: .leading)
-                                .multilineTextAlignment(.leading) // Push text all the way to the left
-                            
-                            // vote buttons
-                            HStack {
-                                // votes on the post
-                                Text("\(selectedPost.votes)")
-                                    .foregroundColor(.cyan)
-                                
-                                
-                                // upvote button
-                                Button(action: {
-                                    DispatchQueue.main.async {
-                                        viewModel.handleVoteOnPost(UpOrDown: VoteType.up, onPost: selectedPost)
-                                        firebaseManager.fetchPost(byId: selectedPost.id){p,error  in
-                                            if let p = p{
-                                                selectedPost.usersLiked = p.usersLiked
-                                                selectedPost.usersDisliked = p.usersDisliked
-                                                selectedPost.votes = p.votes
-                                            }
-                                            
-                                        }
-                                    }
-                                }) {
-                                    Image(systemName: "chevron.up")
-                                }
-                                .disabled(viewModel.isVotingInProgress)
-                                .padding(10)
-                                .buttonStyle(BorderlessButtonStyle())
-                                .foregroundColor(selectedPost.usersLiked.contains(viewModel.userDoc.PhoneNumber ) ? Color.green : Color.gray)
-                               
-                                .cornerRadius(10)
-                                .overlay(
-                                    RoundedRectangle(cornerRadius: 10)
-                                        .stroke(Color.cyan, lineWidth: 1)
-                                    
-                                )
-                                
-                                // downvote button
-                                Button(action: {
-                                    DispatchQueue.main.async {
-                                        viewModel.isVotingInProgress = true
-                                        viewModel.handleVoteOnPost(UpOrDown: VoteType.down, onPost: selectedPost)
-                                        // Custom code to execute when the downvote button is pressed
-                                        // You can add your own logic here
-                                        
-                                        firebaseManager.fetchPost(byId: selectedPost.id){p,error  in
-                                            if let p = p{
-                                                selectedPost.usersLiked = p.usersLiked
-                                                selectedPost.usersDisliked = p.usersDisliked
-                                                selectedPost.votes = p.votes
-                                                viewModel.isVotingInProgress = false
-                                            }
-                                            
-                                        }
-                                    }
-                                }) {
-                                    Image(systemName: "chevron.down")
-                                }
-                                .padding(10)
-                                .buttonStyle(BorderlessButtonStyle())
-                                .foregroundColor(selectedPost.usersDisliked.contains(viewModel.userDoc.PhoneNumber) ? Color.red : Color.gray)
-                                .disabled(viewModel.isVotingInProgress)
-                               
-                                .cornerRadius(10)
-                                .overlay(
-                                    RoundedRectangle(cornerRadius: 10)
-                                        .stroke(Color.cyan, lineWidth: 1)
-                                    
-                                )
-                                
-                                
-                                Spacer()
-                                
-                                Button(action: {
-                                    showingDeleteAlert = true
-                                }) {
-                                    Image(systemName: "trash")
-                                        .resizable()
-                                        .frame(width: 20, height: 20)
-                                        .padding()
-                                        .foregroundColor(.red)
-                                        .cornerRadius(10)
-                                }
-                                .alert(isPresented: $showingDeleteAlert) {
-                                    Alert(
-                                        title: Text("Delete Post"),
-                                        message: Text("Are you sure you want to delete this post?"),
-                                        primaryButton: .destructive(Text("Delete")) {
-                                            viewModel.deletePostAndReplies(selectedPost)
-                                            presentationMode.wrappedValue.dismiss()
-                                        },
-                                        secondaryButton: .cancel()
-                                    )
-                                }
-                                .opacity(isAuthorPost(ofPost: selectedPost) ? 1.0 : 0.0) // Adjusts the opacity based on whether the post is authored by the current user
-                                .disabled(!isAuthorPost(ofPost: selectedPost)) // Disables the button for posts not authored by the current user
-                            }
-                            .padding(.leading, 10)
-                            .padding(.trailing, 10)
-                            .cornerRadius(15)
-                        }
-                        .background(Color.Gray)
-                        
-                        .padding(.top, 1)
-                    }
-                    .frame(minWidth: 0, maxWidth: .infinity, alignment: .center)
-                    .cornerRadius(10)
-                    
+                    // Post cell for the selected post
+                    PostCellView(selectedPost:selectedPost)
+                        .environmentObject(viewModel)
+
+                    // Area for showing replies
                     if viewModel.curReplies.isEmpty {
                         Text("Replies will show up here")
                             .foregroundColor(.cyan)
                     } else {
+                        // Reply headers and separators
                         VStack(spacing: 5) {
                             Divider()
                                 .background(Color.gray)
@@ -199,29 +94,29 @@ struct DetailView: View{
                                     .font(.title2)
                                 Spacer()
                             }
-                            
                         }
                         .padding(.leading, 10)
-                    }
-                    
-                    VStack {
-                        
-                        LazyVStack(spacing: 8) {
-                            ForEach(viewModel.curReplies, id: \.id) { reply in
-                                ReplyView(reply: .constant(reply), selectedPost: .constant(selectedPost), isAuthorReply: isAuthorReply(ofReply:))
-                                    .environmentObject(viewModel)
-                                    .frame(minWidth: 0, maxWidth: .infinity, alignment: .center)
-                                    .cornerRadius(10)
+
+                        // Area for displaying each reply
+                        VStack {
+                            LazyVStack(spacing: 8) {
+                                ForEach(viewModel.curReplies, id: \.id) { reply in
+                                    ReplyView(reply: .constant(reply), selectedPost: .constant(selectedPost), isAuthorReply: isAuthorReply(ofReply:))
+                                        .environmentObject(viewModel)
+                                        .frame(minWidth: 0, maxWidth: .infinity, alignment: .center)
+                                        .cornerRadius(10)
+                                }
                             }
+                            .background(Color.black)
                         }
-                        .background(Color.black)
                     }
                 }
+                // Handling taps outside the reply area
                 .onTapGesture {
                     hideKeyboard()
                     self.addingReply = false
                 }
-                
+                // Navigation bar for adding replies
                 .navigationBarItems(trailing: Button(action: {
                     self.addingReply = true
                 }) {
@@ -229,288 +124,94 @@ struct DetailView: View{
                         .foregroundColor(.white)
                         .font(.title2)
                 })
-                
-                
+
+                // Reply text field area
+                /// This block of code is responsible for creating and managing the TextField used for adding replies to a post.
+                /// It gets rendered if `addingReply` is set to `true`.
                 if addingReply {
-                    
-                        ZStack{
-                            
-                                VStack {
-                                    if #available(iOS 16.0, *) {
-                                        TextField("reply to \(selectedPost.firstName) \(selectedPost.lastName)", text: $addedReply,axis:.vertical)
-                                            .padding([.top, .bottom, .leading])
-                                            .padding(.trailing, 35)  // Increase this number if needed
-                                            .background(Color.gray.opacity(0.2))
-                                            .cornerRadius(8)
-                                            .foregroundColor(.white)
-                                            .accentColor(.cyan)
-                                            .autocapitalization(.sentences)
-                                            .disableAutocorrection(false)
-                                            .focused($focused, equals: true)
-                                            .onAppear {
-                                                setFocus()
-                                            }
-                                            .onChange(of: addedReply) { newValue in
-                                                if newValue.count > 300 {
-                                                    addedReply = String(newValue.prefix(300))
-                                                }
-                                            }
-                                            .overlay(
-                                                HStack {
-                                                    Spacer()
-                                                    Button(action: {
-                                                        let reply = addedReply.trimmingCharacters(in: .whitespacesAndNewlines)
-                                                        if !reply.isEmpty{
-                                                            viewModel.addReply(reply, to: selectedPost)
-                                                        }
-                                                        self.addedReply = ""
-                                                        self.addingReply = false
-                                                    }) {
-                                                        Image(systemName: "arrow.up.circle")
-                                                            .foregroundColor(.white)
-                                                            .font(.system(size: 30))
-                                                            .padding(.horizontal, 10)
-                                                    }
-                                                }
-                                            )
-                                            
-                                            .padding(.top,0)
-
-
-                                    } else {
-                                        // Fallback on earlier versions
-                                        TextField("reply to \(selectedPost.firstName) \(selectedPost.lastName)", text: $addedReply)
-                                            .padding([.top, .bottom, .leading])
-                                            .padding(.trailing, 70)  // Increase this number if needed
-                                            .background(Color.gray.opacity(0.2))
-                                            .cornerRadius(8)
-                                            .foregroundColor(.white)
-                                            .accentColor(.cyan)
-                                            .autocapitalization(.sentences)
-                                            .disableAutocorrection(false)
-                                            .focused($focused, equals: true)
-                                            .onAppear {
-                                                setFocus()
-                                            }
-                                            .onChange(of: addedReply) { newValue in
-                                                if newValue.count > 300 {
-                                                    addedReply = String(newValue.prefix(300))
-                                                }
-                                            }
-                                            .overlay(
-                                                HStack {
-                                                    Spacer()
-                                                    Button(action: {
-                                                        let reply = addedReply.trimmingCharacters(in: .whitespacesAndNewlines)
-                                                        if !reply.isEmpty{
-                                                            viewModel.addReply(reply, to: selectedPost) 
-                                                        }
-                                                        self.addedReply = ""
-                                                        self.addingReply = false
-                                                    }) {
-                                                        Image(systemName: "arrow.up.circle")
-                                                            .foregroundColor(.white)
-                                                            .font(.system(size: 30))
-                                                            .padding(.horizontal, 20)
-                                                    }
-                                                }
-                                            )
-                                            
-                                            .padding(.top,0)
+                    // We use a ZStack here to allow us to layer our TextField over any other views.
+                    ZStack{
+                        VStack {
+                            // This is the TextField where users will input their replies.
+                            TextField("reply to \(selectedPost.firstName) \(selectedPost.lastName)", text: $addedReply, axis:.vertical)
+                                // The padding around the TextField. It's set to be larger on the trailing side for aesthetic balance.
+                                .padding([.top, .bottom, .leading])
+                                .padding(.trailing, 70)
+                                // The background of the TextField. We set an opacity to allow underlying views to be slightly visible.
+                                .background(Color.gray.opacity(0.2))
+                                // The TextField's corners are rounded for aesthetic purposes.
+                                .cornerRadius(8)
+                                // The color of the text that the user types.
+                                .foregroundColor(.white)
+                                // The color of the TextField's cursor and selection highlight.
+                                .accentColor(.cyan)
+                                // The capitalization of the TextField's text. Here, the start of each sentence is capitalized.
+                                .autocapitalization(.sentences)
+                                // We disable autocorrection in this TextField.
+                                .disableAutocorrection(false)
+                                // We focus this TextField when the reply button is pressed.
+                                .focused($focused, equals: true)
+                                .onAppear {
+                                    // As soon as this TextField appears, we set the focus to it.
+                                    setFocus()
+                                }
+                                .onChange(of: addedReply) { newValue in
+                                    // We limit the character count of the reply to 300. If a user types more than this, we truncate the text.
+                                    if newValue.count > 300 {
+                                        addedReply = String(newValue.prefix(300))
                                     }
                                 }
-                                .padding(.bottom,10)
-                                .padding(.top,10)
-                            
+                                // An overlay is added to the TextField which includes a button for submitting the reply.
+                                .overlay(
+                                    HStack {
+                                        Spacer()
+                                        // The action of this button is to add the reply to the post and then clear the TextField.
+                                        Button(action: {
+                                            let reply = addedReply.trimmingCharacters(in: .whitespacesAndNewlines)
+                                            // We check if the reply is not empty before attempting to add it.
+                                            if !reply.isEmpty {
+                                                viewModel.addReply(reply, to: selectedPost)
+                                            }
+                                            // The TextField is cleared and closed after a reply is added.
+                                            self.addedReply = ""
+                                            self.addingReply = false
+                                        }) {
+                                            // The button is represented by an image of an upward-pointing circle.
+                                            Image(systemName: "arrow.up.circle")
+                                                .foregroundColor(.white)
+                                                .font(.system(size: 30))
+                                                .padding(.horizontal, 20)
+                                        }
+                                    }
+                                )
+                                .padding(.top,0)
                         }
-                        
-                       
+                        .padding(.bottom,10)
+                        .padding(.top,10)
+                    }
                 }
-                
 
-                
-                
             }
             .padding(.top,0)
-            
+            // Handle focus changes for reply text field
             .onChange(of: focused) { newValue in
                 if !newValue {
                     hideKeyboard()
                 }
             }
+            // Fetch replies when the view appears
             .onAppear {
                 viewModel.fetchReplies(forPost: selectedPost)
             }
-            .onDisappear(){
+            // Clear replies when the view disappears
+            .onDisappear() {
                 viewModel.curReplies.removeAll()
             }
         }
     }
-    
-    
 }
 
-//struct DetailView_Previews: PreviewProvider {
-//    static var previews: some View {
-//        DetailView(selectedPost)
-//    }
-//}
-struct ReplyView: View {
-    @Binding var reply: Reply
-    @Binding var selectedPost: ClassPost
-    @EnvironmentObject var viewModel: inAppViewVM
-    var isAuthorReply: (Reply) -> Bool  // assuming you have this function defined somewhere
-    
-    @State private var showingDeleteAlertReply = false
-    
-    func convertEpochTimeToDate(epochTime: Double) -> String {
-        let timeInterval = Date().timeIntervalSince1970 -  epochTime
-        
-        let secondsInYear: TimeInterval = 31536000
-        let secondsInDay: TimeInterval = 86400
-        let secondsInHour: TimeInterval = 3600
-        let secondsInMinute: TimeInterval = 60
-        
-        if timeInterval < secondsInMinute {
-            let seconds = Int(timeInterval)
-            return "\(seconds) second\(seconds == 1 ? "" : "s") ago"
-        } else if timeInterval < secondsInHour {
-            let minutes = Int(timeInterval / secondsInMinute)
-            return "\(minutes) minute\(minutes == 1 ? "" : "s") ago"
-        } else if timeInterval < secondsInDay {
-            let hours = Int(timeInterval / secondsInHour)
-            return "\(hours) hour\(hours == 1 ? "" : "s") ago"
-        } else if timeInterval < secondsInYear {
-            let days = Int(timeInterval / secondsInDay)
-            return "\(days) day\(days == 1 ? "" : "s") ago"
-        } else {
-            let years = Int(timeInterval / secondsInYear)
-            return "\(years) year\(years == 1 ? "" : "s") ago"
-        }
-    }
-    
-    
-    var body: some View {
-        ZStack {
-            VStack(alignment: .leading) {
-                // post author
-                HStack {
-                    if let urlString = reply.profilePicURL, let url = URL(string: urlString) {
-                        KFImage(url)
-                            .resizable()
-                            .aspectRatio(contentMode: .fill)
-                            .frame(width: 50, height: 50)
-                            .clipShape(Circle())
-                    } else {
-                        Image(systemName: "person.fill")
-                            .resizable()
-                            .aspectRatio(contentMode: .fill)
-                            .frame(width: 50, height: 50)
-                            .clipShape(Circle())
-                    }
-                    Text("\(reply.firstName) \(reply.lastName)")
-                        .padding(10)
-                        .foregroundColor(.cyan)
-                        .cornerRadius(10.0)
-                    Spacer()
-                    Text("\(convertEpochTimeToDate(epochTime: reply.DatePosted))")
-                        .foregroundColor(Color.white)
-                        .padding(10)
-                }
-                .padding(.top,10)
-                .padding(.leading,5)
-                
-                // post body with rounded background color
-                Text("\(reply.replyBody)")
-                    .padding(10)
-                    .foregroundColor(Color.white)
-                    .cornerRadius(5.0)
-                    .frame(minWidth: 0, maxWidth: .infinity, alignment: .leading)
-                    .multilineTextAlignment(.leading) // Push text all the way to the left
-                
-                // vote buttons
-                HStack {
-                    // votes on the post
-                    Text("\(reply.votes)")
-                        .foregroundColor(.cyan)
-                    
-                    
-                    // upvote button
-                    Button(action: {
-                        DispatchQueue.main.async {
-                            viewModel.handleVoteOnReply(.up, onPost: selectedPost, onReply: reply)
-                        }
-                    }) {
-                        Image(systemName: "chevron.up")
-                    }
-                    .padding(10)
-                    .buttonStyle(BorderlessButtonStyle())
-                    .foregroundColor(reply.UsersLiked.contains(viewModel.userDoc.PhoneNumber ) ? Color.green : Color.gray)
-                    
-                    .cornerRadius(10)
-                    .disabled(viewModel.isVotingInProgress)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 10)
-                            .stroke(Color.cyan, lineWidth: 1)
-                        
-                    )
-                    
-                    // downvote button
-                    Button(action: {
-                        
-                        DispatchQueue.main.async {
-                            viewModel.handleVoteOnReply(.down, onPost: selectedPost, onReply: reply)
-                        }
-                    }) {
-                        Image(systemName: "chevron.down")
-                    }
-                    .padding(10)
-                    .buttonStyle(BorderlessButtonStyle())
-                    .foregroundColor(reply.UserDownVotes.contains(viewModel.userDoc.PhoneNumber ) ? Color.red : Color.gray)
-                    
-                    .cornerRadius(10)
-                    .disabled(viewModel.isVotingInProgress)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 10)
-                            .stroke(Color.cyan, lineWidth: 1)
-                        
-                    )
-                    
-                    
-                    Spacer()
-                    
-                    Button(action: {
-                        showingDeleteAlertReply = true
-                    }) {
-                        Image(systemName: "trash")
-                            .resizable()
-                            .frame(width: 20, height: 20)
-                            .padding()
-                            .foregroundColor(.red)
-                            .cornerRadius(10)
-                    }
-                    .alert(isPresented: $showingDeleteAlertReply) {
-                        Alert(
-                            title: Text("Delete Reply"),
-                            message: Text("Are you sure you want to delete this reply?"),
-                            primaryButton: .destructive(Text("Delete")) {
-                                viewModel.deleteReply(reply, fromPost: selectedPost)
-                            },
-                            secondaryButton: .cancel()
-                        )
-                    }
-                    .opacity(isAuthorReply(reply) ? 1.0 : 0.0)  // Adjusts the opacity based on whether the post is authored by the current user
-                    .disabled(!isAuthorReply(reply))  // Disables the button for posts not authored by the current user
-                }
-                .padding(.leading,10)
-                .padding(.trailing,10)
-            }
-            .background(Color.Gray)
-            
-            .padding(.top,1)
-        }
-    }
-}
+
 
 
 

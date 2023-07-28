@@ -1,113 +1,138 @@
 //
-//  UserProfileSetUp.swift
+//  UserDataAcquisition.swift
 //  NightOut
 //
 //  Created by Kyle Zeller on 7/16/22.
 //
+//  This SwiftUI view facilitates user data collection, such as major and classes
+//  The data is then used to personalize the user's experience on the app
 
 import SwiftUI
 import Firebase
 
 struct UserDataAcquisition: View {
+    // MARK: - Properties
     
-    @State private var showingAlert: Bool = false
+    // State for managing alert presentation
+    @State private var showingAlert = false
     
-    @State var Major: String = ""
-    // Classes will need to be parsed to a string array
-    @State var Class1: String = ""
-    @State var Class2: String = ""
-    @State var Class3: String = ""
-    @State var Class4: String = ""
-    @State var Class5: String = ""
-    @State var Class6: String = ""
+    // User's major and classes
+    @State var major = ""
+    @State var class1 = ""
+    @State var class2 = ""
+    @State var class3 = ""
+    @State var class4 = ""
+    @State var class5 = ""
+    @State var class6 = ""
+    
+    // Navigation control flag
     @State private var navigateToNext = false
-    @Binding var selection: Int
-    @EnvironmentObject var onboardingVM: OnboardingViewModel
-   
     
+    // Control variable for selection management
+    @Binding var selection: Int
+    
+    // Onboarding ViewModel instance
+    @EnvironmentObject var onboardingVM: OnboardingViewModel
+    
+    
+    // MARK: - Body
     
     var body: some View {
-       
-            
-            ZStack{
-                
-                VStack(alignment:.leading){
-                    
+        ScrollView {
+            ZStack {
+                VStack(alignment: .center, spacing: 20) {
                     Text("Major and Classes")
-                        .font(.system(size: 40))
-                        .fontWeight(.semibold)
-                        .foregroundColor(Color.Black)
+                        .font(.title)
+                        .fontWeight(.bold)
                         .multilineTextAlignment(.center)
+                        .foregroundColor(.Black)
                     
-                    
-                    TextField("Your major (or Undecided)", text: $Major)
+                    // Textfield for user to enter their major
+                    TextField("Your major (or Undecided)", text: $major)
                         .autocapitalization(UITextAutocapitalizationType.words)
                         .padding()
                         .background(Color.Gray)
                         .cornerRadius(5.0)
                         .foregroundColor(.Black)
+                        .padding(.leading, 20)
+                        .padding(.trailing, 20)
                     
                     Text("Enroll in up to 6 classes")
+                        .font(.title3)
+                        .fontWeight(.bold)
+                        .multilineTextAlignment(.center)
                         .foregroundColor(.Black)
                     
-                    VStack(spacing: 0){
-                        VStack(spacing: 0){
-                            HStack(spacing: 0){
-                                TextField("CIS115", text: $Class1)
+                    // Textfields for user to enter their classes
+                    VStack(spacing: 0) {
+                        VStack(spacing: 0) {
+                            HStack(spacing: 0) {
+                                // Class 1
+                                TextField("CIS115", text: $class1)
                                     .padding()
                                     .background(Color.Gray)
                                     .cornerRadius(5.0)
                                     .padding(.bottom, 20)
-                                    .padding(.trailing,10)
+                                    .padding(.trailing, 10)
                                     .minimumScaleFactor(0.7)
                                     .foregroundColor(.Black)
                                     .autocapitalization(.allCharacters)
-                                TextField("ECON500", text: $Class2)
+                                
+                                // Class 2
+                                TextField("ECON500", text: $class2)
                                     .padding()
                                     .background(Color.Gray)
                                     .cornerRadius(5.0)
                                     .padding(.bottom, 20)
-                                    .padding(.trailing,10)
+                                    .padding(.trailing, 10)
                                     .minimumScaleFactor(0.7)
                                     .autocapitalization(.allCharacters)
                                     .foregroundColor(.Black)
-                                TextField("MRK367", text: $Class3)
+                                
+                                // Class 3
+                                TextField("MRK367", text: $class3)
                                     .padding()
                                     .background(Color.Gray)
                                     .cornerRadius(5.0)
                                     .padding(.bottom, 20)
-                                    .padding(.trailing,10)
+                                    .padding(.trailing, 10)
                                     .minimumScaleFactor(0.7)
                                     .autocapitalization(.allCharacters)
                                     .foregroundColor(.Black)
                             }
                         }
-                        VStack(spacing: 0){
-                            HStack(spacing: 0){
-                                TextField("MATH222", text: $Class4)
+                        
+                        VStack(spacing: 0) {
+                            HStack(spacing: 0) {
+                                // Class 4
+                                TextField("MATH222", text: $class4)
                                     .padding()
                                     .background(Color.Gray)
                                     .cornerRadius(5.0)
                                     .padding(.bottom, 20)
-                                    .padding(.trailing,10)
+                                    .padding(.trailing, 10)
                                     .minimumScaleFactor(0.7)
                                     .autocapitalization(.allCharacters)
                                     .foregroundColor(.Black)
-                                TextField("ARCH435", text: $Class5)
+                                
+                                // Class 5
+                                TextField("ARCH435", text: $class5)
                                     .padding()
                                     .background(Color.Gray)
                                     .cornerRadius(5.0)
                                     .padding(.bottom, 20)
-                                    .padding(.trailing,10)
+                                    .padding(.trailing, 10)
                                     .minimumScaleFactor(0.7)
                                     .autocapitalization(.allCharacters)
                                     .foregroundColor(.Black)
-                                TextField("BIO349", text: $Class6)
+                                
+                                // Class 6
+                                TextField("BIO349", text: $class6)
                                     .padding()
                                     .background(Color.Gray)
                                     .cornerRadius(5.0)
                                     .padding(.bottom, 20)
-                                    .padding(.trailing,10)
+                                    .padding(.trailing, 10)
                                     .minimumScaleFactor(0.7)
                                     .autocapitalization(.allCharacters)
                                     .foregroundColor(.Black)
@@ -115,64 +140,55 @@ struct UserDataAcquisition: View {
                         }
                         
                     }
+                    .padding(.leading, 20)
+                    .padding(.trailing, 20)
                     
-                    HStack{
+                    // Button for submitting the form
+                    HStack {
                         Spacer()
                         Button(action: {
-                                    if Major != "" , Class1 != ""{
-                                        //if user gives data, upload data to document in firebase
-                                        let user = Auth.auth().currentUser
-                                        if let user = user{
-                                            let email = user.email
-                                            let Major = Major.trimmingCharacters(in: .whitespacesAndNewlines)
-                                            Class1 = Class1.trimmingCharacters(in: .whitespacesAndNewlines)
-                                            Class2 = Class2.trimmingCharacters(in: .whitespacesAndNewlines)
-                                            Class3 = Class3.trimmingCharacters(in: .whitespacesAndNewlines)
-                                            Class4 = Class4.trimmingCharacters(in: .whitespacesAndNewlines)
-                                            Class5 = Class5.trimmingCharacters(in: .whitespacesAndNewlines)
-                                            Class6 = Class6.trimmingCharacters(in: .whitespacesAndNewlines)
-                                            var classes = [Class1, Class2, Class3, Class4, Class5, Class6]
-                                            classes = classes.filter { !$0.isEmpty }
-                                            let classesString = classes.joined(separator: ", ")
-
-                                            
-                                            //add information to view model
-                                            onboardingVM.updateClassesMajor(Classes: classes, Major: self.Major)
-                                            //
-                                            
-                                            withAnimation{
-                                                selection += 1
-                                            }
-                                        //trigger navigation
-                                            
-                                        }
+                            if major != "", class1 != "" {
+                                // If user gives data, upload data to document in Firebase
+                                if let user = Auth.auth().currentUser {
+                                    
+                                    let major = major.trimmingCharacters(in: .whitespacesAndNewlines)
+                                    var classes = [class1, class2, class3, class4, class5, class6]
+                                    classes = classes.map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
+                                    classes = classes.filter { !$0.isEmpty }
+                                    
+                                    // Add information to view model
+                                    onboardingVM.updateClassesMajor(Classes: classes, Major: major)
+                                    
+                                    // Trigger navigation
+                                    withAnimation {
+                                        selection += 1
                                     }
-                                    //if there is missing data from user, show alert
-                                    else{
-                                        self.showingAlert = true
-                                    }
-                                }) {
-                                    NextButton()
                                 }
-                    }
-                    
-                            .alert(isPresented: $showingAlert) {
-                                Alert(title: Text("Please Answer Prompts"), dismissButton: .default(Text("Got it!")))
+                            } else {
+                                // If there is missing data from the user, show an alert
+                                showingAlert = true
                             }
-                            
-                            Spacer()
+                        }) {
+                            NextButton()
                         }
-                        .padding(.leading,20)
-                        .padding(.trailing,20)
-                
-            
-            
+                        .alert(isPresented: $showingAlert) {
+                            Alert(title: Text("Please Answer Prompts"), dismissButton: .default(Text("Got it!")))
+                        }
+                        Spacer()
+                    }
+                    .padding(.leading, 20)
+                    .padding(.trailing, 20)
+                }
+            }
+        }
+        .onTapGesture {
+            hideKeyboard() // Close the keyboard when tapping outside the text field
         }
     }
 }
 
 struct UserProfileSetUp_Previews: PreviewProvider {
     static var previews: some View {
-        UserDataAcquisition( selection: .constant(1))
+        UserDataAcquisition(selection: .constant(1))
     }
 }

@@ -4,7 +4,7 @@
 //
 //  Created by Kyle Zeller on 12/20/22.
 //
-// need to finish the edit button and the edit screen
+
 
 import SwiftUI
 import Firebase
@@ -12,249 +12,159 @@ import Kingfisher
 
 
 
+/// `UserProfileView` displays the profile of the user.
+///
+/// It shows the user's name, college, major, and a list of posts made by the user.
+/// It also provides an option to edit the profile and access settings.
 struct UserProfileView: View {
-    
-    
+    /// ViewModel that manages the app's shared state.
     @EnvironmentObject var inAppVM: inAppViewVM
     
-    
-    //EditProfileView Variables
+    /// Indicates whether the edit profile view is presented.
     @State private var showingEditProfile: Bool = false
-    @State private var showingCover:Bool = false
+    /// Indicates whether the cover view is presented.
+    @State private var showingCover: Bool = false
+    /// Indicates whether the detail view is presented.
     @State private var isShowingDetail = false
+    /// Indicates whether the detail view for a post is presented.
     @State private var isShowingDetailPost = false
+    /// Indicates whether the reply view is presented.
     @State private var isShowingReply = false
+    /// Holds the post selected by the user.
     @State private var selectedPost: ClassPost?
     
-    
-    
+    /// The body of the `UserProfileView`.
     var body: some View {
-    
-                NavigationView{
-                    ZStack {
-                        Color.black
-                            .ignoresSafeArea()
-        
-                        VStack {
-                            HStack{
-                                if let urlString = inAppVM.userDoc.profilePictureURL, let url = URL(string: urlString) {
-                                        KFImage(url)
-                                            .resizable()
-                                            .aspectRatio(contentMode: .fill)
-                                            .frame(width: 100, height: 100)
-                                            .clipShape(Circle())
-                                            .padding(.trailing,10)
-                                    } else {
-                                        Image(systemName: "person.fill")
-                                            .resizable()
-                                            .aspectRatio(contentMode: .fill)
-                                            .frame(width: 100, height: 100)
-                                            .clipShape(Circle())
-                                            .padding(.trailing,10)
-                                    }
-        
-        
-                                Text("\(inAppVM.userDoc.FullName)")
-                                                            .font(.largeTitle)
-                                                            .foregroundColor(.white)
-                                                            .accessibilityHidden(true)
-                                Spacer()
-                                Button(action: {
-                                    showingCover = true
-                                }) {
-                                    Image(systemName: "gear")
-                                        .font(.title)
-                                        .foregroundColor(.white)
-                                }
-                            }
-                            .padding(.leading,20)
-                            .padding(.trailing,20)
-                            VStack(alignment: .leading, spacing: 20){
-        
-                                Text("\(inAppVM.userDoc.College)")
-                                    .font(.title2)
-                                    .fontWeight(.bold)
-                                    .foregroundColor(.white)
-        
-                                Text("Studying \(inAppVM.userDoc.Major)")
-                                    .font(.body)
-                                    .foregroundColor(.white)
-        
-                                Divider()
-                                    .background(Color.gray)
-                                    .padding(.vertical, 20)
-        
-                                Text("My Posts")
-                                    .font(.title)
-                                    .foregroundColor(.white)
-        
-                                if inAppVM.postsforUser.isEmpty {
-                                    Text("Posts you have made will show up here.")
-                                        .font(.caption)
-                                        .foregroundColor(.gray)
-                                        .padding(.top, 10)
-                                }
-                            }
-                            .padding(.horizontal, 20)
-        
-                            
-                                ScrollView(showsIndicators: false) {
-                                    VStack(spacing: 8) {
-                                        // If inAppVM.isLoadingPosts, show a ProgressView
-                                        // ProgressView().scaleEffect(1.5)
-                                    
-                                        LazyVStack(spacing: 8) {
-                                            if inAppVM.postsforUser.isEmpty {
-                                                Text("There might have been a problem fetching the posts, try reloading the app. Or, you're the first to the party. You can get the party started!")
-                                                    .font(.headline)
-                                                    .foregroundColor(.white)
-                                            } else {
-                                                ForEach(inAppVM.postsforUser) { post in
-                                                    NavigationLink(destination: DetailView(selectedPost: post, isShowingDetail: $isShowingDetailPost)
-                                                                    .environmentObject(inAppVM)) {
-                                                        PostCellView(selectedPost: post).environmentObject(inAppVM)
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                                .refreshable {
-                                    withAnimation {
-                                        inAppVM.getPostsForUser(){_ in}
-                                    }
-                                }
-                            
-
-                            
-        
-        
-                        }
-        //
-        
-        
-                    }
-        
-                }
-                .accentColor(.cyan)
-                .fullScreenCover(isPresented: $showingCover) {
-                    SettingsView()
-                        .environmentObject(inAppVM)
-                }
-            }
-    
-        
-    }
-    
-    
-    struct ClassTextModifier: ViewModifier {
-        func body(content: Content) -> some View {
-            content
-                .font(.headline)
-                .lineLimit(1)
-                .minimumScaleFactor(0.5)
-                .padding(5)
-                .background(Color.gray)
-                .foregroundColor(Color.White)
-                .cornerRadius(10)
-            
-        }
-    }
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    struct UserProfilePostCell: View {
-        let selectedPost:ClassPost
-        @EnvironmentObject var inappVM:inAppViewVM
-        @State  private var showingDeleteAlert: Bool = false
-        var body: some View {
+        NavigationView {
             ZStack {
-                VStack(alignment: .leading) {
-                    // post author
-                    HStack {
-                        if let urlString = selectedPost.profilePicURL, let url = URL(string: urlString) {
+                // Background color
+                Color.black.ignoresSafeArea()
+                
+                // Main VStack for user profile elements
+                VStack {
+                    // HStack for profile image and name
+                    HStack{
+                        // Fetch and display profile image
+                        if let urlString = inAppVM.userDoc.profilePictureURL, let url = URL(string: urlString) {
                             KFImage(url)
                                 .resizable()
                                 .aspectRatio(contentMode: .fill)
-                                .frame(width: 50, height: 50)
+                                .frame(width: 100, height: 100)
                                 .clipShape(Circle())
+                                .padding(.trailing,10)
                         } else {
+                            // Default image when no profile picture is available
                             Image(systemName: "person.fill")
                                 .resizable()
                                 .aspectRatio(contentMode: .fill)
-                                .frame(width: 50, height: 50)
+                                .frame(width: 100, height: 100)
                                 .clipShape(Circle())
+                                .padding(.trailing,10)
                         }
-                        Text("\(selectedPost.firstName) \(selectedPost.lastName)")
-                            .padding(10)
-                            .foregroundColor(.cyan)
-                            .cornerRadius(10.0)
-                        Spacer()
-                        Text("\(selectedPost.forClass)")
-                            .foregroundColor(Color.white)
-                            .padding(10)
-                    }
-                    .padding(.top,10)
-                    .padding(.leading,5)
-                    
-                    // post body with rounded background color
-                    Text("\(selectedPost.postBody)")
-                        .padding(10)
-                        .foregroundColor(Color.white)
-                        .cornerRadius(5.0)
-                        .frame(minWidth: 0, maxWidth: .infinity, alignment: .leading)
-                        .multilineTextAlignment(.leading) // Push text all the way to the left
-                    
-                    // vote buttons
-                    HStack {
-                        // votes on the post
-                        Text("\(selectedPost.votes)")
-                            .foregroundColor(.cyan)
                         
-                        
-                        
+                        // Display user's full name
+                        Text("\(inAppVM.userDoc.fullName)")
+                            .font(.largeTitle)
+                            .foregroundColor(.white)
+                            .accessibilityHidden(true)
                         Spacer()
                         
+                        // Button to show settings
                         Button(action: {
-                            showingDeleteAlert = true
+                            showingCover = true
                         }) {
-                            Image(systemName: "trash")
-                                .resizable()
-                                .frame(width: 20, height: 20)
-                                .padding()
-                                .foregroundColor(.red)
-                                .cornerRadius(10)
+                            Image(systemName: "gear")
+                                .font(.title)
+                                .foregroundColor(.white)
                         }
-                        .alert(isPresented: $showingDeleteAlert) {
-                            Alert(
-                                title: Text("Delete Post"),
-                                message: Text("Are you sure you want to delete this post?"),
-                                primaryButton: .destructive(Text("Delete")) {
-                                    inappVM.deletePostAndReplies(selectedPost)
-                                },
-                                secondaryButton: .cancel()
-                            )
-                        }
-                        
                     }
-                    .padding(.leading,10)
-                    .padding(.trailing,10)
-                    .cornerRadius(15)
+                    .padding(.horizontal, 20)
+                    
+                    // VStack for college and major details
+                    VStack(alignment: .leading, spacing: 20){
+                        
+                        Text("\(inAppVM.userDoc.college)")
+                            .font(.title2)
+                            .fontWeight(.bold)
+                            .foregroundColor(.white)
+                        
+                        Text("Studying \(inAppVM.userDoc.major)")
+                            .font(.body)
+                            .foregroundColor(.white)
+                        
+                        Divider()
+                            .background(Color.gray)
+                            .padding(.vertical, 20)
+                        
+                        Text("My Posts")
+                            .font(.title)
+                            .foregroundColor(.white)
+                        
+                        // Placeholder text when there are no posts
+                        if inAppVM.postsforUser.isEmpty {
+                            Text("Posts you have made will show up here.")
+                                .font(.caption)
+                                .foregroundColor(.gray)
+                                .padding(.top, 10)
+                        }
+                    }
+                    .padding(.horizontal, 20)
+                    
+                    // ScrollView to show user's posts
+                    ScrollView(showsIndicators: false) {
+                        VStack(spacing: 8) {
+                            LazyVStack(spacing: 8) {
+                                // Loop through posts
+                                ForEach(inAppVM.postsforUser) { post in
+                                    NavigationLink(destination: DetailView(selectedPost: post, isShowingDetail: $isShowingDetailPost)
+                                        .environmentObject(inAppVM)) {
+                                            PostCellView(selectedPost: post).environmentObject(inAppVM)
+                                        }
+                                }
+                            }
+                        }
+                    }
+                    .refreshable {
+                        withAnimation {
+                            inAppVM.getPostsForUser(){_ in}
+                        }
+                    }
                 }
-                .background(Color.Gray)
-                
-                .padding(.top,1)
             }
-            .frame(minWidth: 0, maxWidth: .infinity, alignment: .center)
-            .cornerRadius(10)
+        }
+        .accentColor(.cyan)
+        .fullScreenCover(isPresented: $showingCover) {
+            // Show settings view when gear button is clicked
+            SettingsView()
+                .environmentObject(inAppVM)
         }
     }
+}
+
+
+
+struct ClassTextModifier: ViewModifier {
+    func body(content: Content) -> some View {
+        content
+            .font(.headline)
+            .lineLimit(1)
+            .minimumScaleFactor(0.5)
+            .padding(5)
+            .background(Color.gray)
+            .foregroundColor(Color.White)
+            .cornerRadius(10)
+        
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
 

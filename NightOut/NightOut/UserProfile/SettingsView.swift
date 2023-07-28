@@ -7,18 +7,33 @@
 
 import SwiftUI
 
+/// SettingsView represents the settings page of the Campus Clique app.
+///
+/// It allows the user to navigate to the Edit Profile view, log out, and delete their account.
 struct SettingsView: View {
+    /// Indicates whether the EditProfileView is presented.
     @State private var isShowingEditProfileView = false
+    
+    /// The mechanism to dismiss the view.
     @Environment(\.presentationMode) var presentationMode
+    
+    /// Indicates whether the onboarding view is shown.
     @AppStorage("showOnboarding") var showOnboarding: Bool = false
+    
+    /// ViewModel that manages the app's shared state.
     @EnvironmentObject var inAppVM: inAppViewVM
+    
+    /// Instance of FirestoreService to manage Firebase operations.
+    let firebaseManager = FirestoreService()
     
     var body: some View {
         ZStack {
-            Color.Black
+            // Background color.
+            Color.black
                 .ignoresSafeArea()
             
             VStack {
+                // Button to dismiss the view.
                 HStack {
                     Button(action: {
                         self.presentationMode.wrappedValue.dismiss()
@@ -31,12 +46,14 @@ struct SettingsView: View {
                 }
                 .padding()
                 
+                // Title of the view.
                 Text("Settings")
                     .font(.largeTitle)
                     .bold()
                     .foregroundColor(.white)
                     .padding(.bottom, 50)
                 
+                // Button to navigate to the Edit Profile view.
                 Button(action: {
                     self.isShowingEditProfileView = true
                 }) {
@@ -61,11 +78,10 @@ struct SettingsView: View {
                         .environmentObject(inAppVM)
                 })
                 
+                // Button to log out.
                 Button(action: {
-                    
                     AccountActions.LogOut()
                     showOnboarding = true
-                    
                 }) {
                     HStack {
                         Image(systemName: "power")
@@ -84,9 +100,18 @@ struct SettingsView: View {
                 }
                 .padding(.horizontal, 10)
                 
+                // Button to delete the account.
                 Button(action: {
-                    AccountActions.deleteAccount()
-                    inAppVM.removeAllPostsFromUser()
+                    inAppVM.removeAllPostsFromUser(){ (success, error) in
+                        if success {
+                            firebaseManager.deleteOldProfilePictureFromFirestore(forPhoneNumber: inAppVM.userDoc.phoneNumber){(res, err) in
+                                if res{
+                                    print("profile picture deleted")
+                                }
+                            }
+                            AccountActions.deleteAccount(usersPhoneNumber: inAppVM.userDoc.phoneNumber)
+                        }
+                    }
                     showOnboarding = true
                 }) {
                     HStack {
@@ -109,8 +134,10 @@ struct SettingsView: View {
     }
 }
 
+/// A PreviewProvider for the SettingsView.
 struct SettingsView_Previews: PreviewProvider {
     static var previews: some View {
         SettingsView()
     }
 }
+
