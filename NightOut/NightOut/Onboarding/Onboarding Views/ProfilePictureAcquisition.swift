@@ -15,6 +15,8 @@ struct ProfilePictureAcquisition: View {
 
     // UserDefaults boolean variable to store whether to show the onboarding screen or not.
     @AppStorage("showOnboarding") var showOnboarding: Bool = true
+    
+    @AppStorage("showOnboardingTab") var showOnboardingTab: Bool = false
 
     // State variables for SwiftUI View
     @State private var isPickerShowing = false // controls the visibility of the image picker
@@ -93,12 +95,15 @@ struct ProfilePictureAcquisition: View {
                         return
                     }
 
+                   
+                    
                     // Sends all information to view model for processing
                     onboardingVM.updatePicture(image: selectedImage ?? UIImage(imageLiteralResourceName: "person.fill")) { result in
                         switch result {
                         case .success(let urlString):
                             print("Picture updated successfully: \(urlString)")
                             showOnboarding = false
+                            showOnboardingTab = false
                         case .failure(let error):
                             print("Error updating picture: \(error)")
                         }

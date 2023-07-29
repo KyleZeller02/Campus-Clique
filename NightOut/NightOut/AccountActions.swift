@@ -18,6 +18,7 @@ struct AccountActions{
 
     static func deleteAccount(usersPhoneNumber:String){
         let db = Firestore.firestore()
+        print(usersPhoneNumber)
         let userDoc = db.collection("Users").document(usersPhoneNumber)
         userDoc.delete { err in
             if let err = err {

@@ -11,20 +11,16 @@ class OnboardingViewModel: ObservableObject {
     /// A published instance of `UserDocument`, represents the current user's information.
     @Published var userInformation = UserDocument(firstName: "", lastName: "", college: "", major: "", classes: [], phoneNumber: "", profilePictureURL: nil)
     
-    /// A published boolean, controls the visibility of Onboarding Tab in the UI.
-    @Published var showOnboardingTab: Bool = false
+
+    
     
     /// Firestore Database instance to interact with Firebase's Firestore database.
     let db = Firestore.firestore()
+    
+   
 
-    // MARK: - Initialization
 
-    /// Initializes the ViewModel. If a user is currently authenticated, it sets `showOnboardingTab` to false.
-    init() {
-        if let _ = Auth.auth().currentUser {
-            self.showOnboardingTab = false
-        }
-    }
+   
     
     // MARK: - Methods
 
@@ -86,7 +82,9 @@ class OnboardingViewModel: ObservableObject {
             print("No signed in user")
             return
         }
-        let userRef = db.collection("Users").document(self.userInformation.phoneNumber)
+        
+        guard let phoneNumber = Auth.auth().currentUser?.phoneNumber else{return}
+        let userRef = db.collection("Users").document(phoneNumber)
         let userInfoDict: [String: Any] = [
             "first_name": self.userInformation.firstName,
             "last_name": self.userInformation.lastName,
@@ -94,7 +92,7 @@ class OnboardingViewModel: ObservableObject {
             "classes": self.userInformation.classes,
             "profile_picture_url": self.userInformation.profilePictureURL ?? "",
             "major": self.userInformation.major,
-            "phone_number" : self.userInformation.phoneNumber
+            "phone_number" : phoneNumber
         ]
 
         userRef.setData(userInfoDict) { error in
@@ -102,8 +100,9 @@ class OnboardingViewModel: ObservableObject {
                 print("Error creating document: \(error)")
             } else {
                 print("Document successfully created!")
+                
             }
         }
-        self.showOnboardingTab = false
+       
     }
 }

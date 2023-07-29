@@ -107,9 +107,13 @@ struct SettingsView: View {
                             firebaseManager.deleteOldProfilePictureFromFirestore(forPhoneNumber: inAppVM.userDoc.phoneNumber){(res, err) in
                                 if res{
                                     print("profile picture deleted")
+                                    AccountActions.deleteAccount(usersPhoneNumber: inAppVM.userDoc.phoneNumber)
+                                }
+                                if let err = err{
+                                    print("Error: \(err.localizedDescription)")
                                 }
                             }
-                            AccountActions.deleteAccount(usersPhoneNumber: inAppVM.userDoc.phoneNumber)
+                            
                         }
                     }
                     showOnboarding = true

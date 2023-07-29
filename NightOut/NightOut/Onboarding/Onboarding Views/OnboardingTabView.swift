@@ -12,7 +12,8 @@ import SwiftUI
 struct OnboardingTabView: View {
     @State private var selection: Int = 0 // The state variable for tracking the selected tab
     @EnvironmentObject var onboardingViewModel: OnboardingViewModel // The ViewModel for handling onboarding data and logic
-
+    
+    
     var body: some View {
         TabView(selection: $selection){
             // User profile creation tab

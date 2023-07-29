@@ -33,6 +33,7 @@ struct UserDataAcquisition: View {
     
     // Onboarding ViewModel instance
     @EnvironmentObject var onboardingVM: OnboardingViewModel
+    //@StateObject var onboardingVM:OnboardingViewModel = OnboardingViewModel()
     
     
     // MARK: - Body
@@ -61,6 +62,9 @@ struct UserDataAcquisition: View {
                         .font(.title3)
                         .fontWeight(.bold)
                         .multilineTextAlignment(.center)
+                        .foregroundColor(.Black)
+                    
+                    Text("These classes should match up with what is on your schedule.")
                         .foregroundColor(.Black)
                     
                     // Textfields for user to enter their classes
@@ -109,7 +113,7 @@ struct UserDataAcquisition: View {
                                     .padding()
                                     .background(Color.Gray)
                                     .cornerRadius(5.0)
-                                    .padding(.bottom, 20)
+                                    //.padding(.bottom, 20)
                                     .padding(.trailing, 10)
                                     .minimumScaleFactor(0.7)
                                     .autocapitalization(.allCharacters)
@@ -120,7 +124,7 @@ struct UserDataAcquisition: View {
                                     .padding()
                                     .background(Color.Gray)
                                     .cornerRadius(5.0)
-                                    .padding(.bottom, 20)
+                                    //.padding(.bottom, 20)
                                     .padding(.trailing, 10)
                                     .minimumScaleFactor(0.7)
                                     .autocapitalization(.allCharacters)
@@ -131,7 +135,7 @@ struct UserDataAcquisition: View {
                                     .padding()
                                     .background(Color.Gray)
                                     .cornerRadius(5.0)
-                                    .padding(.bottom, 20)
+                                    //.padding(.bottom, 20)
                                     .padding(.trailing, 10)
                                     .minimumScaleFactor(0.7)
                                     .autocapitalization(.allCharacters)
@@ -141,7 +145,7 @@ struct UserDataAcquisition: View {
                         
                     }
                     .padding(.leading, 20)
-                    .padding(.trailing, 20)
+                    .padding(.trailing, 15)
                     
                     // Button for submitting the form
                     HStack {
@@ -174,7 +178,7 @@ struct UserDataAcquisition: View {
                         .alert(isPresented: $showingAlert) {
                             Alert(title: Text("Please Answer Prompts"), dismissButton: .default(Text("Got it!")))
                         }
-                        Spacer()
+                        
                     }
                     .padding(.leading, 20)
                     .padding(.trailing, 20)

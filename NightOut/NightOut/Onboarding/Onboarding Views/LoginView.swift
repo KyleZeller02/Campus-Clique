@@ -44,6 +44,10 @@ struct LoginView: View {
     // Boolean flag to show/hide sheet
     @State var showingSheetTab: Bool = false
     
+    
+    
+    
+    
     // Main View body
     var body: some View {
         
@@ -250,6 +254,8 @@ struct VerifyPhoneNumber: View {
     // Onboarding view model object for storing and managing UI-related data
     @EnvironmentObject var onboardingViewModel: OnboardingViewModel
     
+    @AppStorage("showOnboardingTab") var showOnboardingTab: Bool = false
+    
     // The body property that renders the view content
     var body: some View {
         // Layering views on top of each other
@@ -317,7 +323,7 @@ struct VerifyPhoneNumber: View {
                                     // The user exists, proceed with the login
                                     print("User exists, log them in")
                                     showOnboarding = false
-                                    onboardingViewModel.showOnboardingTab = false
+                                    showOnboardingTab = false
                                     onboardingViewModel.objectWillChange.send()
                                 } else {
                                     // Create a new user
@@ -326,7 +332,7 @@ struct VerifyPhoneNumber: View {
                                     onboardingViewModel.updatePhoneNumber(number: phoneNumber)
                                     showPasswordInput = false
                                     showOnboarding = false
-                                    onboardingViewModel.showOnboardingTab = true
+                                    showOnboardingTab = true
                                     onboardingViewModel.objectWillChange.send()
                                 }
                             }

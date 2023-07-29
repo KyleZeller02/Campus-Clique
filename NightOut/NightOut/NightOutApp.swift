@@ -53,6 +53,8 @@ struct NightOutApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
     @StateObject var onboardingViewModel: OnboardingViewModel  = OnboardingViewModel()
     @AppStorage("showOnboarding") var showOnboarding: Bool = false
+    @AppStorage("showOnboardingTab") var showOnboardingTab: Bool = false
+  
     
     var body: some Scene {
             WindowGroup {
@@ -61,7 +63,7 @@ struct NightOutApp: App {
                         LoginView()
                             .environmentObject(onboardingViewModel)
                     }
-                    else if onboardingViewModel.showOnboardingTab{
+                    else if showOnboardingTab{
                         OnboardingTabView()
                             .environmentObject(onboardingViewModel)
                             .transition(.move(edge: .bottom))
