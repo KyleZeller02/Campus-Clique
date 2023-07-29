@@ -427,7 +427,6 @@ class inAppViewVM: ObservableObject {
     ///
     /// - Parameter postBody: The body text of the post to be added.
     /// - Returns: Void
-
     func addNewPost(_ postBody: String) {
         // Check if the necessary user information is available in the `userDoc` property
         guard !self.userDoc.college.isEmpty,

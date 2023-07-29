@@ -14,10 +14,11 @@ import UIKit
 
 
 
+/// this class represents a firebase manager. All queries and access to firebase should go through here. Except there are some methods for updaing profile that are in the view model
 class FirestoreService: FirebaseManagerProtocol{
      
     
-    
+
     let db = Firestore.firestore()
 
     /// Uploads a profile image to Firestore.

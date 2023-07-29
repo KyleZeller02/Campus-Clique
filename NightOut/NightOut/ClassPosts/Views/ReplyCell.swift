@@ -112,7 +112,7 @@ struct ReplyView: View {
                     .buttonStyle(BorderlessButtonStyle())
                     .foregroundColor(reply.UsersLiked.contains(viewModel.userDoc.phoneNumber ) ? Color.green : Color.gray)
                     .cornerRadius(10)
-                    .disabled(viewModel.isVotingInProgress)
+                    .disabled(viewModel.isVotingInProgress) // this is done to allow correct voting on firebase
                     .overlay(
                         RoundedRectangle(cornerRadius: 10)
                             .stroke(Color.cyan, lineWidth: 1)
@@ -130,7 +130,7 @@ struct ReplyView: View {
                     .buttonStyle(BorderlessButtonStyle())
                     .foregroundColor(reply.UserDownVotes.contains(viewModel.userDoc.phoneNumber ) ? Color.red : Color.gray)
                     .cornerRadius(10)
-                    .disabled(viewModel.isVotingInProgress)
+                    .disabled(viewModel.isVotingInProgress) // this is done to allow correct voting on firebase
                     .overlay(
                         RoundedRectangle(cornerRadius: 10)
                             .stroke(Color.cyan, lineWidth: 1)

@@ -83,7 +83,7 @@ struct PostCellView: View {
                         RoundedRectangle(cornerRadius: 10)
                             .stroke(Color.cyan, lineWidth: 1)
                     )
-                    .disabled(viewModel.isVotingInProgress)
+                    .disabled(viewModel.isVotingInProgress) // this is done to allow correct voting on firebase
                     
                     // Downvote button
                     Button(action: {
@@ -101,7 +101,7 @@ struct PostCellView: View {
                         RoundedRectangle(cornerRadius: 10)
                             .stroke(Color.cyan, lineWidth: 1)
                     )
-                    .disabled(viewModel.isVotingInProgress)
+                    .disabled(viewModel.isVotingInProgress) // this is done to allow correct voting on firebase
                     
                     Spacer()
                     
@@ -127,7 +127,7 @@ struct PostCellView: View {
                         )
                     }
                     .opacity(isAuthorPost(ofPost: selectedPost) ? 1.0 : 0.0) // Adjusts the opacity based on whether the post is authored by the current user
-                    .disabled(viewModel.isVotingInProgress)
+                    .disabled(!isAuthorPost(ofPost: selectedPost))
                 }
                 .padding(.leading, 10)
                 .padding(.trailing, 10)
