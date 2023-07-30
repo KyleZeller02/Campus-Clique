@@ -7,6 +7,7 @@
 
 import SwiftUI
 import Kingfisher
+import Photos
 
 // SwiftUI view for editing the user profile.
 struct EditProfileView: View {
@@ -63,10 +64,24 @@ struct EditProfileView: View {
                     cancelButton
                     // Button for uploading a new profile image
                     Button(action: {
-                        // User wants to change the profile image
-                        self.didChangeImage = true
-                        self.isPickerShowing = true
-                    }) {
+                        // Request permission before the image picker is shown.
+                        PHPhotoLibrary.requestAuthorization { status in
+                            switch status {
+                            case .authorized, .limited:
+                                // If authorized or limited, show the image picker.
+                                DispatchQueue.main.async {
+                                    self.didChangeImage = true
+                                    self.isPickerShowing = true
+                                }
+                            case .denied, .restricted, .notDetermined:
+                                // If not authorized, do not show the image picker. Handle this case appropriately in your app.
+                                print("Not authorized to access photo library.")
+                            @unknown default:
+                                fatalError("Unknown case of PHAuthorizationStatus")
+                            }
+                        }
+                    })
+ {
                         // Display current or placeholder profile image
                         if let image = selectedImage {
                             // User has selected a new image

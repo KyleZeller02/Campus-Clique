@@ -52,7 +52,7 @@ struct NightOutApp: App {
     //line below was also copied as instructed
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
     @StateObject var onboardingViewModel: OnboardingViewModel  = OnboardingViewModel()
-    @AppStorage("showOnboarding") var showOnboarding: Bool = false
+    @AppStorage("showOnboarding") var showOnboarding: Bool = true
     @AppStorage("showOnboardingTab") var showOnboardingTab: Bool = false
   
     

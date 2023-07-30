@@ -9,7 +9,7 @@
 import SwiftUI
 import Firebase
 import FirebaseFirestore
-
+import Photos
 // A SwiftUI View that handles acquisition of profile pictures during onboarding
 struct ProfilePictureAcquisition: View {
 
@@ -24,6 +24,8 @@ struct ProfilePictureAcquisition: View {
     @Binding var selection: Int // parent view controller sends which tab should be selected in the tabView
     @State private var showingAlert = false // controls the visibility of the alert
     @State private var MissingInformtion = false // tracks if any information is missing
+    
+    @State private var showRestrictedAccessError = false
     
     // An environment object of OnboardingViewModel
     @EnvironmentObject var onboardingVM: OnboardingViewModel
@@ -64,7 +66,24 @@ struct ProfilePictureAcquisition: View {
 
                 // Button to open the image picker
                 Button(action: {
-                    isPickerShowing = true
+                    PHPhotoLibrary.requestAuthorization { status in
+                                        switch status {
+                                        case .authorized, .limited:
+                                            // If authorized or limited, show the image picker.
+                                            DispatchQueue.main.async {
+                                                self.isPickerShowing = true
+                                            }
+                                        case .denied, .restricted, .notDetermined:
+                                            // If not authorized, do not show the image picker. Handle this case appropriately in your app.
+                                            print("Not authorized to access photo library.")
+                                            DispatchQueue.main.async {
+                                                self.showRestrictedAccessError = true
+                                            }
+                                        @unknown default:
+                                            fatalError("Unknown case of PHAuthorizationStatus")
+                                        }
+                                    }
+                   
                 }, label: {
                     Text("SELECT FROM PHOTO LIBRARY")
                         .font(.headline)
@@ -125,6 +144,9 @@ struct ProfilePictureAcquisition: View {
                 // Alert for missing other information
                 .alert(isPresented: $MissingInformtion) {
                     Alert(title: Text("Missing Data"), message: Text("Please fill out all information on other screens"), dismissButton: .default(Text("Got it!")))
+                }
+                .alert(isPresented: $showRestrictedAccessError) {
+                    Alert(title: Text("Restricted Access"), message: Text("Go to settings and allow Campus Clique to access your camera roll."), dismissButton: .default(Text("Got it!")))
                 }
                 
                 // Takes up remaining space

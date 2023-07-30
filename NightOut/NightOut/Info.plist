@@ -2,6 +2,8 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Campus Clique wants to access your camera roll so that you can add a profile picture to you account.</string>
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
