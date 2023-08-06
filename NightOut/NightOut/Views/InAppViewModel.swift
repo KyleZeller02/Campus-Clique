@@ -391,36 +391,56 @@ class inAppViewVM: ObservableObject {
             return
         }
         
-        // Call to `firebaseManager`'s function to add the reply to the backend
-        firebaseManager.addReply(
-            replyBody,
-            to: post,
-            firstName: self.userDoc.firstName,
-            lastName: self.userDoc.lastName,
-            phoneNumber: self.userDoc.phoneNumber,
-            profilePictureURL: self.userDoc.profilePictureURL ?? ""
-        ) { [weak self] result in
-            // Handle the result of adding the reply
-            switch result {
-            case .success(let reply):
-                // If the reply is added successfully, update the local cache of replies (`curReplies`) with the new reply.
-                DispatchQueue.main.async {
-                    self?.curReplies.append(reply)
-                    // Print all the current replies in the console (for debugging purposes)
-                    if let curReplies = self?.curReplies {
-                        for curReply in curReplies {
-                            print("Reply: \(curReply.replyBody)")
+        // Check to make sure the post we are replying to exists
+        // The post documents location in firebase
+        let postDoc = db.collection("posts").document(post.id)
+        
+        postDoc.getDocument() { [weak self] (document, error) in
+            if let error = error {
+                print("Error fetching document in addReply()")
+                return
+            }
+            
+            // Guard clause ensures the document exists in firebase
+            // If the document does not exist, we print an error and return
+            guard let document = document, document.exists else {
+                print("Error: Post does not exist")
+                return
+            }
+            
+            // If the document does exist, we continue
+            // Call to `firebaseManager`'s function to add the reply to the backend
+            self?.firebaseManager.addReply(
+                replyBody,
+                to: post,
+                firstName: self?.userDoc.firstName ?? "",
+                lastName: self?.userDoc.lastName ?? "",
+                phoneNumber: self?.userDoc.phoneNumber ?? "",
+                profilePictureURL: self?.userDoc.profilePictureURL ?? ""
+            ) { result in
+                // Handle the result of adding the reply
+                switch result {
+                case .success(let reply):
+                    // If the reply is added successfully, update the local cache of replies (`curReplies`) with the new reply.
+                    DispatchQueue.main.async {
+                        self?.curReplies.append(reply)
+                        // Print all the current replies in the console (for debugging purposes)
+                        if let curReplies = self?.curReplies {
+                            for curReply in curReplies {
+                                print("Reply: \(curReply.replyBody)")
+                            }
                         }
+                        // Notify the UI that the data has changed.
+                        self?.objectWillChange.send()
                     }
-                    // Notify the UI that the data has changed.
-                    self?.objectWillChange.send()
+                case .failure(let error):
+                    // If there was an error adding the reply, print the error message in the console.
+                    print("Error adding reply: \(error)")
                 }
-            case .failure(let error):
-                // If there was an error adding the reply, print the error message in the console.
-                print("Error adding reply: \(error)")
             }
         }
     }
+
     
     /// `addNewPost` is a function that allows the user to add a new post to the backend. The function takes the post body as a parameter.
     /// Before adding the post, it checks if the required user information is available in the `userDoc` property.
@@ -484,35 +504,52 @@ class inAppViewVM: ObservableObject {
             return
         }
         
-        // Set `isVotingInProgress` to true to prevent multiple votes being submitted simultaneously
-        isVotingInProgress = true
+        // The post's location:
+        let postDoc = db.collection("posts").document(post.id)
         
-        // Call to `firebaseManager`'s function to perform the vote action on the post
-        firebaseManager.performAction(vote: voteType, post: post, user: user) { success, error in
-            if success {
-                // If the vote action is successful, fetch the updated post from Firestore to update the local cache
-                self.firebaseManager.fetchPost(byId: post.id) { updatedPost, error in
-                    if let updatedPost = updatedPost {
-                        // If the updated post is successfully fetched, update the local cache of posts
-                        DispatchQueue.main.async {
-                            // Call the function to update the post arrays with the updated post
-                            self.updatePostArrays(with: updatedPost)
-                            // Set `isVotingInProgress` to false since the vote action is complete
-                            self.isVotingInProgress = false
-                            // Notify the UI that the data has changed
-                            self.objectWillChange.send()
+        // Ensure that post exists
+        postDoc.getDocument() { [weak self] (document, error) in
+            if let error = error {
+                print("Error in retrieving document for post we are voting on in handleVoteOnPost()")
+                return
+            }
+            
+            guard let document = document, document.exists else {
+                print("Error: Post does not exist")
+                return
+            }
+
+            // Set `isVotingInProgress` to true to prevent multiple votes being submitted simultaneously
+            self?.isVotingInProgress = true
+            
+            // Call to `firebaseManager`'s function to perform the vote action on the post
+            self?.firebaseManager.performAction(vote: voteType, post: post, user: user) { success, error in
+                if success {
+                    // If the vote action is successful, fetch the updated post from Firestore to update the local cache
+                    self?.firebaseManager.fetchPost(byId: post.id) { updatedPost, error in
+                        if let updatedPost = updatedPost {
+                            // If the updated post is successfully fetched, update the local cache of posts
+                            DispatchQueue.main.async {
+                                // Call the function to update the post arrays with the updated post
+                                self?.updatePostArrays(with: updatedPost)
+                                // Set `isVotingInProgress` to false since the vote action is complete
+                                self?.isVotingInProgress = false
+                                // Notify the UI that the data has changed
+                                self?.objectWillChange.send()
+                            }
+                        } else {
+                            // If there was an error fetching the updated post, print the error message in the console.
+                            print(error?.localizedDescription ?? "Error fetching updated post.")
                         }
-                    } else {
-                        // If there was an error fetching the updated post, print the error message in the console.
-                        print(error?.localizedDescription ?? "Error fetching updated post.")
                     }
+                } else {
+                    // If there was an error performing the vote action, print the error message in the console.
+                    print(error?.localizedDescription ?? "Error updating vote.")
                 }
-            } else {
-                // If there was an error performing the vote action, print the error message in the console.
-                print(error?.localizedDescription ?? "Error updating vote.")
             }
         }
     }
+
     
     /// `updatePostArrays` is a private function that updates the local cache of posts with the given `ClassPost` object.
     /// The function is called after a vote action is performed on a post to reflect the updated post data.
@@ -549,39 +586,56 @@ class inAppViewVM: ObservableObject {
             return
         }
         
-        // Set `isVotingInProgress` to true to prevent multiple votes being submitted simultaneously
-        self.isVotingInProgress = true
+        // Check to make sure reply exists in Firebase
+        let replyDoc = db.collection("replies").document(reply.id)
         
-        // Call to `firebaseManager`'s function to handle the vote action on the reply in Firestore
-        firebaseManager.handleVoteOnReplyFirestore(UpOrDown: vote, post: post, reply: reply) { error in
+        // Check replyDoc existence
+        replyDoc.getDocument() { [weak self] (document, error) in
             if let error = error {
-                // If there was an error handling the vote action, print the error message in the console.
-                print("Error updating vote: \(error)")
+                print("Error in retrieving document for reply in handleVoteOnReply(): \(error)")
                 return
             }
             
-            // Fetch the updated reply from Firestore to update the local cache
-            self.firebaseManager.fetchReply(forPost: post, replyId: reply.id) { updatedReply, error in
-                if let updatedReply = updatedReply {
-                    // If the updated reply is successfully fetched, update the local cache of replies.
-                    DispatchQueue.main.async {
-                        // Make sure to replace the `updateReplyArray(with:)` function with your own implementation.
-                        // This function is used to update the local cache of replies with the updated reply.
-                        self.updateReplyArray(with: updatedReply)
-                        
-                        // Set `isVotingInProgress` to false since the vote action is complete
-                        self.isVotingInProgress = false
-                        
-                        // Notify the UI that the data has changed
-                        self.objectWillChange.send()
+            guard let document = document, document.exists else {
+                print("Error: Reply does not exist")
+                return
+            }
+            
+            // Set `isVotingInProgress` to true to prevent multiple votes being submitted simultaneously
+            self?.isVotingInProgress = true
+            
+            // Call to `firebaseManager`'s function to handle the vote action on the reply in Firestore
+            self?.firebaseManager.handleVoteOnReplyFirestore(UpOrDown: vote, post: post, reply: reply) { error in
+                if let error = error {
+                    // If there was an error handling the vote action, print the error message in the console.
+                    print("Error updating vote: \(error)")
+                    return
+                }
+                
+                // Fetch the updated reply from Firestore to update the local cache
+                self?.firebaseManager.fetchReply(forPost: post, replyId: reply.id) { updatedReply, error in
+                    if let updatedReply = updatedReply {
+                        // If the updated reply is successfully fetched, update the local cache of replies.
+                        DispatchQueue.main.async {
+                            // Make sure to replace the `updateReplyArray(with:)` function with your own implementation.
+                            // This function is used to update the local cache of replies with the updated reply.
+                            self?.updateReplyArray(with: updatedReply)
+                            
+                            // Set `isVotingInProgress` to false since the vote action is complete
+                            self?.isVotingInProgress = false
+                            
+                            // Notify the UI that the data has changed
+                            self?.objectWillChange.send()
+                        }
+                    } else {
+                        // If there was an error fetching the updated reply, print the error message in the console.
+                        print(error?.localizedDescription ?? "Error fetching updated reply.")
                     }
-                } else {
-                    // If there was an error fetching the updated reply, print the error message in the console.
-                    print(error?.localizedDescription ?? "Error fetching updated reply.")
                 }
             }
         }
     }
+
     
     /// Private function to update the local cache of replies with an updated reply.
     /// The function replaces the old reply with the updated reply in the `curReplies` array.

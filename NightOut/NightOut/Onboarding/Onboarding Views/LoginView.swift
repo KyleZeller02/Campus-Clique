@@ -328,7 +328,7 @@ struct VerifyPhoneNumber: View {
                                 } else {
                                     // Create a new user
                                     print("New user, create an account")
-                                    docRef.setData(["phoneNumber" : phoneNumber])
+                                    
                                     onboardingViewModel.updatePhoneNumber(number: phoneNumber)
                                     showPasswordInput = false
                                     showOnboarding = false
