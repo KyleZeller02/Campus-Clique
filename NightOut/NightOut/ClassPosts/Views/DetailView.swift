@@ -31,6 +31,8 @@ struct DetailView: View {
 
     /// Controls the presentation of the detail view.
     @Binding var isShowingDetail: Bool
+    
+    @State var showingReportAlertReply: Bool = false
 
     /// Accesses the presentation mode of the view.
     @Environment(\.presentationMode) var presentationMode
@@ -46,6 +48,11 @@ struct DetailView: View {
 
     /// Stores the height of the reply text field.
     @State private var textFieldHeight: CGFloat = 0
+    
+    @State var showingReportReplyActionSheet:Bool = false
+    
+    @State var showingReportPostActionSheet: Bool
+    @State var showingReportPostSheet:Bool = false
 
     // MARK: - Methods
 
@@ -74,7 +81,7 @@ struct DetailView: View {
                 // The scroll view shows all the post and replies
                 ScrollView(showsIndicators: false) {
                     // Post cell for the selected post
-                    PostCellView(selectedPost:selectedPost)
+                    PostCellView(selectedPost:selectedPost,showingReportPostSheet: $showingReportPostSheet, showingReportPostActionSheet: $showingReportPostActionSheet )
                         .environmentObject(viewModel)
 
                     // Area for showing replies
@@ -101,7 +108,7 @@ struct DetailView: View {
                         VStack {
                             LazyVStack(spacing: 8) {
                                 ForEach(viewModel.curReplies, id: \.id) { reply in
-                                    ReplyView(reply: .constant(reply), selectedPost: .constant(selectedPost), isAuthorReply: isAuthorReply(ofReply:))
+                                    ReplyView(reply: .constant(reply), selectedPost: .constant(selectedPost), isAuthorReply: isAuthorReply(ofReply:), showingReportReplySheet: $showingReportAlertReply, showingReportReplyActionSheet: $showingReportReplyActionSheet)
                                         .environmentObject(viewModel)
                                         .frame(minWidth: 0, maxWidth: .infinity, alignment: .center)
                                         .cornerRadius(10)

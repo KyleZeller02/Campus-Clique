@@ -47,8 +47,22 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Your custom handling
     }
 }
-
+/*
+  Things to fix from review:
+  
+  A method for filtering objectionable material from being posted to the app
+  
+  A mechanism to report offensive content and timely responses to concerns
+  
+  The ability to block abusive users from the service
+  
+  Published contact information so users can easily reach you
+  
+  
+  */
     
+
+
 @main
 struct NightOutApp: App {
     //line below was also copied as instructed

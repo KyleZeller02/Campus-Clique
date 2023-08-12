@@ -32,6 +32,9 @@ struct UserProfileView: View {
     @State private var isShowingReply = false
     /// Holds the post selected by the user.
     @State private var selectedPost: ClassPost?
+    @State var showingReportPostSheet = false
+    
+    @State var showingReportPostActionSheet: Bool = false
     
     /// The body of the `UserProfileView`.
     var body: some View {
@@ -116,9 +119,9 @@ struct UserProfileView: View {
                             LazyVStack(spacing: 8) {
                                 // Loop through posts
                                 ForEach(inAppVM.postsforUser) { post in
-                                    NavigationLink(destination: DetailView(selectedPost: post, isShowingDetail: $isShowingDetailPost)
+                                    NavigationLink(destination: DetailView(selectedPost: post, isShowingDetail: $isShowingDetailPost, showingReportPostActionSheet: showingReportPostActionSheet)
                                         .environmentObject(inAppVM)) {
-                                            PostCellView(selectedPost: post).environmentObject(inAppVM)
+                                            PostCellView(selectedPost: post, showingReportPostSheet: $showingReportPostSheet, showingReportPostActionSheet: $showingReportPostActionSheet).environmentObject(inAppVM)
                                         }
                                 }
                             }

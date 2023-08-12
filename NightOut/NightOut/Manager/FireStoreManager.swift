@@ -1331,6 +1331,7 @@ class FirestoreService: FirebaseManagerProtocol{
                   let college = data["college"] as? String,
                   let major = data["major"] as? String,
                   let classes = data["classes"] as? [String],
+                  let usersBlocked = data["blocked_users"] as? [String],
                   let phoneNumber = data["phone_number"] as? String,
                   let profilePictureURL = data["profile_picture_url"] as? String else {
                 // If there's missing or invalid data, call the completion handler with an error
@@ -1340,7 +1341,7 @@ class FirestoreService: FirebaseManagerProtocol{
             }
 
             // Create a UserDocument object from the retrieved data
-            let retrievedDoc = UserDocument(firstName: firstName, lastName: lastName, college: college, major: major, classes: classes, phoneNumber: phoneNumber, profilePictureURL: profilePictureURL)
+            let retrievedDoc = UserDocument(firstName: firstName, lastName: lastName, college: college, major: major, classes: classes, phoneNumber: phoneNumber, profilePictureURL: profilePictureURL,usersBlocked: Set<String>(usersBlocked))
 
             // Call the completion handler with the retrieved UserDocument object and nil for error (indicating success)
             completion(retrievedDoc, nil)
@@ -1612,6 +1613,71 @@ class FirestoreService: FirebaseManagerProtocol{
             }
         }
     }
+    
+    /// Creates a report document in the specified Firestore collection.
+    ///
+    /// This method adds a new document to a Firestore collection specified by the `collection` parameter. The data for the document is passed in the `data` dictionary. If the `collection` string is empty, the completion closure is called with an error.
+    ///
+    /// - Parameters:
+    ///   - collection: The name of the Firestore collection where the report document should be created. Must not be an empty string.
+    ///   - data: A dictionary containing the data to be stored in the report document.
+    ///   - completion: A closure to be called upon completion of the report creation. If the method is successful, the closure is called with a `nil` error. If there is an error, the closure is called with the error object.
+    func createReport(inCollection collection: String, withData data: [String: Any], completion: @escaping (Error?) -> Void) {
+            // Check that the collection string is not empty
+            guard !collection.isEmpty else {
+                completion(NSError(domain: "FirebaseManager", code: -1, userInfo: [NSLocalizedDescriptionKey: "Collection string cannot be empty"]))
+                return
+            }
+            
+            
+            let db = Firestore.firestore()
+            
+            // Reference to the specific collection
+            let collectionRef = db.collection(collection)
+            
+            // Create a new document with the data
+            collectionRef.addDocument(data: data) { (error) in
+                completion(error)
+            }
+        }
+    
+    /**
+     Adds a user to the blocked list of the current user.
+
+     - Parameters:
+        - currentUser: The phone number of the current user who wants to block another user.
+        - userToBlock: The phone number of the user to be blocked.
+        - completion: A closure that will be called when the operation is complete, with a Boolean indicating success or failure.
+
+     - Note: This method updates the "blocked_users" field in the current user's document within the "Users" collection in Firestore. The "blocked_users" field is assumed to be an array.
+    */
+    func addUserToBlockedList(currentUser: String, userToBlock: String, completion: @escaping (Bool) -> Void) {
+        // Check if the parameters are not empty strings
+        guard !currentUser.isEmpty, !userToBlock.isEmpty else {
+            print("Error: Parameters should not be empty strings")
+            completion(false)
+            return
+        }
+        
+        // Get reference to the current user's document in the Firebase collection
+        let userDocRef = db.collection("Users").document(currentUser)
+        
+        // Add the userToBlock to the "blocked_users" property using arrayUnion
+        userDocRef.updateData([
+            "blocked_users": FieldValue.arrayUnion([userToBlock])
+        ]) { err in
+            if let err = err {
+                print("Error updating document: \(err)")
+                completion(false) // Call the completion handler with failure
+            } else {
+                print("User \(userToBlock) successfully blocked.")
+                completion(true) // Call the completion handler with success
+            }
+        }
+    }
+
+
+
 
 
 

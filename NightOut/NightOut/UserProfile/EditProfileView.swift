@@ -50,98 +50,102 @@ struct EditProfileView: View {
     
     // Main view body
     var body: some View {
-        // Spacer for padding
-        Spacer().frame(maxHeight: 10)
-        // Main view scroll view
-        ScrollView{
-            // Container for the profile view
-            ZStack{
-                // Black background color
-                Color.Black.ignoresSafeArea()
-                // Container for the profile content
-                VStack{
-                    // Cancel button view
-                    cancelButton
-                    // Button for uploading a new profile image
-                    Button(action: {
-                        // Request permission before the image picker is shown.
-                        PHPhotoLibrary.requestAuthorization { status in
-                            switch status {
-                            case .authorized, .limited:
-                                // If authorized or limited, show the image picker.
-                                DispatchQueue.main.async {
-                                    self.didChangeImage = true
-                                    self.isPickerShowing = true
+        ZStack{
+            Color.Black.ignoresSafeArea()
+            
+            // Spacer for padding
+            Spacer().frame(maxHeight: 10)
+            // Main view scroll view
+            ScrollView{
+                // Container for the profile view
+                ZStack{
+                    // Black background color
+                    Color.Black.ignoresSafeArea()
+                    // Container for the profile content
+                    VStack{
+                        // Cancel button view
+                        cancelButton
+                        // Button for uploading a new profile image
+                        Button(action: {
+                            // Request permission before the image picker is shown.
+                            PHPhotoLibrary.requestAuthorization { status in
+                                switch status {
+                                case .authorized, .limited:
+                                    // If authorized or limited, show the image picker.
+                                    DispatchQueue.main.async {
+                                        self.didChangeImage = true
+                                        self.isPickerShowing = true
+                                    }
+                                case .denied, .restricted, .notDetermined:
+                                    // If not authorized, do not show the image picker. Handle this case appropriately in your app.
+                                    print("Not authorized to access photo library.")
+                                @unknown default:
+                                    fatalError("Unknown case of PHAuthorizationStatus")
                                 }
-                            case .denied, .restricted, .notDetermined:
-                                // If not authorized, do not show the image picker. Handle this case appropriately in your app.
-                                print("Not authorized to access photo library.")
-                            @unknown default:
-                                fatalError("Unknown case of PHAuthorizationStatus")
+                            }
+                        })
+                        {
+                            // Display current or placeholder profile image
+                            if let image = selectedImage {
+                                // User has selected a new image
+                                Image(uiImage: image)
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fill)
+                                    .frame(width: 200, height: 200)
+                                    .clipShape(Circle())
+                                    .padding(.trailing,10)
+                            } else if let urlString = vm.userDoc.profilePictureURL, let url = URL(string: urlString) {
+                                // User has a profile image
+                                KFImage(url)
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fill)
+                                    .frame(width: 200, height: 200)
+                                    .clipShape(Circle())
+                                    .padding(.trailing,10)
+                            } else {
+                                // User does not have a profile image
+                                Image(systemName: "person.fill")
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fill)
+                                    .frame(width: 200, height: 200)
+                                    .clipShape(Circle())
+                                    .padding(.trailing,10)
                             }
                         }
-                    })
- {
-                        // Display current or placeholder profile image
-                        if let image = selectedImage {
-                            // User has selected a new image
-                            Image(uiImage: image)
-                                .resizable()
-                                .aspectRatio(contentMode: .fill)
-                                .frame(width: 200, height: 200)
-                                .clipShape(Circle())
-                                .padding(.trailing,10)
-                        } else if let urlString = vm.userDoc.profilePictureURL, let url = URL(string: urlString) {
-                            // User has a profile image
-                            KFImage(url)
-                                .resizable()
-                                .aspectRatio(contentMode: .fill)
-                                .frame(width: 200, height: 200)
-                                .clipShape(Circle())
-                                .padding(.trailing,10)
-                        } else {
-                            // User does not have a profile image
-                            Image(systemName: "person.fill")
-                                .resizable()
-                                .aspectRatio(contentMode: .fill)
-                                .frame(width: 200, height: 200)
-                                .clipShape(Circle())
-                                .padding(.trailing,10)
-                        }
+                        
+                        // User profile fields view
+                        fields
+                        // User classes fields view
+                        classesFields
+                        // Filler space
+                        Spacer()
+                    }
+                    // Action to perform when the view appears
+                }.onAppear(){
+                    // Delay execution of the block of code
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 1){
+                        // Set the search query for the search filter
+                        self.filter.searchQuery = self.vm.userDoc.college
                     }
                     
-                    // User profile fields view
-                    fields
-                    // User classes fields view
-                    classesFields
-                    // Filler space
-                    Spacer()
+                    // Populate the fields with user's data
+                    self.newFirstName = vm.userDoc.firstName
+                    self.newLastName = vm.userDoc.lastName
+                    self.selectedCollege = vm.userDoc.college
+                    self.newMajor = vm.userDoc.major
+                    
+                    // Populate the classes fields with user's data
+                    self.newClass1 = vm.userDoc.classes.count > 0 ? vm.userDoc.classes[0] : ""
+                    self.newClass2 = vm.userDoc.classes.count > 1 ? vm.userDoc.classes[1] : ""
+                    self.newClass3 = vm.userDoc.classes.count > 2 ? vm.userDoc.classes[2] : ""
+                    self.newClass4 = vm.userDoc.classes.count > 3 ? vm.userDoc.classes[3] : ""
+                    self.newClass5 = vm.userDoc.classes.count > 4 ? vm.userDoc.classes[4] : ""
+                    self.newClass6 = vm.userDoc.classes.count > 5 ? vm.userDoc.classes[5] : ""
                 }
-                // Action to perform when the view appears
-            }.onAppear(){
-                // Delay execution of the block of code
-                DispatchQueue.main.asyncAfter(deadline: .now() + 1){
-                    // Set the search query for the search filter
-                    self.filter.searchQuery = self.vm.userDoc.college
+                // Image picker view
+                .sheet(isPresented: $isPickerShowing, onDismiss: nil) {
+                    ImagePicker(selectedImage: $selectedImage, isPickerShowing: $isPickerShowing)
                 }
-                
-                // Populate the fields with user's data
-                self.newFirstName = vm.userDoc.firstName
-                self.newLastName = vm.userDoc.lastName
-                self.selectedCollege = vm.userDoc.college
-                self.newMajor = vm.userDoc.major
-                
-                // Populate the classes fields with user's data
-                self.newClass1 = vm.userDoc.classes.count > 0 ? vm.userDoc.classes[0] : ""
-                self.newClass2 = vm.userDoc.classes.count > 1 ? vm.userDoc.classes[1] : ""
-                self.newClass3 = vm.userDoc.classes.count > 2 ? vm.userDoc.classes[2] : ""
-                self.newClass4 = vm.userDoc.classes.count > 3 ? vm.userDoc.classes[3] : ""
-                self.newClass5 = vm.userDoc.classes.count > 4 ? vm.userDoc.classes[4] : ""
-                self.newClass6 = vm.userDoc.classes.count > 5 ? vm.userDoc.classes[5] : ""
-            }
-            // Image picker view
-            .sheet(isPresented: $isPickerShowing, onDismiss: nil) {
-                ImagePicker(selectedImage: $selectedImage, isPickerShowing: $isPickerShowing)
             }
         }
         // Gesture to hide the keyboard and deselect the college field when tapped outside

@@ -67,6 +67,9 @@ struct ClassPosts: View {
     // A state variable to control whether the class selector action sheet is shown.
     @State private var isShowingClassSelector = false
     
+    @State var showingReportPostSheet = false
+    @State var showingReportPostActionSheet = false
+    
     // MARK: - Initialization
     //sets the navigation bar appearance
     init() {
@@ -118,14 +121,14 @@ struct ClassPosts: View {
                             } else {
                                 // Iterate through the posts using ForEach and create NavigationLinks for each post.
                                 ForEach(inAppVM.postsForClass.indices, id: \.self) { index in
-                                    NavigationLink(destination: DetailView(selectedPost: inAppVM.postsForClass[index], isShowingDetail: $isShowingDetail)
+                                    NavigationLink(destination: DetailView(selectedPost: inAppVM.postsForClass[index], isShowingDetail: $isShowingDetail, showingReportPostActionSheet: showingReportPostActionSheet)
                                         .environmentObject(inAppVM)) {
                                             // Each post is wrapped in a NavigationLink to navigate to the detail view.
-                                            PostCellView(selectedPost: inAppVM.postsForClass[index])
+                                            PostCellView(selectedPost: inAppVM.postsForClass[index],showingReportPostSheet: $showingReportPostSheet,showingReportPostActionSheet: $showingReportPostActionSheet)
                                                 .environmentObject(inAppVM)
                                                 .onAppear {
                                                     // Fetch more posts if the user scrolls to the end of the list.
-                                                    if index == inAppVM.postsForClass.count - 3 && !inAppVM.isLastPage {
+                                                    if index == inAppVM.postsForClass.count - 1  && !inAppVM.isLastPage {
                                                         inAppVM.fetchNext30PostsForClass() { success in
                                                             print("There are now \(inAppVM.postsForClass.count) posts")
                                                         }
@@ -138,7 +141,7 @@ struct ClassPosts: View {
                     }
                 }
                 
-                .background(Color.black)
+                .background(Color.Black)
                 .refreshable {
                     // Enable pull-to-refresh to update the post list.
                     withAnimation {

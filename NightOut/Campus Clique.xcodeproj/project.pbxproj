@@ -10,6 +10,7 @@
 		023790CD2A6B6BF10072846F /* List.txt in Resources */ = {isa = PBXBuildFile; fileRef = 023790CC2A6B6BF10072846F /* List.txt */; };
 		023790CF2A745F570072846F /* ClassPostCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 023790CE2A745F570072846F /* ClassPostCell.swift */; };
 		023790D12A7467EF0072846F /* ReplyCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 023790D02A7467EF0072846F /* ReplyCell.swift */; };
+		023790D32A83D1CC0072846F /* ReportSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 023790D22A83D1CC0072846F /* ReportSheet.swift */; };
 		023B24A42A5A50780082910A /* FirebaseManagerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 023B24A32A5A50780082910A /* FirebaseManagerProtocol.swift */; };
 		023C29F92883A9210045904F /* UserDataAcquisition.swift in Sources */ = {isa = PBXBuildFile; fileRef = 023C29F82883A9200045904F /* UserDataAcquisition.swift */; };
 		023C29FB2883A9670045904F /* CreateUserPofile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 023C29FA2883A9670045904F /* CreateUserPofile.swift */; };
@@ -56,6 +57,7 @@
 		023790CC2A6B6BF10072846F /* List.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = List.txt; sourceTree = "<group>"; };
 		023790CE2A745F570072846F /* ClassPostCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClassPostCell.swift; sourceTree = "<group>"; };
 		023790D02A7467EF0072846F /* ReplyCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReplyCell.swift; sourceTree = "<group>"; };
+		023790D22A83D1CC0072846F /* ReportSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReportSheet.swift; sourceTree = "<group>"; };
 		023B24A32A5A50780082910A /* FirebaseManagerProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseManagerProtocol.swift; sourceTree = "<group>"; };
 		023C29F82883A9200045904F /* UserDataAcquisition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDataAcquisition.swift; sourceTree = "<group>"; };
 		023C29FA2883A9670045904F /* CreateUserPofile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateUserPofile.swift; sourceTree = "<group>"; };
@@ -251,6 +253,7 @@
 				0263CB482A2EC5C9004E40D7 /* DetailView.swift */,
 				023790CE2A745F570072846F /* ClassPostCell.swift */,
 				023790D02A7467EF0072846F /* ReplyCell.swift */,
+				023790D22A83D1CC0072846F /* ReportSheet.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -375,6 +378,7 @@
 				023C29FB2883A9670045904F /* CreateUserPofile.swift in Sources */,
 				0263CB492A2EC5C9004E40D7 /* DetailView.swift in Sources */,
 				02C593552A2D6D7A00A79E28 /* InAppViewModel.swift in Sources */,
+				023790D32A83D1CC0072846F /* ReportSheet.swift in Sources */,
 				023C2A0528B1B7180045904F /* UserProfileModel.swift in Sources */,
 				02943C892972299600DB7DF6 /* ClassPostsView.swift in Sources */,
 				02943C2D29664CED00DB7DF6 /* OnboardingDatabaseManger.swift in Sources */,

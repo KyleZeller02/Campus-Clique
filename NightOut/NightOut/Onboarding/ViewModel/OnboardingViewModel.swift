@@ -9,7 +9,7 @@ class OnboardingViewModel: ObservableObject {
     // MARK: - Properties
 
     /// A published instance of `UserDocument`, represents the current user's information.
-    @Published var userInformation = UserDocument(firstName: "", lastName: "", college: "", major: "", classes: [], phoneNumber: "", profilePictureURL: nil)
+    @Published var userInformation = UserDocument(firstName: "", lastName: "", college: "", major: "", classes: [], phoneNumber: "", profilePictureURL: nil,usersBlocked: Set<String>())
     
 
     
@@ -92,7 +92,8 @@ class OnboardingViewModel: ObservableObject {
             "classes": self.userInformation.classes,
             "profile_picture_url": self.userInformation.profilePictureURL ?? "",
             "major": self.userInformation.major,
-            "phone_number" : phoneNumber
+            "phone_number" : phoneNumber,
+            "blocked_users" :[]
         ]
 
         userRef.setData(userInfoDict) { error in

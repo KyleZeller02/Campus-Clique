@@ -41,6 +41,8 @@ class UserDocument: Identifiable, ObservableObject {
         return "\(firstName) \(lastName)"
     }
     
+    var blockedUsers: Set<String>
+    
     // MARK: - Initialization
     
     /// Creates a new User Document.
@@ -53,7 +55,7 @@ class UserDocument: Identifiable, ObservableObject {
     ///   - classes: The list of classes the user is currently taking.
     ///   - phoneNumber: The user's phone number.
     ///   - profilePictureURL: The URL for the user's profile picture.
-    init(firstName: String, lastName: String, college: String, major: String, classes: [String], phoneNumber: String, profilePictureURL: String?) {
+    init(firstName: String, lastName: String, college: String, major: String, classes: [String], phoneNumber: String, profilePictureURL: String?, usersBlocked: Set<String>) {
         self.firstName = firstName
         self.lastName = lastName
         self.college = college
@@ -61,6 +63,7 @@ class UserDocument: Identifiable, ObservableObject {
         self.classes = classes
         self.phoneNumber = phoneNumber
         self.profilePictureURL = profilePictureURL
+        self.blockedUsers = usersBlocked
     }
 }
 

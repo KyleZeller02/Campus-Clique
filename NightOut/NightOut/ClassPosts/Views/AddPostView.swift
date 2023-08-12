@@ -32,10 +32,12 @@ struct AddPostView: View {
                    
                     TextEditor(text: $postBody)
                         .frame(height: 300)
-                        .background(Color.cyan)
+                        .background(Color.Black)
+                        .foregroundColor(Color.White)
                         .cornerRadius(10)
                         .padding(.leading,10)
                         .padding(.trailing,10)
+                        .scrollContentBackground(.hidden)
                         .overlay(
                             RoundedRectangle(cornerRadius: 10)
                                 .stroke(Color.cyan, lineWidth: 2)

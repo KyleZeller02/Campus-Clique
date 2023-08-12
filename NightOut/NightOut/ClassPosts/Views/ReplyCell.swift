@@ -25,6 +25,12 @@ struct ReplyView: View {
     // State variable to control the showing of the delete confirmation alert
     @State private var showingDeleteAlertReply = false
     
+    @Binding var showingReportReplySheet:Bool // this variable is held in the detail view, will show alert to report
+    
+    @Binding var showingReportReplyActionSheet: Bool
+    
+    @State private var showingBlockUserAlert = false
+    
     /// Convert epoch time (number of seconds from 1970) to a readable date string
     ///
     /// - Parameter epochTime: The time in epoch format to be converted.
@@ -135,6 +141,63 @@ struct ReplyView: View {
                         RoundedRectangle(cornerRadius: 10)
                             .stroke(Color.cyan, lineWidth: 1)
                     )
+                    
+                    // Button for reporting the reply
+                            Button(action: {
+                                // When the button is tapped, it sets a state variable to true, triggering an action sheet for reporting
+                                showingReportReplyActionSheet = true
+                            }) {
+                                // Displays an image for the report button (exclamation mark inside a triangle)
+                                    Image(systemName: "flag")
+                                        .resizable() // Makes the image resizable
+                                        .frame(width: 20, height: 20) // Sets the width and height of the image
+                                        .padding() // Adds padding around the image
+                                        .foregroundColor(.yellow) // Sets the foreground color to yellow
+                                        .cornerRadius(10)
+                            }
+                            .opacity(isAuthorReply(reply) ? 0.0 : 1.0)  // Adjusts the opacity based on whether the post is authored by the current user
+                            .disabled(isAuthorReply(reply))
+                            .actionSheet(isPresented: $showingReportReplyActionSheet) {
+                                ActionSheet(title: Text("What would you like to do?"),
+                                            buttons: [
+                                                .default(Text("Report Content"), action: {
+                                                    showingReportReplySheet = true
+                                                }),
+                                                .destructive(Text("Block User"), action: {
+                                                    // Trigger the alert for blocking the user
+                                                    showingBlockUserAlert = true
+                                                }),
+                                                .cancel()
+                                            ])
+                            }
+                            .sheet(isPresented: $showingReportReplySheet) {
+                                ReportSheet(postable:reply ).environmentObject(viewModel)
+                            }
+                            .alert(isPresented: $showingBlockUserAlert) {
+                                Alert(
+                                    title: Text("Block User"),
+                                    message: Text("Are you sure you want to block this user?"),
+                                    primaryButton: .destructive(Text("Block"), action: {
+                                        // Add the action to actually block the user here
+                                    }),
+                                    secondaryButton: .cancel()
+                                )
+                            }
+
+                    // Alert for confirming the report action
+//                    .alert(isPresented: $showingReportAlertReply) { // Presents the alert when the state variable is true
+//                        Alert(
+//                            title: Text("Report Reply"), // Title of the alert
+//                            message: Text("Are you sure you want to report this reply?"), // Message of the alert
+//                            primaryButton: .destructive(Text("Report")) {
+//                                // Action to take when the 'Report' button is tapped; it calls a method to handle the report
+//                               // viewModel.reportReply(reply, fromPost: selectedPost)
+//                            },
+//                            secondaryButton: .cancel() // Provides a 'Cancel' button to dismiss the alert without action
+//                        )
+//                    }
+
+                    
                     
                     // Spacer to push the delete button to the right of the screen
                     Spacer()
