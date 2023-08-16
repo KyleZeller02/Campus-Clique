@@ -114,6 +114,8 @@ class inAppViewVM: ObservableObject {
     // A published property to indicate whether data can be refreshed or not.
     // Views subscribed to this object will refresh when the canRefresh property changes.
     @Published var canRefresh: Bool = true
+    
+    
    
     // The initializer where initial fetching of user document and posts for a class and user are performed.
     // Initializer for the inAppViewVM class.
@@ -192,147 +194,113 @@ class inAppViewVM: ObservableObject {
             } else {
                 self.curError = "Something went wrong getting your credentials. Log out and log back in."
             }
+            completion(false) // Notify the caller that the operation failed
             return
         }
-        
+
         // Check if there are more posts to fetch. If not, exit the function.
         if isLastPage { return }
-        
+
         // Fetch the next 30 posts related to the selected class from Firestore.
         firebaseManager.fetchNext30PostsForClass(fromClass: self.selectedClass, fromCollege: self.userDoc.college, after: lastDocumentSnapshot) { [weak self] (posts, lastSnapshot, error) in
             // Switch to the main thread to update the UI.
             DispatchQueue.main.async {
+                guard let self = self else { return }
+
+                // Update the last document snapshot.
+                self.lastDocumentSnapshot = lastSnapshot
+
                 // Handle any error that occurred during the fetch operation.
                 if let error = error {
-                    self?.curError = "Something went wrong getting the posts for \(self?.selectedClass ?? "this class") : \(error)"
+                    self.curError = "Something went wrong getting the posts for \(self.selectedClass) : \(error)"
                     // Invoke the completion handler with false to indicate that the operation failed.
                     completion(false)
                     return
                 }
-                // If the count of the fetched posts is less than 30, it means we have fetched all posts and there are no more posts to fetch.
+
+                // If the count of the fetched posts is less than 30, it means we have fetched all posts, and there are no more posts to fetch.
                 if posts?.count ?? 0 < 30 {
-                    self?.isLastPage = true
+                    self.isLastPage = true
                 }
-                
+
                 // Filter the newly fetched posts to remove those from blocked users.
-                let newPosts = posts?.filter { post in
-                    guard let self = self else { return true }
-                    return !self.userDoc.blockedUsers.contains(post.phoneNumber)
-                } ?? []
+                let newPosts = posts?.filter { !self.userDoc.blockedUsers.contains($0.phoneNumber) } ?? []
 
-
-                // Append the filtered posts to the existing posts.
-                self?.postsForClass += newPosts
-
-                // Update the last document snapshot for future fetch operations.
-                self?.lastDocumentSnapshot = lastSnapshot
-
-                // Invoke the completion handler with true to indicate that the operation was successful.
-                completion(true)
-
-                if self?.postsForClass.count ?? 0 < 5 {
-                    self?.fetchNext30PostsForClass { success in
-                        if success {
-                            print("Successfully fetched the next 30 posts.")
-                        } else {
-                            print("Failed to fetch the next 30 posts.")
-                        }
-                    }
+                // If there are no new posts after filtering and it's not the last page, recursively fetch the next 30 posts.
+                if newPosts.isEmpty && !self.isLastPage {
+                    self.fetchNext30PostsForClass(completion: completion)
+                    return
                 }
+
+                // Just append the filtered posts to the existing posts
+                self.postsForClass += newPosts
+
+                completion(true)
             }
         }
     }
 
 
-
-
-    /// `refreshPosts` is a function that refreshes the current list of class posts in the app by re-fetching the first 30 posts
-    /// for the selected class and getting all posts for the user. This function is useful for keeping the posts in the app up-to-date.
-    ///
-    /// - Parameter completion: A closure that is invoked when the operation to refresh the posts completes. The closure takes one argument:
-    ///     - Bool: A boolean flag indicating whether the operation was successful.
-    /// - Returns: Void
-
-    func refreshPosts(completion: @escaping (Bool) -> Void) {
-        // Check if the posts can be refreshed.
-        if canRefresh {
-            // Set `canRefresh` to false to prevent multiple refresh operations at the same time.
-            canRefresh = false
-            // Reset the last document snapshot and the flag indicating if there are more posts to fetch.
-            self.lastDocumentSnapshot = nil
-            self.isLastPage = false
-
-            // Fetch the first 30 posts for the selected class.
-            fetchFirst30PostsForClass(){res in
-                print("After refreshing classPost there are \(self.postsForClass.count)")
-            }
-
-            // Allow refreshing the posts again after the current refresh operation is completed.
-            canRefresh = true
-        }
-        
-        // Fetch all posts for the user. The completion handler is ignored because there is no need to do anything after the operation.
-        self.getPostsForUser(){_ in}
-        
-    }
 
     /**
-     Fetches the first 30 posts for a specific class, filtering out posts from blocked users.
-     
-     The function fetches posts for a specific class, applies a filter to exclude posts from blocked users, and handles pagination by fetching additional posts if necessary.
-     
-     - Parameter completion: A closure that is called upon completion of the fetch operation, with a Boolean indicating success or failure.
-     */
+     Fetches the first 30 posts related to a specific class from the Firestore database and filters out any posts from blocked users.
+
+     This function performs a query to fetch the first batch of 30 posts related to a specific class and filters out posts from users that have been blocked.
+
+     - Parameters:
+        - completion: A closure that is invoked when the operation to fetch the posts completes.
+            - Bool: A boolean flag indicating whether the operation was successful.
+
+     - Returns: Void
+    */
     func fetchFirst30PostsForClass(completion: @escaping (Bool) -> Void) {
-        // Ensure that required data is available.
-        guard !self.selectedClass.isEmpty, !self.userDoc.college.isEmpty, Auth.auth().currentUser != nil else {
-            self.curError = Auth.auth().currentUser == nil ? "You are not currently Authenticated. Log out and log back in." : "Something went wrong getting your credentials. Log out and log back in."
+        guard let currentUser = Auth.auth().currentUser,
+              !self.selectedClass.isEmpty,
+              !self.userDoc.college.isEmpty else {
+            curError = "Required information is missing"
+            completion(false)
             return
         }
+
+        // Resetting the flag for last page to allow further fetching
+        self.isLastPage = false
+        self.lastDocumentSnapshot = nil
 
         firebaseManager.fetchFirst30PostsForClass(fromClass: self.selectedClass, fromCollege: self.userDoc.college) { [weak self] (posts, lastSnapshot, error) in
             DispatchQueue.main.async {
                 guard let self = self else { return }
 
-                // Handle any error that might have occurred.
                 if let error = error {
                     self.curError = "Something went wrong getting the posts for \(self.selectedClass): \(error)"
                     completion(false)
                     return
                 }
-
-                // Determine if this is the last page of posts, based on the amount of posts returned from Firestore, BEFORE FILTERING.
-                if posts?.count ?? 0 < 30 {
+                // If the posts array is empty or has fewer items than expected, mark it as the last page
+                if posts?.isEmpty == true || (posts?.count ?? 0) < 30 {
                     self.isLastPage = true
                 }
-                
-                // Assign the fetched posts to `postsForClass`.
-                self.postsForClass = posts ?? []
 
-                // Remove posts from blocked users.
-                self.postsForClass.removeAll { post in
-                    return self.userDoc.blockedUsers.contains(post.phoneNumber)
-                }
-                
-                if self.postsForClass.count < 5 {
-                    self.fetchNext30PostsForClass { success in
-                        if success {
-                            print("Successfully fetched the next 30 posts.")
-                        } else {
-                            print("Failed to fetch the next 30 posts.")
-                        }
-                    }
-                }
-
-                
-
-                // Update the last document snapshot for future fetch operations.
+                // Filter posts
+                let tempPosts = posts?.filter { !self.userDoc.blockedUsers.contains($0.phoneNumber) } ?? []
+                self.postsForClass = tempPosts
                 self.lastDocumentSnapshot = lastSnapshot
+                
+                // If the filtered posts array is empty and there are still more posts to fetch, fetch the next 30 posts
+                if tempPosts.isEmpty && (posts?.count ?? 0) == 30 {
+                    self.fetchNext30PostsForClass(completion: completion)
+                    return
+                }
+
+                
 
                 completion(true)
             }
         }
     }
+
+
+
+
 
 
 
@@ -404,10 +372,15 @@ class inAppViewVM: ObservableObject {
     func fetchReplies(forPost post: ClassPost) {
         // Call to firebaseManager's function to fetch replies for the post from the backend
         firebaseManager.getReplies(forPost: post) { replies in
-            // Update the `curReplies` property with the fetched replies
-            self.curReplies = replies
+            // Filter the replies to exclude any where the author is blocked
+            let filteredReplies = replies.filter { reply in
+                return !self.userDoc.blockedUsers.contains(reply.phoneNumber)
+            }
+            // Update the `curReplies` property with the filtered replies
+            self.curReplies = filteredReplies
         }
     }
+
     
     /// `addReply` is a function that adds a new reply to a specific post in the backend. The function takes the reply body and the associated post as parameters.
     /// It also retrieves the necessary user information from the `userDoc` property to store the reply's author information.
@@ -1182,33 +1155,24 @@ class inAppViewVM: ObservableObject {
     ///   - object: An instance of either `ClassPost` or `Reply` that represents the object being reported.
     ///   - description: A string describing the report. If empty, a default description will be used.
     ///   - type: An enum value representing the type of the report.
-    func handleReportOnPost(for object: Any, description: String, reportType type: ReportType) {
+    func handleReportOnPost(for objectID: String, with objType: String, description: String, reportType type: ReportType) {
         // Check and sanitize description
         let descriptionText = description.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? "No description provided from user" : description
 
-        var id: String?
-        var objectType: String?
-
-        // Determine the object type and extract the relevant ID
-        if let post = object as? ClassPost {
-            id = post.id
-            objectType = "ClassPost"
-        } else if let reply = object as? Reply {
-            id = reply.id
-            objectType = "Reply"
-        } else {
+        // Validate objType
+        guard objType == "Post" || objType == "Reply" else {
             print("Unknown object type")
             return
         }
 
         // Create a dictionary to represent the report
         let data: [String: Any] = [
-            "id": id!,
-            "object_type": objectType!,
+            "id": objectID,
+            "object_type": objType,
             "description": descriptionText,
             "report_type": type.displayText,
-            "has_been_reviewed" : false,
-            "upon_review" : ""
+            "has_been_reviewed": false,
+            "upon_review": ""
         ]
 
         // Specify the collection for the reports
@@ -1217,12 +1181,13 @@ class inAppViewVM: ObservableObject {
         // Call the FirebaseManager method to create the report in a single collection
         firebaseManager.createReport(inCollection: collection, withData: data) { (error) in
             if let error = error {
-                print("Error reporting \(objectType!): \(error)")
+                print("Error reporting \(objType): \(error)")
             } else {
-                print("\(objectType!) report successfully created")
+                print("\(objType) report successfully created")
             }
         }
     }
+
     
     /**
      Handles the action of blocking a user by their phone number.
@@ -1250,6 +1215,33 @@ class inAppViewVM: ObservableObject {
             }
         }
     }
+    
+    /// Unblocks a user based on their phone number.
+    ///
+    /// This function handles the unblocking of a user by removing their phone number from the `blockedUsers` set.
+    /// It makes use of the `firebaseManager.unblockUser` function to perform the actual unblocking in Firebase.
+    ///
+    /// - Parameters:
+    ///   - user: The phone number of the user to unblock.
+    ///   - completion: A closure to be called upon completion of the unblocking operation. Returns a `Result` indicating success or failure.
+    func handleUnblock(unblocking user: String, completion: @escaping (Result<Void, Error>) -> Void) {
+        // Call the firebaseManager's unblockUser function, passing in the phone number to unblock and the authenticated user's phone number
+        firebaseManager.unblockUser(phoneNumberToUnblock: user, fromAccount: self.userDoc.phoneNumber) { result in
+            switch result {
+            case .success:
+                // If unblocking was successful in Firebase, remove the phone number from the local blockedUsers set
+                self.userDoc.blockedUsers.remove(user)
+                // Pass success to the completion handler
+                completion(.success(()))
+            case .failure(let error):
+                // If there was an error during unblocking, pass the error to the completion handler
+                completion(.failure(error))
+            }
+        }
+    }
+
+
+
 
 
 

@@ -13,6 +13,8 @@ import SwiftUI
 struct SettingsView: View {
     /// Indicates whether the EditProfileView is presented.
     @State private var isShowingEditProfileView = false
+    /// indicates whether the BlockedUsersListView is presented
+    @State private var isShowingBlockedUsersView = false
     
     /// The mechanism to dismiss the view.
     @Environment(\.presentationMode) var presentationMode
@@ -102,6 +104,35 @@ struct SettingsView: View {
                 
                 // Button to delete the account.
                 Button(action: {
+                    // Action to navigate to the blocked users list or perform the blocking operation
+                    self.isShowingBlockedUsersView = true
+                }) {
+                    HStack {
+                        Image(systemName: "person.badge.minus") // Image representing blocking a user
+                            .foregroundColor(.white)
+                        Text("Blocked Users")
+                            .font(.headline)
+                            .foregroundColor(.white)
+                    }
+                    .padding()
+                    .frame(maxWidth: .infinity)
+                    .background(Color.Black)
+                    .cornerRadius(10)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 10)
+                            .stroke(.cyan, lineWidth: 4)
+                    )
+                    .cornerRadius(10)
+                }
+                .fullScreenCover(isPresented: $isShowingBlockedUsersView, content: {
+                    BlockedUsersListView()
+                        .environmentObject(inAppVM)
+                })
+
+                .padding(.horizontal, 10)
+                
+                // Button to delete the account.
+                Button(action: {
                     inAppVM.removeAllPostsFromUser(){ (success, error) in
                         if success {
                             firebaseManager.deleteOldProfilePictureFromFirestore(forPhoneNumber: inAppVM.userDoc.phoneNumber){(res, err) in
@@ -131,6 +162,9 @@ struct SettingsView: View {
                     .cornerRadius(10)
                 }
                 .padding(.horizontal, 10)
+                
+                
+                
                 
                 Spacer()
             }

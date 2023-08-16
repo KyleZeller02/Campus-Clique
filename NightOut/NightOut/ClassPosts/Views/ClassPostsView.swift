@@ -48,6 +48,7 @@ struct ClassPosts: View {
     
     // An environment object of type `inAppViewVM` that holds the view model for this view.
     @EnvironmentObject var inAppVM: inAppViewVM
+
     
     // An environment variable representing the current color scheme.
     @Environment(\.colorScheme) var colorScheme
@@ -70,6 +71,13 @@ struct ClassPosts: View {
     @State var showingReportPostSheet = false
     @State var showingReportPostActionSheet = false
     
+    @State var showingBlockUserAlert:Bool = false
+    
+    @State private var userToBlock: UserToBlock?
+    
+   
+    
+    
     // MARK: - Initialization
     //sets the navigation bar appearance
     init() {
@@ -90,7 +98,8 @@ struct ClassPosts: View {
             ActionSheet.Button.default(Text(curClass)) {
                 inAppVM.selectedClass = curClass
                 DispatchQueue.main.async {
-                    inAppVM.refreshPosts() { _ in }
+                    inAppVM.fetchFirst30PostsForClass(){ _ in}
+                    //inAppVM.refreshPosts() { _ in }
                 }
             }
         }
@@ -113,29 +122,72 @@ struct ClassPosts: View {
                         LazyVStack(spacing: 8) {
                             // LazyVStack is used to efficiently handle large numbers of posts.
                             
-                            if inAppVM.postsForClass.isEmpty {
-                                // Show a message if there are no posts available.
-                                Text("There might have been a problem fetching the posts, try reloading the app. Or, you're the first to the party. You can get the party started!")
-                                    .font(.headline)
-                                    .foregroundColor(.white)
-                            } else {
+                             
                                 // Iterate through the posts using ForEach and create NavigationLinks for each post.
                                 ForEach(inAppVM.postsForClass.indices, id: \.self) { index in
-                                    NavigationLink(destination: DetailView(selectedPost: inAppVM.postsForClass[index], isShowingDetail: $isShowingDetail, showingReportPostActionSheet: showingReportPostActionSheet)
+                                    NavigationLink(destination: DetailView(selectedPost: inAppVM.postsForClass[index], isShowingDetail: $isShowingDetail, showingReportActionSheet: showingReportPostActionSheet)
                                         .environmentObject(inAppVM)) {
                                             // Each post is wrapped in a NavigationLink to navigate to the detail view.
-                                            PostCellView(selectedPost: inAppVM.postsForClass[index],showingReportPostSheet: $showingReportPostSheet,showingReportPostActionSheet: $showingReportPostActionSheet)
+                                            PostCellView(selectedPost: inAppVM.postsForClass[index], showReportActionSheet: $showingReportPostActionSheet, userToBlock: self.$userToBlock )
                                                 .environmentObject(inAppVM)
                                                 .onAppear {
+                                                   
                                                     // Fetch more posts if the user scrolls to the end of the list.
                                                     if index == inAppVM.postsForClass.count - 1  && !inAppVM.isLastPage {
+                                                        
+                                                        
                                                         inAppVM.fetchNext30PostsForClass() { success in
                                                             print("There are now \(inAppVM.postsForClass.count) posts")
                                                         }
                                                     }
+                                                    
+
                                                 }
+                                                .sheet(isPresented: $showingReportPostSheet){
+                                                    ReportSheet(id: inAppVM.postsForClass[index].id,type:"Post")
+                                                        .environmentObject(inAppVM)
+                                                    
+                                                }
+                                                .actionSheet(isPresented: $showingReportPostActionSheet) {
+                                                                    ActionSheet(title: Text("What would you like to do?"),
+                                                                                buttons: [
+                                                                                    .default(Text("Report Content"), action: {
+                                                                                        showingReportPostSheet = true
+                                                                                    }),
+                                                                                    .destructive(Text("Block User"), action: {
+                                                                                        // Trigger the alert for blocking the user
+                                                                                        showingBlockUserAlert = true
+                                                                                    }),
+                                                                                    .cancel()
+                                                                                ])
+                                                                }
+                                                .alert(isPresented: $showingBlockUserAlert) {
+                                                    Alert(
+                                                        title: Text("Block User"),
+                                                        message: Text("Are you sure you want to block \(userToBlock?.name ?? "this user")?"),
+
+                                                        primaryButton: .destructive(Text("Block")) {
+                                                            guard let phoneNumberToBlock = userToBlock else {
+                                                                print("No phone number provided to block.")
+                                                                return
+                                                            }
+                                                            let num = phoneNumberToBlock.phoneNumber
+                                                            inAppVM.handleBlockUser(userToBlockPhoneNumber: num)
+
+                                                            userToBlock = nil
+                                                            showingBlockUserAlert = false
+                                                        },
+                                                        secondaryButton: .cancel(Text("Cancel")) {
+                                                            userToBlock = nil
+                                                            showingBlockUserAlert = false
+                                                        }
+                                                    )
+                                                }
+
+
+
                                         }
-                                }
+                                
                             }
                         }
                     }
@@ -145,7 +197,12 @@ struct ClassPosts: View {
                 .refreshable {
                     // Enable pull-to-refresh to update the post list.
                     withAnimation {
-                        inAppVM.refreshPosts() { success in }
+                        //inAppVM.refreshPosts() { success in }
+                        inAppVM.postsForClass = []
+                        DispatchQueue.main.asyncAfter(deadline:.now() + 0.5){
+                            inAppVM.fetchFirst30PostsForClass(){ _ in}
+                        }
+                       
                     }
                 }
                 
@@ -216,26 +273,6 @@ struct ClassPosts: View {
             }
         }
     }
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
     
 }
 

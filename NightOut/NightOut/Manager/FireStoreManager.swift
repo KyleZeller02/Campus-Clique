@@ -1675,6 +1675,91 @@ class FirestoreService: FirebaseManagerProtocol{
             }
         }
     }
+    
+    /**
+     Fetches the blocked users from the Firestore database based on a set of phone numbers.
+     
+     - Parameters:
+        - users: A set of phone numbers (as strings) representing the users to be fetched. The phone number should never be an empty string.
+        - completion: A closure that receives a dictionary mapping phone numbers to full names. This closure will be executed on the main thread once all users have been fetched.
+
+     - Returns: Nothing, the result is passed through the completion handler.
+    */
+    func fetchBlockedUsers(users: Set<String>, completion: @escaping ([String: String]) -> Void) {
+        // Reference to the Users collection in Firestore
+        let usersCollection = db.collection("Users")
+        // Dictionary to hold the result: mapping phone numbers to full names
+        var userDictionary: [String: String] = [:]
+        
+        // DispatchGroup to manage the multiple asynchronous database calls
+        let group = DispatchGroup()
+        
+        for user in users {
+            // Check if the user phone number is an empty string; if so, skip to the next iteration
+            guard !user.isEmpty else {
+                print("Error: User phone number is an empty string")
+                continue
+            }
+            
+            // Get a reference to the specific user document based on the phone number
+            let userDocPath = usersCollection.document(user)
+            group.enter() // Enter the group for each user
+            
+            // Asynchronously fetch the user document
+            userDocPath.getDocument { (documentSnapshot, error) in
+                defer { group.leave() } // Leave the group whether success or failure
+                
+                // Check for and handle errors during the fetch
+                if let error = error {
+                    print("Error fetching user: \(error)")
+                    return
+                }
+                
+                // Check if the document exists; if not, print a message and return
+                guard let documentSnapshot = documentSnapshot, documentSnapshot.exists else {
+                    print("Document does not exist for user: \(user)")
+                    return
+                }
+                
+                // Extract the user data, ensuring all required fields are present and correctly typed
+                guard let data = documentSnapshot.data(),
+                      let firstName = data["first_name"] as? String,
+                      let lastName = data["last_name"] as? String else {
+                    print("Error extracting user data")
+                    return
+                }
+                
+                // Concatenate the first and last names and add the full name to the result dictionary
+                let fullName = firstName + " " + lastName
+                userDictionary[user] = fullName
+            }
+        }
+        
+        // Notify when all asynchronous calls are complete, and pass the result dictionary to the completion handler
+        group.notify(queue: .main) {
+            completion(userDictionary)
+        }
+    }
+
+    func unblockUser(phoneNumberToUnblock: String, fromAccount loggedInUserPhoneNumber: String, completion: @escaping (Result<Void, Error>) -> Void) {
+        // Get reference to the authenticated user's document
+        let authenticatedUserDocument = db.collection("Users").document(loggedInUserPhoneNumber)
+
+        // Update the 'blocked_users' field by removing the specified phone number
+        authenticatedUserDocument.updateData([
+            "blocked_users": FieldValue.arrayRemove([phoneNumberToUnblock])
+        ]) { error in
+            if let updateError = error {
+                print("Error unblocking user with phone number \(phoneNumberToUnblock): \(updateError)")
+                completion(.failure(updateError)) // Pass the error to the completion handler
+            } else {
+                print("Successfully unblocked user with phone number \(phoneNumberToUnblock)")
+                completion(.success(())) // Pass success to the completion handler
+            }
+        }
+    }
+
+
 
 
 

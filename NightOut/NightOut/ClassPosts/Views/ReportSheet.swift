@@ -13,7 +13,8 @@ struct ReportSheet: View {
     @Environment(\.presentationMode) var presentationMode
     @State private var shouldBlockUser: Bool = false
     @EnvironmentObject var vm: inAppViewVM
-    let postable: Any
+    let id: String
+    let type: String
     
     @State private var showingAlertNoReportChosen: Bool = false
     var body: some View {
@@ -42,7 +43,8 @@ struct ReportSheet: View {
                             return
                         }
 
-                        vm.handleReportOnPost(for: postable, description: description, reportType: selectedType)
+                        vm.handleReportOnPost(for: id, with: type, description: self.description, reportType: selectedType)
+                        
 
                         
                         // Dismiss the modal view when this button is tapped.

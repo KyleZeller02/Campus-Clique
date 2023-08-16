@@ -33,6 +33,8 @@ struct DetailView: View {
     @Binding var isShowingDetail: Bool
     
     @State var showingReportAlertReply: Bool = false
+    
+   
 
     /// Accesses the presentation mode of the view.
     @Environment(\.presentationMode) var presentationMode
@@ -49,10 +51,28 @@ struct DetailView: View {
     /// Stores the height of the reply text field.
     @State private var textFieldHeight: CGFloat = 0
     
-    @State var showingReportReplyActionSheet:Bool = false
     
-    @State var showingReportPostActionSheet: Bool
-    @State var showingReportPostSheet:Bool = false
+   
+    
+   
+    
+    
+  // action sheet for reporting anything
+    @State var showingReportActionSheet = false
+    @State var showingReportReplyActionSheet = false
+    
+    //Reporting anything sheet
+    @State var showingReportPostSheet = false
+    @State var showingReportReplySheet = false
+    //blocking a user
+    @State var showingBlockUserAlertPost = false
+    @State var showingBlockUserAlertReply = false
+    @State  var userToBlock: UserToBlock?
+    
+    @State  var userToBlockReply: UserToBlock?
+
+    
+   
 
     // MARK: - Methods
 
@@ -81,8 +101,51 @@ struct DetailView: View {
                 // The scroll view shows all the post and replies
                 ScrollView(showsIndicators: false) {
                     // Post cell for the selected post
-                    PostCellView(selectedPost:selectedPost,showingReportPostSheet: $showingReportPostSheet, showingReportPostActionSheet: $showingReportPostActionSheet )
+                    PostCellView(selectedPost:selectedPost, showReportActionSheet: $showingReportActionSheet, userToBlock: $userToBlock )
                         .environmentObject(viewModel)
+                        .sheet(isPresented: $showingReportPostSheet){
+                            ReportSheet(id:selectedPost.id,type:"Post")
+                                .environmentObject(viewModel)
+                            
+                        }
+                        .actionSheet(isPresented: $showingReportActionSheet) {
+                                            ActionSheet(title: Text("What would you like to do?"),
+                                                        buttons: [
+                                                            .default(Text("Report Content"), action: {
+                                                                showingReportPostSheet = true
+                                                            }),
+                                                            .destructive(Text("Block User"), action: {
+                                                                // Trigger the alert for blocking the user
+                                                                self.userToBlock = UserToBlock(name: "\(selectedPost.firstName) \(selectedPost.lastName)", phoneNumber: selectedPost.phoneNumber)
+                                                                showingBlockUserAlertPost = true
+                                                            }),
+                                                            .cancel()
+                                                        ])
+                                        }
+                        .alert(isPresented: $showingBlockUserAlertPost) {
+                            Alert(
+                                title: Text("Block User"),
+                                message: Text("Are you sure you want to block \(userToBlock?.name ?? "this user")?"),
+                               
+
+                                primaryButton: .destructive(Text("Block")) {
+                                    guard let phoneNumberToBlock = userToBlock else {
+                                        print("No phone number provided to block.")
+                                        return
+                                    }
+                                    let num = phoneNumberToBlock.phoneNumber
+                                    viewModel.handleBlockUser(userToBlockPhoneNumber: num)
+
+                                    userToBlock = nil
+                                    showingBlockUserAlertPost = false
+                                    presentationMode.wrappedValue.dismiss()
+                                },
+                                secondaryButton: .cancel(Text("Cancel")) {
+                                    userToBlock = nil
+                                    showingBlockUserAlertPost = false
+                                }
+                            )
+                        }
 
                     // Area for showing replies
                     if viewModel.curReplies.isEmpty {
@@ -108,13 +171,59 @@ struct DetailView: View {
                         VStack {
                             LazyVStack(spacing: 8) {
                                 ForEach(viewModel.curReplies, id: \.id) { reply in
-                                    ReplyView(reply: .constant(reply), selectedPost: .constant(selectedPost), isAuthorReply: isAuthorReply(ofReply:), showingReportReplySheet: $showingReportAlertReply, showingReportReplyActionSheet: $showingReportReplyActionSheet)
+
+                                    ReplyView(reply: .constant(reply), selectedPost: .constant(selectedPost), isAuthorReply: isAuthorReply(ofReply:), showingReportActionSheet: $showingReportReplyActionSheet,  showingBlockUserAlert: $showingBlockUserAlertReply, userToBlockReply: $userToBlockReply)
                                         .environmentObject(viewModel)
                                         .frame(minWidth: 0, maxWidth: .infinity, alignment: .center)
                                         .cornerRadius(10)
+                                        .actionSheet(isPresented: $showingReportReplyActionSheet) {
+                                                            ActionSheet(title: Text("What would you like to do?"),
+                                                                        buttons: [
+                                                                            .default(Text("Report Content"), action: {
+                                                                                showingReportReplySheet = true
+                                                                            }),
+                                                                            .destructive(Text("Block User"), action: {
+                                                                                // Trigger the alert for blocking the user
+                                                                               
+                                                                                showingBlockUserAlertReply = true
+                                                                            }),
+                                                                            .cancel()
+                                                                        ])
+                                                        }
+                                        .alert(isPresented: $showingBlockUserAlertReply) {
+                                            Alert(
+                                                title: Text("Block User"),
+                                                message: Text("Are you sure you want to block \(userToBlockReply?.name ?? "this user")?"),
+
+                                                primaryButton: .destructive(Text("Block")) {
+                                                    guard let phoneNumberToBlock = userToBlockReply else {
+                                                        print("No phone number provided to block.")
+                                                        return
+                                                    }
+                                                    let num = phoneNumberToBlock.phoneNumber
+                                                    viewModel.handleBlockUser(userToBlockPhoneNumber: num)
+
+                                                    userToBlockReply = nil
+                                                    showingBlockUserAlertReply = false
+                                                    
+                                                    if selectedPost.phoneNumber == reply.phoneNumber{
+                                                        presentationMode.wrappedValue.dismiss()
+                                                    }
+                                                },
+                                                secondaryButton: .cancel(Text("Cancel")) {
+                                                    userToBlockReply = nil
+                                                    showingBlockUserAlertReply = false
+                                                }
+                                            )
+                                        }
+                                        .sheet(isPresented: $showingReportReplySheet){
+                                            ReportSheet(id:reply.id,type:"Reply")
+                                                .environmentObject(viewModel)
+                                            
+                                        }
                                 }
                             }
-                            .background(Color.black)
+                            .background(Color.Black)
                         }
                     }
                 }

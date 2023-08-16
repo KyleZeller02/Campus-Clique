@@ -19,12 +19,9 @@ struct PostCellView: View {
     @EnvironmentObject var viewModel: inAppViewVM // Replace `inAppViewVM` with your actual view model data type
     
     
-    
-    @Binding var showingReportPostSheet:Bool // this variable is held in the detail view, will show alert to report
-    
-    @Binding var showingReportPostActionSheet: Bool
-    
-    @State private var showingBlockUserAlert = false
+    @Binding var showReportActionSheet:Bool
+    @Binding var userToBlock: UserToBlock?
+   
     
     /// View's body property defining the layout and content of the post cell.
     var body: some View {
@@ -78,6 +75,8 @@ struct PostCellView: View {
                     // Upvote button
                     Button(action: {
                         DispatchQueue.main.async {
+                            print("PostBody: \(selectedPost.postBody)")
+                            print("Author: \(selectedPost.firstName)")
                             viewModel.handleVoteOnPost(UpOrDown: VoteType.up, onPost: selectedPost)
                         }
                     }) {
@@ -96,6 +95,8 @@ struct PostCellView: View {
                     // Downvote button
                     Button(action: {
                         DispatchQueue.main.async {
+                            print("PostBody: \(selectedPost.postBody)")
+                            print("Author: \(selectedPost.firstName)")
                             viewModel.handleVoteOnPost(UpOrDown: VoteType.down, onPost: selectedPost)
                         }
                     }) {
@@ -114,7 +115,9 @@ struct PostCellView: View {
                     // Button for reporting the reply
                             Button(action: {
                                 // When the button is tapped, it sets a state variable to true, triggering an action sheet for reporting
-                                showingReportPostActionSheet = true
+                                self.showReportActionSheet = true
+                                self.userToBlock = UserToBlock(name: "\(selectedPost.firstName) \(selectedPost.lastName)", phoneNumber: selectedPost.phoneNumber)
+                                
                             }) {
                                 // Displays an image for the report button (exclamation mark inside a triangle)
                                     Image(systemName: "flag")
@@ -126,35 +129,9 @@ struct PostCellView: View {
                             }
                             .opacity(isAuthorPost(ofPost: selectedPost) ? 0.0 : 1.0)  // Adjusts the opacity based on whether the post is authored by the current user
                             .disabled(isAuthorPost(ofPost: selectedPost))
-                            .actionSheet(isPresented: $showingReportPostActionSheet) {
-                                ActionSheet(title: Text("What would you like to do?"),
-                                            buttons: [
-                                                .default(Text("Report Content"), action: {
-                                                    showingReportPostSheet = true
-                                                }),
-                                                .destructive(Text("Block User"), action: {
-                                                    // Trigger the alert for blocking the user
-                                                    showingBlockUserAlert = true
-                                                }),
-                                                .cancel()
-                                            ])
-                            }
-                            .sheet(isPresented: $showingReportPostSheet) {
-                                ReportSheet(postable: selectedPost).environmentObject(viewModel)
-                            }
-                            .alert(isPresented: $showingBlockUserAlert) {
-                                Alert(
-                                    title: Text("Block User"),
-                                    message: Text("Are you sure you want to block this user?"),
-                                    primaryButton: .destructive(Text("Block"), action: {
-                                        
-                                        // Add the action to actually block the user here
-                                        
-                                        viewModel.handleBlockUser(userToBlockPhoneNumber: selectedPost.phoneNumber)
-                                    }),
-                                    secondaryButton: .cancel()
-                                )
-                            }
+                            
+                            
+                            
                     
                     Spacer()
                     

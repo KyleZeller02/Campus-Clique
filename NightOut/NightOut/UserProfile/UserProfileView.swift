@@ -36,6 +36,8 @@ struct UserProfileView: View {
     
     @State var showingReportPostActionSheet: Bool = false
     
+    @State private var userToBlock: UserToBlock?
+    
     /// The body of the `UserProfileView`.
     var body: some View {
         NavigationView {
@@ -119,9 +121,9 @@ struct UserProfileView: View {
                             LazyVStack(spacing: 8) {
                                 // Loop through posts
                                 ForEach(inAppVM.postsforUser) { post in
-                                    NavigationLink(destination: DetailView(selectedPost: post, isShowingDetail: $isShowingDetailPost, showingReportPostActionSheet: showingReportPostActionSheet)
+                                    NavigationLink(destination: DetailView(selectedPost: post, isShowingDetail: $isShowingDetailPost, showingReportActionSheet: showingReportPostActionSheet)
                                         .environmentObject(inAppVM)) {
-                                            PostCellView(selectedPost: post, showingReportPostSheet: $showingReportPostSheet, showingReportPostActionSheet: $showingReportPostActionSheet).environmentObject(inAppVM)
+                                            PostCellView(selectedPost: post,  showReportActionSheet: $showingReportPostActionSheet,userToBlock: $userToBlock).environmentObject(inAppVM)
                                         }
                                 }
                             }

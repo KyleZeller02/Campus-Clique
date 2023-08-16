@@ -2,14 +2,14 @@ import SwiftUI
 
 struct AddPostView: View {
     @State private var postBody:String = ""
-    @FocusState private var focused:Bool
+    @FocusState private var focused:Bool 
     @Environment(\.presentationMode) var presentationMode
     @EnvironmentObject var viewModel: inAppViewVM
     
     
     init() {
         UITextView.appearance().backgroundColor = .clear
-        setFocus()
+        
     }
     func setFocus() {
         focused = true
@@ -32,6 +32,7 @@ struct AddPostView: View {
                    
                     TextEditor(text: $postBody)
                         .frame(height: 300)
+                        .focused($focused)
                         .background(Color.Black)
                         .foregroundColor(Color.White)
                         .cornerRadius(10)
@@ -50,6 +51,7 @@ struct AddPostView: View {
                                 postBody = String(newValue.prefix(400))
                             }
                         }
+                        
 
                                             
                     
@@ -95,7 +97,9 @@ struct AddPostView: View {
             }
             
         }
-
+        .onAppear(){
+            setFocus()
+        }
         
         
         
