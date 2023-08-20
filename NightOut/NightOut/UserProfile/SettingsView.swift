@@ -80,27 +80,7 @@ struct SettingsView: View {
                         .environmentObject(inAppVM)
                 })
                 
-                // Button to log out.
-                Button(action: {
-                    AccountActions.LogOut()
-                    showOnboarding = true
-                }) {
-                    HStack {
-                        Image(systemName: "power")
-                            .foregroundColor(.white)
-                        Text("Log Out")
-                            .font(.headline)
-                            .foregroundColor(.white)
-                    }
-                    .padding()
-                    .frame(maxWidth: .infinity)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 10)
-                            .stroke(.cyan, lineWidth: 4)
-                    )
-                    .cornerRadius(10)
-                }
-                .padding(.horizontal, 10)
+                
                 
                 // Button to delete the account.
                 Button(action: {
@@ -131,6 +111,27 @@ struct SettingsView: View {
 
                 .padding(.horizontal, 10)
                 
+                // Button to log out.
+                Button(action: {
+                    AccountActions.LogOut()
+                    showOnboarding = true
+                }) {
+                    HStack {
+                        Image(systemName: "power")
+                            .foregroundColor(.white)
+                        Text("Log Out")
+                            .font(.headline)
+                            .foregroundColor(.white)
+                    }
+                    .padding()
+                    .frame(maxWidth: .infinity)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 10)
+                            .stroke(.cyan, lineWidth: 4)
+                    )
+                    .cornerRadius(10)
+                }
+                .padding(.horizontal, 10)
                 // Button to delete the account.
                 Button(action: {
                     inAppVM.removeAllPostsFromUser(){ (success, error) in

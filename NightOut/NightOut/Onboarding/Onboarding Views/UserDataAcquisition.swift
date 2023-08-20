@@ -64,7 +64,7 @@ struct UserDataAcquisition: View {
                         .multilineTextAlignment(.center)
                         .foregroundColor(.Black)
                     
-                    Text("These classes should match up with what is on your schedule.")
+                    Text("These classes should match up with what is on your schedule. Make sure there are no spaces.")
                         .foregroundColor(.Black)
                     
                     // Textfields for user to enter their classes
@@ -157,6 +157,9 @@ struct UserDataAcquisition: View {
                                     
                                     let major = major.trimmingCharacters(in: .whitespacesAndNewlines)
                                     var classes = [class1, class2, class3, class4, class5, class6]
+                                    
+                                    classes = classes.map { $0.replacingOccurrences(of: " ", with: "") }
+                                                
                                     classes = classes.map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
                                     classes = classes.filter { !$0.isEmpty }
                                     

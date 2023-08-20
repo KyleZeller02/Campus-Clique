@@ -29,6 +29,7 @@ struct ProfilePictureAcquisition: View {
     
     // An environment object of OnboardingViewModel
     @EnvironmentObject var onboardingVM: OnboardingViewModel
+    //@StateObject var onboardingVM = OnboardingViewModel()
 
     // The body of the SwiftUI view
     var body: some View {
@@ -94,6 +95,7 @@ struct ProfilePictureAcquisition: View {
                         .cornerRadius(15)
                         .shadow(radius: 5)
                 })
+                
 
                 // Button to proceed with the profile creation
                 Button(action: {
@@ -148,6 +150,16 @@ struct ProfilePictureAcquisition: View {
                 .alert(isPresented: $showRestrictedAccessError) {
                     Alert(title: Text("Restricted Access"), message: Text("Go to settings and allow Campus Clique to access your camera roll."), dismissButton: .default(Text("Got it!")))
                 }
+                TextView(
+                            attributedString: .constant(
+                                NSAttributedString(string: "By creating your account, you agree to Campus Clique's terms and conditions", attributes: [
+                                    .link: URL(string: "https://campuscliquecom.wordpress.com")!,
+                                    .font: UIFont.systemFont(ofSize: 10)
+                                ])
+                            )
+                        )
+                        .frame(maxWidth: .infinity, maxHeight: 20)
+                        
                 
                 // Takes up remaining space
                 Spacer()

@@ -91,7 +91,19 @@ struct AddPostView: View {
                     }
                     .padding(.horizontal)
                 }
-                .padding(.bottom)
+                .padding(.bottom,3)
+                
+                
+                TextView(
+                            attributedString: .constant(
+                                NSAttributedString(string: "By posting, you agree to Campus Clique's terms and conditions", attributes: [
+                                    .link: URL(string: "https://campuscliquecom.wordpress.com")!,
+                                    .font: UIFont.systemFont(ofSize: 10)
+                                ])
+                            )
+                        )
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                        .padding()
                 
                 Spacer()
             }
@@ -110,5 +122,33 @@ struct AddPostView: View {
 struct AddPostView_Previews: PreviewProvider {
     static var previews: some View {
         AddPostView()
+    }
+}
+
+struct TextView: UIViewRepresentable {
+    @Binding var attributedString: NSAttributedString
+
+    func makeUIView(context: Context) -> UITextView {
+        let textView = UITextView()
+        textView.delegate = context.coordinator
+        textView.isEditable = false
+        textView.isScrollEnabled = false
+        return textView
+    }
+
+    func updateUIView(_ uiView: UITextView, context: Context) {
+        uiView.attributedText = attributedString
+    }
+
+    func makeCoordinator() -> Coordinator {
+        Coordinator(self)
+    }
+
+    class Coordinator: NSObject, UITextViewDelegate {
+        var parent: TextView
+
+        init(_ parent: TextView) {
+            self.parent = parent
+        }
     }
 }
