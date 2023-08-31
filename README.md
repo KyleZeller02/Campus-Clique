@@ -41,16 +41,5 @@ The app was successfully published to the App Store. However, due to the extensi
 - **Socialize**: Create posts, like, dislike, or reply to engage with your community.
 
 
-## App Screenshots
-
-![App Logo](./assets/AppLogo.jpeg)
-
-### App Usage
-
-![Screenshot 1](./assets/IMG_1024.PNG)
-![Screenshot 2](./assets/IMG_1025.PNG)
-![Screenshot 3](./assets/IMG_1026.PNG)
-![Screenshot 4](./assets/IMG_1027.PNG)
-![Screenshot 5](./assets/IMG_1028.PNG)
-![Screenshot 6](./assets/IMG_1031.PNG)
-![Screenshot 7](./assets/IMG_1032.PNG)
+## App In Use
+Photos of the app that were used for app store previews can be found in the assets folder.
